@@ -6,7 +6,7 @@ dotenv.config();
 
 const connection = async () => {
   try {
-    mongoose.set('strictQuery', true); // Optional: for strict MongoDB queries
+    mongoose.set('strictQuery', true); // Optional: for strict MongoDB bulbol
 
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
