@@ -6,11 +6,10 @@ dotenv.config();
 
 const connection = async () => {
   try {
-    mongoose.set('strictQuery', true); // Optional: for strict MongoDB bulbol
+    mongoose.set('strictQuery', true); // Optional: for strict MongoDB queries
 
     await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      // No need for useNewUrlParser and useUnifiedTopology
       autoIndex: true, // Enables automatic creation of indexes (optional)
     });
 
