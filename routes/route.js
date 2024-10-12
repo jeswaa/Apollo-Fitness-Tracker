@@ -8,7 +8,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/login', (req, res) => {
-  res.render('login');  // This renders 'views/index.ejs'
+  res.render('login');  // This renders 'views/login.ejs'
+});
+
+router.get('/signup', (req, res) => {
+  res.render('signup');  // This renders 'views/signup.ejs'
 });
 
 export default router;

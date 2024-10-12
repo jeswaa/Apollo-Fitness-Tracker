@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/copperplate-gothic-std');
+
+
+
 * {
   margin: 0;
   padding: 0;
@@ -30,6 +36,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 50px;
+  height: 80px; /* Adjust the height as needed */
 }
 
 .logo {
@@ -38,20 +45,16 @@ nav {
 }
 
 .logo img {
-  width: 60px;
-  height: 60px;
+  width: 90px;
+  height: 90px;
   margin-right: 10px;
 }
 
-.logo h1 {
-  color: red;
-  font-size: 24px;
-  font-weight: bold;
-}
-
 nav ul {
+  font-family: "Arvo", serif;
   display: flex;
   list-style: none;
+  gap: 50px;
 }
 
 nav ul li {
@@ -61,7 +64,7 @@ nav ul li {
 nav ul li a {
   color: white;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 25px;
 }
 
 nav ul li .login-btn {
@@ -103,29 +106,38 @@ nav ul li .login-btn:hover {
 
 .hero-text {
   max-width: 500px; /* Control width */
+  text-align: right;
+  margin-right: 75px;
 }
 
 .hero-text h1 {
-  font-size: 80px; /* Make text larger */
+  font-size: 110px; /* Make text larger */
   font-weight: bold;
 }
 
+
 .hero-text .highlight-red {
   color: red;
-  text-shadow: 3px 3px 5px rgb(255, 255, 255); /* Solid shadow effect */
+  text-shadow: 
+  6px 6px 0px white,  /* Second shadow for thickness */
+  0px 0px 10px white;  /* Optional glowing effect */
 }
 
-.hero-text p {
-  font-size: 22px; /* Make paragraph text bigger */
-  margin: 20px 0;
+.hero-description {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px; /* Example size for the description */
+  margin: 40px -60px;
+  text-align: right;
+
 }
 
 .btn {
+  font-family: 'Copperplate Gothic Std', sans-serif;                                              
   background-color: red;
   color: white;
   padding: 20px 40px; /* Larger button */
   text-decoration: none;
-  font-size: 20px;
+  font-size: 30px;
   border-radius: 5px;
   transition: background-color 0.3s ease;
 }

@@ -1,0 +1,156 @@
+/* Reset default margin, padding, and box-sizing for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Styling for the body to center the container */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
+
+/* Main container holding the left image and the right login form */
+.container {
+    display: flex;
+    width: 80%;
+    max-width: 1200px;
+    height: 600px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Left and right sections of the container */
+.left, .right {
+    width: 50%;
+}
+
+/* Left side image styling */
+.left img {
+    width: 80%; /* Adjusted to take 80% of the width */
+    height: 100%;
+}
+
+/* Right side form container styling */
+.right {
+    display: flex;
+    justify-content:left;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Form container styling within the right section */
+.form-container {
+    width: 80%;
+    text-align: left; /* Align text to the left */
+    margin-left: -80px; /* Adjust this value to move it further left */
+    padding-left: 20px; /* Keep the padding if you want space from the left edge */
+}
+
+
+
+/* Logo inside the form */
+.form-container .logo {
+    position: absolute;
+    top: 5%; /* Position it at the top */
+    right: 10%; /* Align it to the right side */
+    margin: 20px; /* Optional: Adds some space between the logo and the edges */
+}
+
+.form-container .logo img {
+    width: 100px;
+}
+
+
+/* Main heading in the form */
+.form-container h1 {
+    padding-top: 9px;
+    margin-bottom: 10px;
+    font-size: 32px;
+    font-weight: bolder;
+}
+
+/* Subheading and instructions */
+.form-container p {
+    margin-bottom: 20px;
+    color: black;
+    font-weight: bold;
+}
+
+/* Form styling with flexbox for vertical layout */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Styling for form labels */
+label {
+    align-self: flex-start;
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 1px;
+}
+
+/* Input fields styling */
+input {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    border: 3px solid #d0ccb9;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+/* Login button styling */
+.login-btn {
+    width: 90%;
+    padding: 10px 20px;
+    background-color: #3b3b39;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bolder;
+
+}
+
+/* Hover effect for login button */
+.login-btn:hover {
+    background-color: #34495e;
+}
+
+/* Links inside the form */
+a {
+    color: #2980b9;
+    text-decoration: none;
+}
+
+/* Hover effect for links */
+a:hover {
+    text-decoration: underline;
+}
+
+.signup-text {
+    text-align: center; /* Center the text */
+    margin-top: 20px; /* Add some space above */
+    font-size: 16px; /* Adjust font size */
+}
+
+.signup-text a {
+    color: #bf1616; /* Change the link color */
+    text-decoration: none; /* Remove underline */
+}
+
+.signup-text a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
