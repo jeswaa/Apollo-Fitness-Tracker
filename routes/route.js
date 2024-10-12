@@ -15,4 +15,9 @@ router.get('/signup', (req, res) => {
   res.render('signup');  // This renders 'views/signup.ejs'
 });
 
+router.get('/guest', (req, res) => {
+  res.render('guest');  // This renders 'views/geust-page.ejs'
+});
+
+
 export default router;
