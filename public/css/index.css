@@ -8,12 +8,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 
 body, html {
   height: 100%;
   font-family: 'Arial', sans-serif;
   color: white;
+  background-color: #111827;
 }
 
 body {
@@ -145,5 +147,130 @@ nav ul li .login-btn:hover {
 .btn:hover {
   background-color: darkred;
 }
+
+.why-choose-us {
+  width: 100%;
+  text-align: right; /* Align text to the right */
+  padding: 20px; 
+}
+
+/* Heading Styles */
+h1 {
+  font-size: 90px;
+  margin-bottom: 40px;
+  margin-left: 50px;
+  font-weight: bold;
+  color: white;
+}
+
+/* Services Container */
+.services-container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 100px;
+  gap: 20px; /* Spacing between cards */
+}
+
+/* Individual Service Cards */
+.service-card {
+  background-color: #2b3147; /* Card background */
+  border-radius: 10px;
+  width: 25%; /* Reduced width for better spacing */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transition: transform 0.3s ease; /* Smooth hover effect */
+}
+
+.service-card img {
+  width: 100%; /* Make image width 100% of its container */
+  height: 250px; /* Fixed height */
+  object-fit: cover; /* Cover the area without stretching */
+  border-radius: 10px; /* Rounded corners for images */
+  margin-bottom: 10px; /* Space between image and text */
+}
+
+
+.service-card h3 {
+  font-family: "Roboto", sans-serif;
+  font-size: 25px; /* Service title font size */
+  margin-bottom: 10px;
+}
+
+.service-card p {
+  font-family: "Roboto", sans-serif;  
+  font-size: 14px; /* Service description font size */
+  line-height: 1.4;
+  color: #d1d1d1; /* Light color for text */
+  margin-bottom: 50px;
+}
+
+/* Hover effect for service cards */
+.service-card:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.user-reviews-section{
+  padding-top: 10%;
+  padding-bottom: 130px;
+}
+/* User Reviews Section */
+.user-reviews {
+  display: flex;
+  justify-content: space-around; /* Space between review cards */
+  gap: 20px;
+  margin-top: 40px; /* Space above the user reviews */
+  margin-bottom: 50px;
+}
+
+/* Individual Review Cards */
+.review-card {
+  background-color: #2b3147; /* Matching background for reviews */
+  padding: 20px;
+  border-radius: 15px; /* Softer corners for review cards */
+  width: 35%;
+  height: 50%; /* You may want to adjust this based on your design */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+  text-align: center; /* Align text to the center */
+  transition: transform 0.3s ease; /* Smooth hover effect */
+}
+
+
+.review-card:hover {
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+.reviews-title{
+  margin-left: 90px;
+}/* Review Title Styles */
+.review-title{
+  margin-top: -40px;
+  padding-top: 40px;
+  font-size: 30px; /* Title font size */
+  font-weight: bold;
+  color: red ; /* Emphasized color for titles */
+
+}
+
+/* Review Text Styles */
+.review-text {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px; /* Text font size */
+  line-height: 1.6;
+  color: #d1d1d1; /* Light text color */
+  margin-bottom: 10px;
+}
+
+/* Review Author Styles */
+.review-author {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px; /* Author font size */
+  font-style: italic; /* Italic for author */
+  color: #d1d1d1; /* Light color for text */
+  display: inline-block;
+  padding-bottom: 5px; /* Padding for underline spacing */
+}
+
 
 
