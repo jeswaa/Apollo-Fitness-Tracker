@@ -19,5 +19,6 @@ router.get('/guest', (req, res) => {
   res.render('guest');  // This renders 'views/geust-page.ejs'
 });
 
+//buratburat
 
 export default router;
