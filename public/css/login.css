@@ -145,3 +145,29 @@ a:hover {
 .signup-text a:hover {
   text-decoration: underline;
 }
+
+.success-message {
+  position: fixed; /* Position it in the fixed position */
+  top: 20px;      /* Adjust top position */
+  right: 20px;    /* Adjust right position */
+  background-color: #d4edda; /* Light green background */
+  color: #155724;  /* Dark green text color */
+  border: 1px solid #c3e6cb; /* Light green border */
+  padding: 15px; /* Padding for the message */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  z-index: 1000; /* Ensure it appears above other content */
+  animation: fadeIn 0.5s; /* Animation for fade-in effect */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fade-out animation */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

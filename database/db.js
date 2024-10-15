@@ -2,14 +2,15 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
+// Load environment variables
 dotenv.config();
 
 const connection = async () => {
   try {
     mongoose.set('strictQuery', true); // Optional: for strict MongoDB queries
 
+    // Connect to MongoDB using the URI from environment variables
     await mongoose.connect(process.env.MONGO_URI, {
-      // No need for useNewUrlParser and useUnifiedTopology
       autoIndex: true, // Enables automatic creation of indexes (optional)
     });
 
