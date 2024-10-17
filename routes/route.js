@@ -1,8 +1,8 @@
 import express from 'express';
-import User from '../models/User.js';  // Import your User model
-import bcrypt from 'bcrypt';  // For password hashing
-import flash from 'connect-flash'; // Import connect-flash
-import session from 'express-session'; // Import express-session
+import User from '../models/User.js';
+import bcrypt from 'bcrypt'; 
+import flash from 'connect-flash'; 
+import session from 'express-session'; 
 
 const router = express.Router();
 
@@ -12,24 +12,38 @@ router.use(flash());
 
 // Route to render the index.ejs file
 router.get('/', (req, res) => {
-    res.render('index');  // This renders 'views/index.ejs'
+    res.render('index'); 
 });
 
 // Route to render the login page
 router.get('/login', (req, res) => {
     const successMessage = req.flash('success_msg');
-    res.render('login', { successMessage });  // Pass the success message to the login view
+    res.render('login', { successMessage }); 
 });
 
 // Route to render the signup page
 router.get('/signup', (req, res) => {
-    res.render('signup');  // This renders 'views/signup.ejs'
+    res.render('signup'); 
 });
 
+
+// Admin-Side
+
 // Route to render the dashboard page
-router.get('/dashboard', (req, res) => {
-  res.render('dashboard');  // This renders 'views/dashboard.ejs'
+router.get('/admin-dashboard', (req, res) => {
+  res.render('adminDashboard');
 });
+
+// Route to render the add workout page
+router.get('/add-workout', (req, res) => {
+    res.render('adminWorkout'); 
+});
+
+// Route to render the add workout page
+router.get('/add-food', (req, res) => {
+    res.render('adminNutrition'); 
+});
+
 // POST route to handle signup form submission
 router.post('/signup', async (req, res) => {
     const { fullname, email, username, password } = req.body;
