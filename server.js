@@ -1,12 +1,16 @@
-// server.js
 import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import connection from './database/db.js';  // Import your database connection function
 import routes from './routes/route.js';      // Import your routes
 import dotenv from 'dotenv';                 // For loading environment variables
-import path from 'path';                      // For handling file and directory paths
 
 // Load environment variables
 dotenv.config();
+
+// Deriving __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
@@ -22,10 +26,11 @@ connection(); // Assuming this connects to your MongoDB instance
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
+app.use('/uploads', express.static(join(__dirname, 'public/uploads')));
 
 // Set up EJS as the templating engine
 app.set('view engine', 'ejs');
-app.set('views', path.join(path.resolve(), 'views')); // Set the views directory
+app.set('views', join(__dirname, 'views')); // Set the views directory
 
 // Define routes
 app.use('/', routes);

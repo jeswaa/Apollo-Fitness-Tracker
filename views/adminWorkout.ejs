@@ -17,12 +17,209 @@
             <h1>Admin Name</h1>
         </div>
     </div>
-    <div class="side-panel">
-        <a href="/admin-dashboard">Dashboard</a>
-        <a href="/add-workout">Workout</a>
-        <a href="/add-food">Nutrition</a>
-        <a href="#">Users</a>
-        <a href="#">Progress Tracker</a>
+
+    <div class="content">
+        <div class="side-panel">
+            <a href="/admin-dashboard">Dashboard</a>
+            <a href="/add-workout">Workout</a>
+            <a href="/add-food">Nutrition</a>
+            <a href="#">Users</a>
+            <a href="#">Progress Tracker</a>
+        </div>
+
+        <div class="main-col">
+            <div class="addntn">
+                <a href="#" id="openModalBtn">Add Workout</a>
+            </div>
+
+            <div class="main-sec">
+                <table border="2px">
+                    <thead>
+                        <tr>
+                            <th>Workout Name</th>
+                            <th>Workout Description</th>
+                            <th>Workout Image</th>
+                            <th>Intensity</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workoutTableBody"></tbody> <!-- Table body to be populated -->
+                </table>
+            </div>
+        </div>
     </div>
+
+    <!-- Modal Structure -->
+    <div id="workoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add or Edit Workout</h2>
+            <form id="workoutForm" action="/add-workout" method="POST" enctype="multipart/form-data">
+                <label for="name">Workout Name:</label>
+                <input type="text" id="name" name="name" required><br>
+            
+                <label for="description">Workout Description:</label>
+                <textarea id="description" name="description" required></textarea><br>
+            
+                <label for="image">Workout Image:</label>
+                <input type="file" id="image" name="image" accept="image/*"><br>
+            
+                <label for="intensity">Intensity:</label>
+                <input type="text" id="intensity" name="intensity" required><br>
+            
+                <button type="submit">Save Workout</button>
+            </form>            
+        </div>
+    </div>
+
+    <script>
+        // Get the modal, open button, and close button elements
+        const modal = document.getElementById('workoutModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.querySelector('.close');
+
+        // Open the modal
+        openModalBtn.onclick = () => {
+            modal.style.display = 'block';
+            document.getElementById('workoutForm').reset(); // Reset form on open
+            const hiddenInput = document.querySelector('input[name="id"]');
+            if (hiddenInput) hiddenInput.remove(); // Remove hidden input if exists
+        };
+
+        // Close the modal
+        closeModalBtn.onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        // Close the modal if user clicks outside it
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        // Fetch and display workouts
+        async function fetchWorkouts() {
+            try {
+                const response = await fetch('/workouts'); // Replace with your backend endpoint
+                if (!response.ok) throw new Error('Failed to fetch workouts');
+
+                const workouts = await response.json();
+                displayWorkouts(workouts);
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+            }
+        }
+
+        // Display fetched workouts in the table
+        function displayWorkouts(workouts) {
+            const tableBody = document.getElementById('workoutTableBody');
+            tableBody.innerHTML = ''; // Clear any existing content
+
+            workouts.forEach(workout => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td>${workout.name}</td>
+                    <td>${workout.description}</td>
+                    <td><img src="${workout.image}" alt="${workout.name}" width="100"></td>
+                    <td>${workout.intensity}</td>
+                    <td>
+                        <button onclick="editWorkout('${workout._id}')">Edit</button>
+                        <button onclick="deleteWorkout('${workout._id}')">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Edit Workout Function
+        function editWorkout(id) {
+            // Fetch the workout details by ID
+            fetch(`/workouts/${id}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch workout for editing');
+                    return response.json();
+                })
+                .then(workout => {
+                    // Populate the modal with the workout details
+                    document.getElementById('name').value = workout.name;
+                    document.getElementById('description').value = workout.description;
+                    document.getElementById('intensity').value = workout.intensity;
+
+                    // Set a hidden input to store the ID for update
+                    let hiddenInput = document.querySelector('input[name="id"]');
+                    if (!hiddenInput) {
+                        hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'id';
+                        document.querySelector('form').appendChild(hiddenInput);
+                    }
+                    hiddenInput.value = workout._id; // Use _id from MongoDB
+
+                    // Open the modal
+                    modal.style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching workout for edit:', error));
+        }
+
+        // Delete Workout Function
+        function deleteWorkout(id) {
+            if (confirm('Are you sure you want to delete this workout?')) {
+                fetch(`/workouts/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Workout deleted successfully!');
+                        fetchWorkouts(); // Refresh the list
+                    } else {
+                        alert('Failed to delete workout.');
+                    }
+                })
+                .catch(error => console.error('Error deleting workout:', error));
+            }
+        }
+
+        // Form submission handling
+        document.getElementById('workoutForm').onsubmit = (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+
+            // Log FormData contents
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}: ${pair[1]}`);
+            }
+
+            const id = formData.get('id'); // Check for ID to differentiate between add and edit
+            const method = id ? 'PUT' : 'POST'; // Use PUT for edit, POST for add
+            const url = id ? `/workouts/${id}` : '/add-workout'; // Set URL based on action
+
+            fetch(url, {
+                method: method,
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text); // Capture error response text
+                    });
+                }
+                alert(id ? 'Workout updated successfully!' : 'Workout added successfully!');
+                fetchWorkouts(); // Refresh the list
+                modal.style.display = 'none'; // Close the modal
+                event.target.reset(); // Reset the form
+            })
+            .catch(error => {
+                alert(id ? 'Workout updated successfully!' : 'Workout added successfully!');
+                fetchWorkouts(); // Refresh the list
+                modal.style.display = 'none'; // Close the modal
+                event.target.reset(); // Reset the form
+            });
+        };
+
+        // Fetch workouts when the page loads
+        window.onload = fetchWorkouts;
+    </script>
 </body>
 </html>
