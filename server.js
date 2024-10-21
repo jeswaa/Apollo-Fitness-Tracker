@@ -1,6 +1,8 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import session from 'express-session'; // Import session middleware
+import flash from 'connect-flash';     // Import flash middleware
 import connection from './database/db.js';  // Import your database connection function
 import routes from './routes/route.js';      // Import your routes
 import dotenv from 'dotenv';                 // For loading environment variables
@@ -8,7 +10,7 @@ import dotenv from 'dotenv';                 // For loading environment variable
 // Load environment variables
 dotenv.config();
 
-// Deriving __dirname
+// Derive __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -22,7 +24,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Connect to MongoDB
-connection(); // Assuming this connects to your MongoDB instance
+connection(); // Connects to your MongoDB instance
+
+// Set up session middleware
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || 'your-secret-key', // Use an environment variable for security
+        resave: false,
+        saveUninitialized: true,
+        cookie: { maxAge: 60000 } // Session expires in 1 minute for demonstration
+    })
+);
+
+// Set up flash middleware
+app.use(flash());
+
+// Middleware to make flash messages available to views
+app.use((req, res, next) => {
+    res.locals.successMessage = req.flash('success_msg');
+    res.locals.errorMessage = req.flash('error_msg');
+    next();
+});
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
@@ -37,7 +59,7 @@ app.use('/', routes);
 
 // Handle 404 errors
 app.use((req, res, next) => {
-    res.status(404).send("404 FILE NOT FOUND");
+    res.status(404).send('404 FILE NOT FOUND');
 });
 
 // Start the server

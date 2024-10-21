@@ -14,7 +14,6 @@
     <div class="header">
         <div class="logo">
             <img src="./images/logo.png" alt="">
-            <h1>Admin Name</h1>
         </div>
     </div>
 
@@ -28,8 +27,8 @@
         </div>
 
         <div class="main-col">
-            <div class="addntn">
-                <a href="#" id="openModalBtn">Add Workout</a>
+            <div class="addbtn">
+                <button id="openModalBtn"><span>Add Workout</span></button>
             </div>
 
             <div class="main-sec">
@@ -52,25 +51,33 @@
     <!-- Modal Structure -->
     <div id="workoutModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add or Edit Workout</h2>
-            <form id="workoutForm" action="/add-workout" method="POST" enctype="multipart/form-data">
-                <label for="name">Workout Name:</label>
-                <input type="text" id="name" name="name" required><br>
-            
-                <label for="description">Workout Description:</label>
-                <textarea id="description" name="description" required></textarea><br>
-            
-                <label for="image">Workout Image:</label>
-                <input type="file" id="image" name="image" accept="image/*"><br>
-            
-                <label for="intensity">Intensity:</label>
-                <input type="text" id="intensity" name="intensity" required><br>
-            
-                <button type="submit">Save Workout</button>
-            </form>            
+          <span class="close">&times;</span>
+          <h2>Workout</h2>
+          <form id="workoutForm" action="/add-workout" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+              <label for="name">Workout Name:</label>
+              <input type="text" id="name" name="name" required />
+            </div>
+  
+            <div class="form-group">
+              <label for="description">Workout Description:</label>
+              <textarea id="description" name="description" required></textarea>
+            </div>
+  
+            <div class="form-group">
+              <label for="image">Workout Image:</label>
+              <input type="file" id="image" name="image" accept="image/*" />
+            </div>
+  
+            <div class="form-group">
+              <label for="intensity">Intensity:</label>
+              <input type="text" id="intensity" name="intensity" required />
+            </div>
+  
+            <button type="submit" class="submit-btn">Save Workout</button>
+          </form>
         </div>
-    </div>
+      </div>
 
     <script>
         // Get the modal, open button, and close button elements
@@ -124,7 +131,7 @@
                     <td>${workout.description}</td>
                     <td><img src="${workout.image}" alt="${workout.name}" width="100"></td>
                     <td>${workout.intensity}</td>
-                    <td>
+                    <td class="action-btn">
                         <button onclick="editWorkout('${workout._id}')">Edit</button>
                         <button onclick="deleteWorkout('${workout._id}')">Delete</button>
                     </td>

@@ -51,7 +51,83 @@
     overflow-y: auto; 
     height: 80vh;
 }
+.main-col .addbtn{
+    float: right;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.main-col .addbtn button {
+    padding: 17px 40px;
+    border-radius: 10px;
+    border: 0;
+    background-color: #1f2937;
+    letter-spacing: 1.5px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: #111827 0px 10px 0px 0px;
+    color: hsl(0, 0%, 100%);
+    cursor: pointer;
+}
+.main-col .addbtn button:hover {
+    box-shadow: #111827 0px 7px 0px 0px;
+}
+.main-col .addbtn button:active {
+    background-color: #111827;
+    /*50, 168, 80*/
+    box-shadow: #111827 0px 0px 0px 0px;
+    transform: translateY(5px);
+    transition: 200ms;
+}
+.main-col .addbtn span{
+    text-transform: uppercase;
+    font-size: 15px;
+    font-weight: bold;
+}
 
+/* Table Section */
+.main-col .main-sec {
+    margin-top: 10%;
+    padding: 20px;
+    border-radius: 15px;
+}
+.main-col .main-sec table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 10px; 
+  }
+.main-col .main-sec  thead tr {
+    background-color: #111827;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+} 
+.main-col .main-sec th, td{
+    padding: 15px;
+    text-align: center;
+}
+.main-col .main-sec table tbody tr:last-child td {
+    border-bottom: none;
+}
+.main-col .main-sec img {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+  }
+.action-btn button {
+    padding: 8px 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.action-btn button:hover {
+    background-color: #45a049;
+  }
+  
 /* Modal Styling */
 .modal {
     display: none; /* Hidden by default */
@@ -65,12 +141,55 @@
 }
 
 .modal-content {
-    background-color: white;
-    margin: 15% auto;
+    background-color: #111827;
+    color: white;
+    margin-top: 10%;
+    margin-left: 30%;
     padding: 20px;
     border-radius: 10px;
     width: 40%; /* Adjust as needed */
     position: relative;
+}
+.modal-content h2{
+    text-align: center;
+    font-size: 30px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+.modal-content form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.modal-content .form-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.modal-content .form-group label {
+    flex: 0 0 120px; /* Fixed width for labels */
+    font-weight: bold;
+}
+.modal-content .form-group input , textarea{
+    flex: 1; /* Inputs take the remaining space */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.modal-content .submit-btn {
+    padding: 10px 15px;
+    background-color: #4caf50;
+    color: white;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.modal-content .submit-btn:hover {
+    background-color: #45a049;
 }
 
 .close {

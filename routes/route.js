@@ -55,7 +55,10 @@ const renderWithFlash = (res, view, req) => {
 router.get('/', (req, res) => {
     renderWithFlash(res, 'index', req);
 });
-
+// Admin: Add Workout
+router.get('/login', (req, res) => {
+    res.render('login');
+});
 // Admin Dashboard
 router.get('/admin-dashboard', (req, res) => {
     renderWithFlash(res, 'adminDashboard', req);
