@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
-     <!-- Header & Side Panel -->
     <div class="header">
         <div class="logo">
             <img src="./images/logo.png" alt="">
@@ -21,7 +20,7 @@
         <div class="side-panel">
             <a href="/admin-dashboard">Dashboard</a>
             <a href="/add-workout">Workout</a>
-            <a href="/add-food">Nutrition</a>
+            <a href="/add-food">Food</a>
             <a href="#">Users</a>
             <a href="#">Progress Tracker</a>
         </div>
@@ -29,24 +28,24 @@
         <div class="main-col">
             <h1>Welcome, Admin</h1>
             <div class="first-col">
-               <div class="summary">
+                <div class="summary">
                     <div class="card">
                         <h1>Total Users</h1>
-                        <p>20</p>
+                        <p><%= userCount %></p> <!-- Dynamic User Count -->
                     </div>
                     <div class="card">
                         <h1>Total Workouts</h1>
-                        <p>30</p>
+                        <p><%= workoutCount %></p> <!-- Dynamic Workout Count -->
                     </div>
                     <div class="card">
-                        <h1>Total Meals</h1>
-                        <p>20</p>
+                        <h1>Total Food</h1>
+                        <p><%= FoodCount %></p>
                     </div>
                     <div class="card">
-                        <h1>Total Active User</h1>
-                        <p>10</p>
+                        <h1>Total Active Users</h1>
+                        <p>0</p>
                     </div>
-               </div>
+                </div>
             </div>
             <div class="second-col">
                 <div class="recentact">
@@ -55,9 +54,9 @@
                 </div>
             </div>
             <div class="review-sec">
-                <h1>reviews</h1>
+                <h1>Reviews</h1>
                 <div class="review-sec-col">
-                    <p>no reviews...</p>
+                    <p>No reviews...</p>
                 </div>
             </div>
         </div>

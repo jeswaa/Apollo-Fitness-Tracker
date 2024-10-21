@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Workout</title>
+    <title>Food</title>
     <link rel="stylesheet" href="css/dashboard-addfood.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,12 +17,229 @@
             <h1>Admin Name</h1>
         </div>
     </div>
-    <div class="side-panel">
-        <a href="/admin-dashboard">Dashboard</a>
-        <a href="/add-workout">Workout</a>
-        <a href="/add-food">Nutrition</a>
-        <a href="#">Users</a>
-        <a href="#">Progress Tracker</a>
+    <div class="content">
+        <div class="side-panel">
+            <a href="/admin-dashboard">Dashboard</a>
+            <a href="/add-workout">Workout</a>
+            <a href="/add-food">Food</a>
+            <a href="#">Users</a>
+            <a href="#">Progress Tracker</a>
+        </div>
+
+        <div class="main-col">
+            <div class="addbtn">
+                <button id="openModalBtn"><span>Add Food</span></button>
+            </div>
+    
+            <div class="main-sec">
+                <table border="2px">
+                    <thead>
+                        <tr>
+                            <th>Food Name</th>
+                            <th>Food Description</th>
+                            <th>Food Image</th>
+                            <th>Calories</th>
+                            <th>Carbs</th>
+                            <th>Protein</th>
+                            <th>Fats</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="foodTableBody"></tbody> <!-- Table body to be populated -->
+                </table>
+            </div>
+        </div>
     </div>
+
+    <!-- Modal Structure -->
+    <div id="workoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Food</h2>
+            <form id="workoutForm" action="/add-food" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Food Name:</label>
+                    <input type="text" id="name" name="name" required />
+                </div>
+                <div class="form-group">
+                    <label for="description">Food Description:</label>
+                    <textarea id="description" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="image">Food Image:</label>
+                    <input type="file" id="image" name="image" accept="image/*" />
+                </div>
+                <div class="form-group">
+                    <label for="calories">Calories:</label>
+                    <input type="text" id="calories" name="calories" required />
+                </div>
+                <div class="form-group">
+                    <label for="carbs">Carbs:</label>
+                    <input type="text" id="carbs" name="carbs" required />
+                </div>
+                <div class="form-group">
+                    <label for="protein">Protein:</label>
+                    <input type="text" id="protein" name="protein" required />
+                </div>
+                <div class="form-group">
+                    <label for="fats">Fats:</label>
+                    <input type="text" id="fats" name="fats" required />
+                </div>
+                <button type="submit" class="submit-btn">Save Food</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get the modal, open button, and close button elements
+        const modal = document.getElementById('workoutModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.querySelector('.close');
+    
+        // Open the modal for adding food
+        openModalBtn.onclick = () => {
+            modal.style.display = 'block';
+            document.getElementById('workoutForm').reset(); // Reset form on open
+            const hiddenInput = document.querySelector('input[name="id"]');
+            if (hiddenInput) hiddenInput.remove(); // Remove hidden input if exists
+        };
+    
+        // Close the modal
+        closeModalBtn.onclick = () => {
+            modal.style.display = 'none';
+        };
+    
+        // Close the modal if user clicks outside it
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    
+        // Fetch and display foods
+        async function fetchFoods() {
+            try {
+                const response = await fetch('/foods'); // Replace with your backend endpoint
+                if (!response.ok) throw new Error('Failed to fetch foods');
+    
+                const foods = await response.json();
+                displayFoods(foods);
+            } catch (error) {
+                console.error('Error fetching foods:', error);
+            }
+        }
+    
+        // Display fetched foods in the table
+        function displayFoods(foods) {
+            const tableBody = document.getElementById('foodTableBody');
+            tableBody.innerHTML = ''; // Clear any existing content
+    
+            foods.forEach(food => {
+                const row = document.createElement('tr');
+    
+                row.innerHTML = `
+                    <td>${food.name}</td>
+                    <td>${food.description}</td>
+                    <td><img src="${food.image}" alt="${food.name}" width="100"></td>
+                    <td>${food.calories}</td>
+                    <td>${food.carbs}</td>
+                    <td>${food.protein}</td>
+                    <td>${food.fats}</td>
+                    <td class="action-btn">
+                        <button onclick="editFood('${food._id}')">Edit</button>
+                        <button onclick="deleteFood('${food._id}')">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    
+        // Edit Food Function
+        function editFood(id) {
+            // Fetch the food details by ID
+            fetch(`/foods/${id}`) // Adjust the endpoint based on your API
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch food for editing');
+                    return response.json();
+                })
+                .then(food => {
+                    // Populate the modal with the food details
+                    document.getElementById('name').value = food.name;
+                    document.getElementById('description').value = food.description;
+                    document.getElementById('calories').value = food.calories;
+                    document.getElementById('carbs').value = food.carbs;
+                    document.getElementById('protein').value = food.protein;
+                    document.getElementById('fats').value = food.fats;
+    
+                    // Set a hidden input to store the ID for update
+                    let hiddenInput = document.querySelector('input[name="id"]');
+                    if (!hiddenInput) {
+                        hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'id';
+                        document.querySelector('form').appendChild(hiddenInput);
+                    }
+                    hiddenInput.value = food._id; // Use _id from MongoDB    
+    
+                    // Open the modal
+                    modal.style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching food for edit:', error));
+        }
+    
+        // Delete Food Function
+        function deleteFood(id) {
+            if (confirm('Are you sure you want to delete this food item?')) {
+                fetch(`/foods/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Food item deleted successfully!');
+                        fetchFoods(); // Refresh the list
+                    } else {
+                        alert('Failed to delete food item.');
+                    }
+                })
+                .catch(error => console.error('Error deleting food:', error));
+            }
+        }
+    
+        // Form submission handling
+        document.getElementById('workoutForm').onsubmit = (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+    
+            const id = formData.get('id'); // Check for ID to differentiate between add and edit
+            const method = id ? 'PUT' : 'POST'; // Use PUT for edit, POST for add
+            const url = id ? `/foods/${id}` : '/add-food'; // Set URL based on action
+    
+            fetch(url, {
+                method: method,
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text); // Capture error response text
+                    });
+                }
+                alert(id ? 'Food item updated successfully!' : 'Food item added successfully!');
+                fetchFoods(); // Refresh the list
+                modal.style.display = 'none'; // Close the modal
+                event.target.reset(); // Reset the form
+            })
+            .catch(error => {
+                alert(id ? 'Food item updated successfully!' : 'Food item added successfully!');
+                fetchFoods(); // Refresh the list
+                modal.style.display = 'none'; // Close the modal
+                event.target.reset(); // Reset the form
+            });
+        };
+    
+        // Fetch foods when the page loads
+        window.onload = fetchFoods;
+    </script>
+    
 </body>
 </html>

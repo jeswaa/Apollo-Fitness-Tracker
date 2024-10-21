@@ -21,7 +21,7 @@
         <div class="side-panel">
             <a href="/admin-dashboard">Dashboard</a>
             <a href="/add-workout">Workout</a>
-            <a href="/add-food">Nutrition</a>
+            <a href="/add-food">Food</a>
             <a href="#">Users</a>
             <a href="#">Progress Tracker</a>
         </div>
@@ -162,7 +162,7 @@
                         hiddenInput.name = 'id';
                         document.querySelector('form').appendChild(hiddenInput);
                     }
-                    hiddenInput.value = workout._id; // Use _id from MongoDB
+                    hiddenInput.value = workout._id; // Use _id from MongoDB    
 
                     // Open the modal
                     modal.style.display = 'block';
