@@ -55,9 +55,13 @@ const renderWithFlash = (res, view, req) => {
 router.get('/', (req, res) => {
     renderWithFlash(res, 'index', req);
 });
-// Admin: Add Workout
+//Login Page
 router.get('/login', (req, res) => {
     res.render('login');
+});
+// Signup Page
+router.get('/signup', (req, res) => {
+    res.render('signup');
 });
 // Admin Dashboard
 router.get('/admin-dashboard', (req, res) => {
@@ -194,7 +198,7 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({ username });
         if (user && await bcrypt.compare(password, user.password)) {
             req.flash('success_msg', 'Successfully logged in.');
-            res.redirect('/');
+            res.redirect('/user-dashboard');
         } else {
             req.flash('error_msg', 'Invalid username or password.');
             res.redirect('/login');
@@ -205,5 +209,11 @@ router.post('/login', async (req, res) => {
         res.redirect('/login'); // Redirect back to login on error
     }
 });
+
+// USER DASHBOARD
+router.get('/user-dashboard', (req, res) => {
+    res.render('user-dashboard');
+});
+
 
 export default router;
