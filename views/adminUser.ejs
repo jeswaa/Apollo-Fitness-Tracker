@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User</title>
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard-usertbl.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="./images/logo.png" alt="">
+            <h1>Admin Name</h1>
+        </div>
+    </div>
+    <div class="wrapper">
+        <div class="side-panel">
+            <a href="/admin-dashboard">Dashboard</a>
+            <a href="/add-workout">Workout</a>
+            <a href="/add-food">Food</a>
+            <a href="/admin-usertbl">Users</a>
+            <a href="/admin-review">Reviews</a>
+        </div>
+        <div class="main-col">
+            <div class="main-sec">
+                <table border="2px">
+                    <thead>
+                        <tr>
+                            <th>Fullname</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Password</th>
+                        </tr>
+                    </thead>
+                        <tbody id="workoutTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch users from the backend
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/users');
+                if (!response.ok) throw new Error('Failed to fetch users');
+                
+                const users = await response.json();
+                const tableBody = document.getElementById('workoutTableBody');
+                tableBody.innerHTML = ''; // Clear previous content
+
+                // Populate the table with users
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.fullname}</td>
+                        <td>${user.email}</td>
+                        <td>${user.username}</td>
+                        <td>${user.password}</td> <!-- Avoid displaying raw passwords -->
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        // Call the fetchUsers function when the page loads
+        window.onload = fetchUsers;
+    </script>
+</body>
+</html>

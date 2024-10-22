@@ -1,4 +1,3 @@
-// models/User.js
 import mongoose from 'mongoose';
 
 // Define the User Schema
@@ -21,7 +20,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+}, { 
+    timestamps: true 
 });
+
 
 // Create and export the User model
 const User = mongoose.model('User', userSchema);

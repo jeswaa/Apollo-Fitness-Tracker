@@ -49,15 +49,53 @@ router.get('/login', (req, res) => res.render('login'));
 router.get('/signup', (req, res) => res.render('signup'));
 router.get('/add-workout', (req, res) => res.render('adminWorkout'));
 router.get('/add-food', (req, res) => res.render('adminNutrition'));
+router.get('/admin-usertbl', (req, res) => res.render('adminUser'));
+router.get('/admin-review', (req, res) => res.render('adminReview'));
 router.get('/user-dashboard', (req, res) => res.render('user-dashboard'));
 router.get('/user-workout', (req, res) => res.render('user-workout'));
 router.get('/user-nutrition', (req, res) => res.render('user-nutrition'));
 router.get('/user-profile', (req, res) => res.render('user-profile'));
 
+// Fetch Recent Activities
+router.get('/activities', async (req, res) => {
+    try {
+        // Fetch the most recent 5 users, workouts, and foods
+        const recentUsers = await User.find().sort({ createdAt: -1 }).limit(5);
+        const recentWorkouts = await Workout.find().sort({ createdAt: -1 }).limit(5);
+        const recentFoods = await Food.find().sort({ createdAt: -1 }).limit(5);
+
+        // Combine all activities into a single array
+        const activities = [
+            ...recentUsers.map(user => ({ type: 'User', activity: `New user registered: ${user.username}` })),
+            ...recentWorkouts.map(workout => ({ type: 'Workout', activity: `New workout added: ${workout.name}` })),
+            ...recentFoods.map(food => ({ type: 'Food', activity: `New food added: ${food.name}` }))
+        ];
+
+        res.json(activities); // Send the activities as JSON
+    } catch (error) {
+        console.error('Error fetching activities:', error);
+        res.status(500).json({ error: 'Failed to fetch activities' });
+    }
+});
+
+// Fetch All Users
+router.get('/users', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Failed to fetch users' });
+    }
+});
 // Admin Dashboard - Fetching User and Workout Counts
 router.get('/admin-dashboard', async (req, res) => {
     try {
-        const userCount = await User.countDocuments();
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+        const userCount = await User.countDocuments({
+            isAdmin: { $ne: true },
+            lastActive: { $gte: fiveMinutesAgo }
+        });
         const workoutCount = await Workout.countDocuments(); 
         const FoodCount = await Food.countDocuments(); 
 

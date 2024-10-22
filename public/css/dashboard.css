@@ -88,7 +88,16 @@
     width: 63%;
     height: 500px;
 }
-
+.main-col .second-col .recentAct ul{
+    list-style-type: none;
+    margin-top: 20px;
+}
+.main-col .second-col .recentAct #activity-list li {
+    margin-bottom: 10px; /* Space between list items */
+    line-height: 1.6;    /* Adjust line height */
+    font-size: 20px;
+    color: white;
+}
 /* Review Section */
 
 .review-sec{
