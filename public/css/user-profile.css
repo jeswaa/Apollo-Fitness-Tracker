@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.custom-header {
+    background-color: #1C2A3A;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 80px;
+    width: 100%;
+}
+
+.logo img {
+    margin-left: 55px;
+    height: 60px;
+}
+
+.welcome-text h1 {
+    color: white;
+    font-size: 24px;
+}
+
+.profile-icon i {
+    font-size: 50px;
+    color: black;
+}
+
+/* Side Navbar Styles */
+.navbar {
+    background-color: #1f2937;
+    width: 210px;
+    height:100vh;
+    position: fixed;
+    top: 80px; /* Starts right below the header */
+    left: 0;
+    padding-top: 70px;
+    margin-top: 20px;
+}
+
+.navbar nav ul {    
+    list-style: none;
+    padding: 10px;
+}
+
+.navbar nav ul li {
+    margin-bottom: 50px;
+}
+
+.navbar nav ul li a {
+    font-size: larger;
+    font-weight: bold;
+    display: block;
+    padding: 10px 20px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+.navbar nav ul li a:hover {
+    background-color: #333a46;
+    color: #ffffff;
+}
+
+/* Active page link */
+.navbar nav ul li a.active {
+    background-color: #333a46;
+    color: #ffffff;
+}

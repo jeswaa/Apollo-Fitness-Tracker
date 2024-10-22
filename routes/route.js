@@ -50,6 +50,9 @@ router.get('/signup', (req, res) => res.render('signup'));
 router.get('/add-workout', (req, res) => res.render('adminWorkout'));
 router.get('/add-food', (req, res) => res.render('adminNutrition'));
 router.get('/user-dashboard', (req, res) => res.render('user-dashboard'));
+router.get('/user-workout', (req, res) => res.render('user-workout'));
+router.get('/user-nutrition', (req, res) => res.render('user-nutrition'));
+router.get('/user-profile', (req, res) => res.render('user-profile'));
 
 // Admin Dashboard - Fetching User and Workout Counts
 router.get('/admin-dashboard', async (req, res) => {

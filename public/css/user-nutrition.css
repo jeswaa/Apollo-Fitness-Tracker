@@ -1,0 +1,197 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.custom-header {
+    background-color: #1C2A3A;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: 80px;
+    width: 100%;
+}
+
+.logo img {
+    margin-left: 55px;
+    height: 60px;
+}
+
+.welcome-text h1 {
+    color: white;
+    font-size: 24px;
+}
+
+.profile-icon i {
+    font-size: 50px;
+    color: black;
+}
+
+/* Side Navbar Styles */
+.navbar {
+    background-color: #1f2937;
+    width: 210px;
+    height:100vh;
+    position: fixed;
+    top: 80px; /* Starts right below the header */
+    left: 0;
+    padding-top: 70px;
+    margin-top: 20px;
+}
+
+.navbar nav ul {    
+    list-style: none;
+    padding: 10px;
+}
+
+.navbar nav ul li {
+    margin-bottom: 50px;
+}
+
+.navbar nav ul li a {
+    font-size: larger;
+    font-weight: bold;
+    display: block;
+    padding: 10px 20px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect */
+.navbar nav ul li a:hover {
+    background-color: #333a46;
+    color: #ffffff;
+}
+
+/* Active page link */
+.navbar nav ul li a.active {
+    background-color: #333a46;
+    color: #ffffff;
+}
+
+/* Main Content Container (Beside Navbar) */
+.content-container {
+    margin-left: 180px; /* Make space for the navbar */
+    padding: 20px;
+    height: 200;
+}
+
+/* Overview Card Styles */
+.overview-card {
+    margin-top: 19px;
+    margin-left: 200px;
+    background-color: #1a1a2e;
+    border-radius: 15px;
+    padding: 45px;
+    width: 87%;
+    height: 100vh;
+    text-align: center;
+    overflow-y: scroll;
+    border-top-right-radius: 60px; 
+}
+
+/* Align h2 and search form horizontally */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Style for the h2 heading */
+h2 {
+    letter-spacing: 5px;
+    text-align: left;
+    font-size: 50px;
+    color: #ff3333;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Search form styling */
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-form input {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    margin-right: 10px;
+    width: 400px;
+}
+
+.search-form button {
+    background-color: #ff3333;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.search-form button i {
+    font-size: 18px;
+}
+
+/* Adjust button hover state */
+.search-form button:hover {
+    background-color: #cc0000;
+}
+
+/* Meal Details Container */
+.meal-details {
+    background-color: #2c3e50;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    color: white;
+}
+
+.meal-info {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+
+.meal-info .meal-info-content  span {
+    font-size: 22px;
+    margin-left: 70px;
+}
+
+
+/* Chart container styles */
+.chart-container {
+    width: 350px; /* Adjust width as needed */
+    height: 350px; /* Maintain aspect ratio */
+    margin-left: auto; /* This will push the chart to the right */
+}
+
+.foods-card {
+    margin-top: 19px;
+    background-color: #1a1a2e;
+    border-radius: 15px;
+    border-top-right-radius: 60px; 
+}
+
+.foods-details {
+    background-color: #2c3e50;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    height: 500px;
+}

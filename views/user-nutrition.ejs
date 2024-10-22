@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUTRITION</title>
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="css/user-nutrition.css">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <div class="custom-header">
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo">
+        </div>
+        <div class="welcome-text">
+            <h1>Welcome Back, User!</h1>
+        </div>
+        <div class="profile-icon">
+            <i class="fa-solid fa-circle-user"></i>
+        </div>
+    </div>
+
+    <!-- Side Navbar -->
+    <div class="navbar">
+        <nav>
+            <ul>
+                <li><a href="#">DASHBOARD</a></li>
+                <li><a href="#">WORKOUT</a></li>
+                <li><a href="#" class="active">NUTRITION</a></li>
+                <li><a href="#">PROFILE</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content: Container beside Navbar -->
+    <div class="overview-card">
+        <div class="header-section">
+            <h2>MEAL TRACKER</h2>
+            <form class="search-form">
+                <input type="text" placeholder="Search...">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+    
+        <!-- New container below the header-section -->
+        <div class="meal-details">
+            <div class="meal-info">
+                <div class="meal-info-content">
+                    <span>Carbs: </span>
+                    <span>Protein: </span>
+                    <span>Fats: </span>
+                    <span>Calories: </span>
+                    <span>Total Cal: </span>
+                </div>
+                <!-- Donut Chart Canvas -->
+                <div class="chart-container">
+                    <canvas id="mealChart"></canvas>
+                </div>
+            </div>
+        </div>  
+
+        <div class="foods-card">
+            <div class="foods-section">
+                <h2>FOODS</h2>
+            </div>
+        </div>
+
+
+        <div class="foods-details">
+        </div>  
+        
+           <!-- Script to generate the donut chart -->
+           <script>
+            const ctx = document.getElementById('mealChart').getContext('2d');
+            const mealChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Carbs', 'Protein', 'Fats'],
+                    datasets: [{
+                        data: [60, 20, 20], // Example data
+                        backgroundColor: ['#f39c12', '#27ae60', '#e74c3c'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '70%', // This controls the size of the donut hole
+                }
+            });
+        </script>
+</body>
+</html>
