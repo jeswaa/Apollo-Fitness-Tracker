@@ -5,6 +5,8 @@ const workoutSchema = new mongoose.Schema({
     description: { type: String, required: true },
     image: { type: String }, // Store image URL or path
     intensity: { type: String, required: true }
+}, { 
+    timestamps: true 
 });
 
 const Workout = mongoose.model('Workout', workoutSchema);
