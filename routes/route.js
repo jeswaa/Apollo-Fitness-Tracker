@@ -49,12 +49,27 @@ router.get('/login', (req, res) => res.render('login'));
 router.get('/signup', (req, res) => res.render('signup'));
 router.get('/add-workout', (req, res) => res.render('adminWorkout'));
 router.get('/add-food', (req, res) => res.render('adminNutrition'));
+router.get('/admin-usertbl', (req, res) => res.render('adminUser'));
 router.get('/user-dashboard', (req, res) => res.render('user-dashboard'));
 
+// Fetch All Users
+router.get('/users', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Failed to fetch users' });
+    }
+});
 // Admin Dashboard - Fetching User and Workout Counts
 router.get('/admin-dashboard', async (req, res) => {
     try {
-        const userCount = await User.countDocuments();
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+        const userCount = await User.countDocuments({
+            isAdmin: { $ne: true },
+            lastActive: { $gte: fiveMinutesAgo }
+        });
         const workoutCount = await Workout.countDocuments(); 
         const FoodCount = await Food.countDocuments(); 
 
