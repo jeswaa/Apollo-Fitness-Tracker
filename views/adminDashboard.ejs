@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,6 +25,9 @@
             <a href="/add-food">Food</a>
             <a href="/admin-usertbl">Users</a>
             <a href="/admin-review">Reviews</a>
+            <div class="logoutbtn">
+                <a href="/"><i class="fas fa-sign-out-alt"></i></a>
+            </div>
         </div>
 
         <div class="main-col">
@@ -69,22 +73,72 @@
             try {
                 const response = await fetch('/activities');
                 const activities = await response.json();
-                
-                const activityList = document.getElementById('activity-list');
-                activityList.innerHTML = ''; // Clear the list
     
-                activities.forEach(activity => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `[${activity.type}] - ${activity.activity}`;
-                    activityList.appendChild(listItem);
+                const activityList = document.getElementById('activity-list');
+                activityList.innerHTML = ''; 
+    
+                const now = new Date(); // Current time
+    
+                // Split activities into recent (≤ 30 mins) and older (> 30 mins)
+                const recentActivities = activities.filter(activity => {
+                    const activityTime = new Date(activity.createdAt);
+                    const diffInMinutes = (now - activityTime) / (1000 * 60); // Convert ms to minutes
+                    return diffInMinutes <= 30;
                 });
+    
+                const olderActivities = activities.filter(activity => {
+                    const activityTime = new Date(activity.createdAt);
+                    const diffInMinutes = (now - activityTime) / (1000 * 60); // Convert ms to minutes
+                    return diffInMinutes > 30;
+                });
+    
+                // Render recent activities
+                if (recentActivities.length > 0) {
+                    const recentHeader = document.createElement('h3');
+                    recentHeader.textContent = 'Recent Activities';
+                    activityList.appendChild(recentHeader);
+    
+                    recentActivities.forEach(activity => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${activity.activity}`;
+                        activityList.appendChild(listItem);
+                    });
+                }
+    
+                // Add a horizontal line if there are both recent and older activities
+                if (recentActivities.length > 0 && olderActivities.length > 0) {
+                    const line = document.createElement('hr');
+                    activityList.appendChild(line);
+                }
+    
+                // Render older activities
+                if (olderActivities.length > 0) {
+                    const olderHeader = document.createElement('h3');
+                    olderHeader.textContent = 'Activities';
+                    activityList.appendChild(olderHeader);
+    
+                    olderActivities.forEach(activity => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${activity.activity}`;
+                        activityList.appendChild(listItem);
+                    });
+                }
             } catch (error) {
                 console.error('Error fetching activities:', error);
             }
         }
     
-        // Fetch activities on page load
-        fetchActivities();
+        // Function to refresh activities every 30 seconds
+        function startFetchingActivities() {
+            fetchActivities(); // Initial fetch
+            setInterval(fetchActivities, 30000); // Refresh every 30 seconds
+        }
+    
+        // Start fetching activities when the page loads
+        window.onload = startFetchingActivities;
     </script>
+    
+    
+    
 </body>
 </html>

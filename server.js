@@ -55,7 +55,7 @@ app.set('view engine', 'ejs');
 app.set('views', join(__dirname, 'views')); // Set the views directory
 
 // Define routes
-app.use('/', routes);
+app.use('/', routes); // Make sure your routes are defined after session and flash setup
 
 // Handle 404 errors
 app.use((req, res, next) => {
