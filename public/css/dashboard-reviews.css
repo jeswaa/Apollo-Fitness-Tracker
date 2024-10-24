@@ -44,6 +44,21 @@
     background-color: #1f2937;
     padding: 20px;
 }
+.side-panel .logoutbtn{
+    margin-top: 30px;
+}
+.side-panel .logoutbtn a{
+    font-size: 30px;
+    margin-left: 30%;
+}
+.side-panel .logoutbtn a:hover{
+    color: #1f2937;
+    background-color: transparent;
+}
+.side-panel a:hover{
+    background-color: #1f2937;
+    padding: 20px;
+}
 
 /* Main Column */
 .main-col{
