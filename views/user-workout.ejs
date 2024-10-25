@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <!-- CSS Link -->
     <link rel="stylesheet" href="css/user-workout.css">
-    <!-- Font Awesome CDN -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Header -->
+    <!-- Header Section -->
     <div class="custom-header">
         <div class="logo">
             <img src="/images/logo.png" alt="Logo">
@@ -23,24 +24,146 @@
         </div>
     </div>
 
-    <!-- Side Navbar -->
+    <!-- Navigation Bar -->
     <div class="navbar">
         <nav>
             <ul>
                 <li><a href="/user-dashboard">DASHBOARD</a></li>
                 <li><a href="/user-workout">WORKOUT</a></li>
-                <li><a href="/user-nutrition" class="active">NUTRITION</a></li>
+                <li><a href="/user-nutrition">NUTRITION</a></li>
                 <li><a href="/user-profile">PROFILE</a></li>
             </ul>
         </nav>
     </div>
 
-    <!-- Main Content: Container beside Navbar -->
+    <!-- Content Section -->
     <div class="content-container">
-        <!-- Overview Card Container -->
         <div class="overview-card">
-            <h2>WORKOUT LOGS</h2>
+            <h2>WORKOUT</h2>
+            <div id="workout-list" class="workout-list"></div>
         </div> 
-    </div>    
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="workout-modal" class="modal">
+        <div class="modal-content">
+            <span id="close-modal" class="close">&times;</span>
+            <h2>Workout</h2>
+            <div class="modal-section">
+                <form id="add-workout-form">
+                    <img id="workout-image" class="modal-workout-image" alt="Workout Image">
+                    <div class="modal-text">
+                        <label for="workout-name">Workout Name</label>
+                        <input type="text" id="workout-name" name="workout-name" readonly>
+        
+                        <label for="workout-description">Description</label>
+                        <textarea id="workout-description" name="workout-description" readonly></textarea>
+        
+                        <label for="workout-intensity">Intensity</label>
+                        <input type="text" id="workout-intensity" name="workout-intensity" readonly>
+        
+                        <label for="workout-duration">Duration (in minutes)</label>
+                        <input type="number" id="workout-duration" name="workout-duration" required>
+                        <button type="submit">Add Workout</button>
+                </form>
+                    </div>
+                    
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal control logic
+        document.getElementById('close-modal').addEventListener('click', closeModal);
+        document.getElementById('add-workout-form').addEventListener('submit', addWorkout);
+
+        // Fetch workouts from the backend and display them
+        async function fetchWorkouts() {
+            try {
+                const response = await fetch('/workouts');
+                const workouts = await response.json();
+                const workoutList = document.getElementById('workout-list');
+
+                workoutList.innerHTML = ''; // Clear previous content
+
+                workouts.forEach(workout => {
+                    const workoutDiv = document.createElement('div');
+                    workoutDiv.className = 'workout-item';
+
+                    workoutDiv.innerHTML = `
+                        <button class="add-workout-btn" data-image="${workout.image}" data-name="${workout.name}" data-description="${workout.description}" data-intensity="${workout.intensity}" ><i class="fas fa-plus"></i></button>
+                        <img src="${workout.image}" alt="${workout.name}" class="workout-image">
+                        <div class="workout-text">
+                            <h3>${workout.name}</h3>
+                            <p>${workout.description}</p>
+                            <p><strong>Intensity:</strong> ${workout.intensity}</p>
+                        </div>
+                        
+                    `;
+
+                    // Attach event listener to the Add Workout button
+                    workoutDiv.querySelector('.add-workout-btn').addEventListener('click', openModal);
+                    workoutList.appendChild(workoutDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+                document.getElementById('workout-list').innerHTML = 
+                    '<p>Error loading workouts. Please try again later.</p>';
+            }
+        }
+
+        // Open modal and populate with selected workout data
+        function openModal(event) {
+            const button = event.currentTarget;
+
+            // Fill modal fields with workout data
+            document.getElementById('workout-image').src = button.getAttribute('data-image');
+            document.getElementById('workout-name').value = button.getAttribute('data-name');
+            document.getElementById('workout-description').value = button.getAttribute('data-description');
+            document.getElementById('workout-intensity').value = button.getAttribute('data-intensity');
+
+            // Display the modal
+            document.getElementById('workout-modal').style.display = 'block';
+        }
+
+        // Close the modal
+        function closeModal() {
+            document.getElementById('workout-modal').style.display = 'none';
+        }
+
+        // Add workout via form submission
+        async function addWorkout(event) {
+            event.preventDefault();
+
+            const workoutData = {
+                name: document.getElementById('workout-name').value,
+                description: document.getElementById('workout-description').value,
+                intensity: document.getElementById('workout-intensity').value,
+                duration: document.getElementById('workout-duration').value,
+                image: document.getElementById('workout-image').src
+            };
+
+            try {
+                const response = await fetch('/add-workout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(workoutData)
+                });
+
+                if (response.ok) {
+                    alert('Workout added successfully!');
+                    closeModal();
+                    fetchWorkouts(); // Refresh workout list
+                } else {
+                    alert('Failed to add workout.');
+                }
+            } catch (error) {
+                console.error('Error adding workout:', error);
+            }
+        }
+
+        // Fetch workouts when the page loads
+        fetchWorkouts();
+    </script>
 </body>
 </html>

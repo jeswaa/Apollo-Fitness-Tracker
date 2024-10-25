@@ -57,7 +57,6 @@ router.get('/user-workout', (req, res) => res.render('user-workout'));
 router.get('/user-nutrition', (req, res) => res.render('user-nutrition'));
 router.get('/user-profile', (req, res) => res.render('user-profile'));
 
-// Logout Route
 router.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
@@ -158,6 +157,15 @@ router.get('/workouts', async (req, res) => {
     }
 });
 
+router.get('/user-workout', async (req, res) => {
+    try {
+        const workouts = await Workout.find(); // Fetch workouts from the database
+        res.render('user-workout', { workouts }); // Pass the workouts to the EJS template
+    } catch (error) {
+        console.error('Error fetching workouts:', error);
+        res.status(500).send('Server Error');
+    }
+});
 router.get('/workouts/:id', async (req, res) => {
     try {
         const workout = await Workout.findById(req.params.id);
@@ -169,6 +177,7 @@ router.get('/workouts/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch workout' });
     }
 });
+
 
 router.put('/workouts/:id', upload.single('image'), async (req, res) => {
     const { name, description, intensity } = req.body;
