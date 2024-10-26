@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
 }
 
 body {
@@ -13,7 +14,7 @@ body {
 
 /* Header Styles */
 .custom-header {
-    background-color: #1C2A3A;
+    background-color: #111827;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -89,20 +90,163 @@ body {
 
 /* Overview Card Styles */
 .overview-card {
-    background-color: #1a1a2e;
+    background-color: #111827;
     border-top-right-radius: 60px;
     padding: 45px;
     width: 85%;
     height: 100vh;
-    text-align: center;
     position: fixed;
     overflow-y: scroll;
 }
-
-h2 {
+/* Main Content */
+h2{
     text-align: left;
     font-size: 50px;
     color: #ff3333;
     margin-bottom: 20px;
+    letter-spacing: 10px;
     font-weight: bold;
+}
+.overview-card .workout-list {
+    width: 100%; 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px; 
+}
+.workout-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.workout-item {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    padding: 25px;
+    border-radius: 12px;
+    background-color: #1f2937;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.workout-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.workout-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 20px;
+}
+.workout-text h3 {
+    margin: 0;
+    color: white;
+    font-size: 40px;
+}
+.workout-text p {
+    margin: 5px 0;
+    color: #7f8c8d;
+    font-size: 16px;
+}
+
+.workout-text p strong {
+    color: #e67e22;
+}
+.workout-item button{
+    position: absolute;
+    top: -10%;
+    right: -20px;
+    font-size: 20px;
+    background-color: #1C2A3A;
+    padding: 20px;
+    border-radius: 50%;
+    border: 5px solid #111827;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+.workout-item button:hover{
+    background-color: white;
+    border: 5px solid white;
+    color: #111827;
+}
+/* Modal Content */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: myAnim  .5s ease-out 0s 1 normal forwards;
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    width: 600px;
+    height: 500px;
+    border-radius: 10px;
+    position: relative;
+    margin-top: 7%;
+}
+.modal-content h2{
+    font-size: 40px;
+    margin: 30px 0 20px;
+    text-transform: uppercase;
+    text-align: center;
+}
+.modal-section{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.modal-text{
+    float: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 30px;
+}
+.modal-text label{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.modal-text input ,textarea{
+    padding: 5px;
+    width: 200%;
+}
+.modal-text button{
+    margin-top: 10px;
+    width: 200%;
+    padding: 10px;
+    background-color: #1a1a2e;
+    color: white;
+}
+.close {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    font-size: 30px;
+    cursor: pointer;
+}
+.modal-workout-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    margin-top: 15px;
+    margin-left: 10px;
+    border: 1px solid #1a1a2e;
+}
+@keyframes myAnim {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
 }
