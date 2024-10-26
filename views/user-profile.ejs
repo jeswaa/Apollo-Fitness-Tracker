@@ -1,38 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
     <!-- CSS Link -->
-    <link rel="stylesheet" href="css/user-profile.css">
+    <link rel="stylesheet" href="css/user-profile.css" />
     <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <!-- Header -->
     <div class="custom-header">
-        <div class="logo">
-            <img src="/images/logo.png" alt="Logo">
-        </div>
-        <div class="welcome-text">
-            <h1>Welcome Back, User!</h1>
-        </div>
-        <div class="profile-icon">
-            <i class="fa-solid fa-circle-user"></i>
-        </div>
+      <div class="logo">
+        <img src="/images/logo.png" alt="Logo" />
+      </div>
+      <div class="welcome-text">
+        <h1>Welcome Back, User!</h1>
+      </div>
+      <div class="profile-icon">
+        <i class="fa-solid fa-circle-user"></i>
+      </div>
     </div>
 
     <!-- Side Navbar -->
     <div class="navbar">
-        <nav>
-            <ul>
-                <li><a href="/user-dashboard">DASHBOARD</a></li>
-                <li><a href="/user-workout">WORKOUT</a></li>
-                <li><a href="/user-nutrition" class="active">NUTRITION</a></li>
-                <li><a href="/user-profile">PROFILE</a></li>
-            </ul>
-        </nav>
-    </div>   
-</body>
+      <nav>
+        <ul>
+          <li><a href="/user-dashboard">DASHBOARD</a></li>
+          <li><a href="/user-workout">WORKOUT</a></li>
+          <li><a href="/user-nutrition">NUTRITION</a></li>
+          <li><a href="/user-profile" class="active">PROFILE</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="content-container">
+      <div class="overview-card">
+        <h2>Profile Overview</h2>
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <img src="/images/BGBG.jpg" alt="User Avatar" class="avatar" />
+          <div class="user-info">
+            <h2>Jack Hanma</h2>
+            <p>kamote@gmail.com</p>
+          </div>
+        </div>
+
+        <!-- Progress Section with Images -->
+        <div class="progress-section">
+          <h3>Progress</h3>
+
+          <div class="image-gallery">
+            <div class="gallery-item">
+              <img src="/images/BGBG.jpg" alt="Achievement 1" />
+              <p>First Marathon Completed!</p>
+            </div>
+
+            <div class="gallery-item">
+              <img src="/images/BGBG.jpg" alt="Achievement 2" />
+              <p>Lost 10kg Milestone</p>
+            </div>
+
+            <div class="gallery-item">
+              <img src="/images/BGBG.jpg" alt="Achievement 3" />
+              <p>Muscle Gain Progress</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

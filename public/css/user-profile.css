@@ -9,6 +9,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #f4f4f4;
 }
 
 /* Header Styles */
@@ -41,9 +42,9 @@ body {
 .navbar {
     background-color: #1f2937;
     width: 210px;
-    height:100vh;
+    height: 100vh;
     position: fixed;
-    top: 80px; /* Starts right below the header */
+    top: 80px; /* Below header */
     left: 0;
     padding-top: 70px;
     margin-top: 20px;
@@ -78,4 +79,100 @@ body {
 .navbar nav ul li a.active {
     background-color: #333a46;
     color: #ffffff;
+}
+
+/* Main Content Container */
+.content-container {
+    margin-left: 210px; /* Space for navbar */
+    padding: 20px;
+}
+
+/* Overview Card */
+.overview-card {
+    background-color: #1a1a2e;
+    border-top-right-radius: 60px;
+    padding: 45px;
+    width: 85%; 
+    height: 100vh;
+    text-align: center;
+    position: fixed;
+    overflow-y: auto;
+}
+
+/* Overview Header */
+.overview-card h2 {
+    text-align: left;
+    font-size: 50px;
+    color: #ff3333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: rgba(28, 42, 58, 0.8); /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+.user-info h2 {
+    font-size: 28px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.user-info p {
+    font-size: 16px;
+    color: #d1d1d1;
+}
+
+/* Progress Section */
+.progress-section {
+    margin-top: 30px;
+    width: 100%;
+    background-color: #1f2937;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+}
+
+.progress-section h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Image Gallery Styles */
+.image-gallery {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.gallery-item {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.gallery-item img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.gallery-item p {
+    color: #d1d1d1;
+    font-size: 16px;
 }
