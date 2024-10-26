@@ -77,6 +77,7 @@ body {
 
 .form-container .logo img {
     width: 50px;
+    padding-top: 47px;
 }
 
 /* Main heading in the form */
@@ -160,4 +161,48 @@ a:hover {
 
 .signup-text a:hover {
     text-decoration: underline; /* Underline on hover */
+}
+/* Container for password input and tooltip */
+.password-container {
+    position: relative; /* Position relative for tooltip placement */
+    width: 100%; /* Full width of the form */
+}
+
+/* Styling for the tooltip */
+.tooltip {
+    visibility: hidden; /* Initially hidden */
+    background-color: #555; /* Dark background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Center the tooltip text */
+    border-radius: 5px; /* Rounded corners */
+    padding: 8px; /* Padding for the tooltip */
+    position: absolute; /* Position absolute for tooltip */
+    z-index: 1; /* Ensure it appears above other elements */
+    bottom: -100%; /* Position above the input */
+    left: 50%; /* Center tooltip */
+    transform: translateX(-50%); /* Center tooltip horizontally */
+    opacity: 0; /* Start with opacity 0 */
+    transition: opacity 0.3s; /* Smooth transition for tooltip visibility */
+}
+
+/* Show tooltip when hovering over the password input */
+.password-container:hover .tooltip {
+    visibility: visible; /* Make it visible */
+    opacity: 1; /* Fade in */
+}
+
+/* Adjustments for the password input */
+input[type="password"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    border: 3px solid #d0ccb9; /* Base border color */
+    border-radius: 5px;
+    transition: border-color 0.3s ease; /* Smooth transition for border color on focus */
+}
+
+input[type="password"]:focus {
+    border-color: #3b3b39; /* Change border color when focused */
+    outline: none; /* Remove the default outline */
+    box-shadow: 0 0 5px rgba(59, 59, 57, 0.5); /* Optional shadow for focus effect */
 }
