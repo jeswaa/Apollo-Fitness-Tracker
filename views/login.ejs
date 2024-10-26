@@ -1,55 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Apollo Fitness Tracker</title>
     <link rel="stylesheet" href="css/login.css" />
-  </head>
-  <body>
+    <!-- Include SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
     <% if (successMessage.length > 0) { %>
       <div class="success-message" id="successMessage">
         <p><%= successMessage %></p>
       </div>
     <% } %>
+
     <div class="container">
-      <div class="left">
-        <img src="/images/forlogin.png" alt="Fitness Image" />
-      </div>
-      <div class="right">
-        <div class="form-container">
-          <div class="logo">
-            <a href="/"><img src="/images/logo.png" alt="Apollo Logo"/></a>
-          </div>
-          <h1>Hi There!</h1>
-          <p>LOGIN TO YOUR ACCOUNT</p>
-          <form action="/login" method="POST">
-              <label for="username">USERNAME</label>
-              <input type="text" id="username" name="username" placeholder="Username..." required />
-          
-              <label for="password">PASSWORD</label>
-              <input type="password" id="password" name="password" placeholder="Password..." required />
-          
-              <button type="submit" class="login-btn">LOGIN</button>
-          </form>
-          <p class="signup-text">
-            Doesn't have an account? <a href="/signup">Signup</a>
-          </p>
+        <div class="left">
+            <img src="/images/forlogin.png" alt="Fitness Image" />
         </div>
-      </div>
+        <div class="right">
+            <div class="form-container">
+                <div class="logo">
+                    <a href="/"><img src="/images/logo.png" alt="Apollo Logo"/></a>
+                </div>
+                <h1>Hi There!</h1>
+                <p>LOGIN TO YOUR ACCOUNT</p>
+                <form action="/login" method="POST">
+                    <label for="username">USERNAME</label>
+                    <input type="text" id="username" name="username" placeholder="Username..." required />
+                    
+                    <label for="password">PASSWORD</label>
+                    <input type="password" id="password" name="password" placeholder="Password..." required />
+                    
+                    <button type="submit" class="login-btn">LOGIN</button>
+                </form>
+                <p class="signup-text">
+                    Don't have an account? <a href="/signup">Signup</a>
+                </p>
+            </div>
+        </div>
     </div>
 
     <script>
-      // JavaScript to fade out the success message after 3 seconds
-      const successMessage = document.getElementById('successMessage');
-      if (successMessage) {
-          setTimeout(() => {
-              successMessage.style.animation = 'fadeOut 1s forwards'; // Set fadeOut animation
-              setTimeout(() => {
-                  successMessage.style.display = 'none'; // Remove it from the display after fading out
-              }, 1000); // Wait for fade-out animation to finish (1 second)
-          }, 3000); // Wait for 3 seconds before starting the fade out
-      }
-  </script>
-  </body>
+        // JavaScript to fade out the success message after 3 seconds
+        const successMessage = document.getElementById('successMessage');
+        if (successMessage) {
+            setTimeout(() => {
+                successMessage.style.animation = 'fadeOut 1s forwards';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 1000);
+            }, 3000);
+        }
+
+        // Display SweetAlert if there's an error message
+        <% if (errorMessage && errorMessage.length > 0) { %>
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: '<%= errorMessage %>',
+            });
+        <% } %>
+    </script>
+</body>
 </html>

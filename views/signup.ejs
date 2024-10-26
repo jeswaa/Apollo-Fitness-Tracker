@@ -5,6 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign Up - Apollo Fitness Tracker</title>
     <link rel="stylesheet" href="css/signup.css" />
+    <style>
+        /* Tooltip styles */
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 10;
+            width: 220px;
+        }
+
+        /* Positioning the tooltip */
+        .password-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Show tooltip on focus */
+        .password-container:hover .tooltip,
+        .password-container:focus-within .tooltip {
+            display: block;
+        }
+    </style>
+    <script>
+        function validatePassword() {
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            // Regular expression for special characters
+            const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+            // Check if password is at least 8 characters long and contains a special character
+            if (password.length < 8 || !specialCharacterRegex.test(password)) {
+                alert("Password must be at least 8 characters long and include at least one special character.");
+                return false; // Prevent form submission
+            }
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -18,7 +67,7 @@
                 </div>
                 <h1>Create an Account</h1>
                 <!-- Set action to /signup and method to POST -->
-                <form action="/signup" method="POST">
+                <form action="/signup" method="POST" onsubmit="return validatePassword()">
                     <label for="fullname">FULL NAME</label>
                     <input
                         type="text"
@@ -47,13 +96,16 @@
                     />
 
                     <label for="password">PASSWORD</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="Password..."
-                        required
-                    />
+                    <div class="password-container">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Password..."
+                            required
+                        />
+                        <div class="tooltip">Password must be at least 8 characters long and include at least one special character.</div>
+                    </div>
 
                     <label for="confirm-password">CONFIRM PASSWORD</label>
                     <input

@@ -53,7 +53,7 @@ nav {
 }
 
 nav ul {
-  font-family: "Arvo", serif;
+  font-family: "Montserrat", sans-serif;
   display: flex;
   list-style: none;
   gap: 50px;
@@ -66,17 +66,39 @@ nav ul li {
 nav ul li a {
   color: white;
   text-decoration: none;
-  font-size: 25px;
+  font-size: 20px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: white;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+nav ul li a:hover::after {
+  width: 150%;
 }
 
-nav ul li .login-btn {
+.login-btn a{
+  text-decoration: none;
+  font-size: 20px;
+  color: white;
   border: 2px solid red;
+  margin-top: -20px;
   padding: 5px 15px;
   border-radius: 15px;
   font-weight: bold;
+  transition: .5s ease;
 }
 
-nav ul li .login-btn:hover {
+.login-btn a:hover {
   background-color: red;
   color: white;
 }
@@ -105,36 +127,42 @@ nav ul li .login-btn:hover {
   background: rgba(0, 0, 0, 0.6); /* Dark overlay */
   z-index: -1;
 }
-
 .hero-text {
   max-width: 500px; /* Control width */
   text-align: right;
-  margin-right: 75px;
+  display: block;
 }
 
 .hero-text h1 {
-  font-size: 110px; /* Make text larger */
+  letter-spacing: 10px;
   font-weight: bold;
+  font-size: 100px;
+  margin-right: 50px;
 }
-
-
-.hero-text .highlight-red {
+.hero-text span{
+  font-size: 100px;
+  letter-spacing: 10px;
+  font-weight: bold;
+  margin-right: 100px;
+  margin-left: -80px;
   color: red;
   text-shadow: 
   6px 6px 0px white,  /* Second shadow for thickness */
   0px 0px 10px white;  /* Optional glowing effect */
 }
 
-.hero-description {
+.hero-text p {
   font-family: "Montserrat", sans-serif;
   font-size: 18px; /* Example size for the description */
   margin: 40px -60px;
-  text-align: right;
-
+  margin-right: 50px;
+  margin-left: -200px;
 }
 
 .btn {
-  font-family: 'Copperplate Gothic Std', sans-serif;                                              
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;                                          
   background-color: red;
   color: white;
   padding: 20px 40px; /* Larger button */
@@ -142,28 +170,23 @@ nav ul li .login-btn:hover {
   font-size: 30px;
   border-radius: 5px;
   transition: background-color 0.3s ease;
+  margin-right: 50px;
 }
 
 .btn:hover {
-  background-color: darkred;
+  background-color: white;
+  color: red;
 }
 
+/* Features */
 .why-choose-us {
   width: 100%;
-  text-align: right; /* Align text to the right */
+  text-align: right;
   padding: 20px; 
 }
-
-/* Heading Styles */
-h1 {
-  font-size: 90px;
-  margin-bottom: 40px;
-  margin-left: 50px;
-  font-weight: bold;
-  color: white;
+.why-choose-us h1{
+  font-size: 100px;
 }
-
-/* Services Container */
 .services-container {
   display: flex;
   justify-content: space-between;
@@ -171,17 +194,16 @@ h1 {
   padding-left: 20px;
   padding-right: 20px;
   padding-bottom: 100px;
-  gap: 20px; /* Spacing between cards */
+  gap: 20px; 
 }
 
-/* Individual Service Cards */
 .service-card {
-  background-color: #2b3147; /* Card background */
+  background-color: #2b3147;
   border-radius: 10px;
-  width: 25%; /* Reduced width for better spacing */
+  width: 25%; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   text-align: center;
-  transition: transform 0.3s ease; /* Smooth hover effect */
+  transition: transform 0.3s ease;
 }
 
 .service-card img {
@@ -216,7 +238,9 @@ h1 {
   padding-top: 10%;
   padding-bottom: 130px;
 }
-/* User Reviews Section */
+.user-reviews-section h1{
+  font-size: 90px;
+}
 .user-reviews {
   display: flex;
   justify-content: space-around; /* Space between review cards */
@@ -255,7 +279,7 @@ h1 {
 
 /* Review Text Styles */
 .review-text {
-  font-family: "Roboto", sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 16px; /* Text font size */
   line-height: 1.6;
   color: #d1d1d1; /* Light text color */
@@ -270,6 +294,34 @@ h1 {
   color: #d1d1d1; /* Light color for text */
   display: inline-block;
   padding-bottom: 5px; /* Padding for underline spacing */
+}
+footer{
+  background-color: #2b3147;
+  height: 100px;
+  display: flex;
+}
+.footer-content {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.social-icons a {
+  color: white;
+  font-size: 24px;
+  margin: 0 10px;
+  transition: transform 0.3s, color 0.3s;
+}
+.social-icons a:hover {
+  transform: scale(1.2);
+  color: #1e90ff; /* Light blue color on hover */
+}
+
+footer p {
+  margin-top: 15px;
+  font-size: 14px;
+  font-family: "Montserrat", sans-serif;
 }
 
 
