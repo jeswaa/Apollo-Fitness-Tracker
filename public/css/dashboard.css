@@ -16,7 +16,7 @@
     width: 100px;
     margin-left: 50px;
 }
-.header .logo h1{
+.header .logo h1, span{
     margin-top: 30px;
     color: white;
     text-align: center;

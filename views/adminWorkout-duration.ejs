@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout User</title>
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/dashboard-addworkout-duration.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header & Side Panel -->
+    <div class="header">
+        <div class="logo">
+            <img src="./images/logo.png" alt="Logo">
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="side-panel">
+            <a href="/admin-dashboard">Dashboard</a>
+            <div class="dropdown">
+                <p class="dropdown-toggle">Workout</p>
+                <div class="dropdown-content">
+                    <a href="/workout-user">User Workout</a>
+                    <a href="/add-workout">Workouts</a>
+                </div>
+            </div>
+            <a href="/add-food">Food</a>
+            <a href="/admin-usertbl">Users</a>
+            <a href="/admin-review">Reviews</a>
+            <div class="logoutbtn">
+                <a href="/"><i class="fas fa-sign-out-alt"></i></a>
+            </div>
+        </div>
+        <!-- Main Section -->
+        <div class="main-col">
+            <div class="main-sec">
+                <h2>User Workouts</h2>
+                <table border="2px">
+                    <thead>
+                        <tr>
+                            <th>User Name</th>
+                            <th>Workout Name</th>
+                            <th>Workout Description</th>
+                            <th>Workout Image</th>
+                            <th>Intensity</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="workoutTableBody"></tbody> <!-- Table body to be populated -->
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch workouts from UserWorkout table
+        async function fetchWorkouts() {
+            try {
+                const response = await fetch('/user-workouts');
+                const workouts = await response.json();
+                const workoutTableBody = document.getElementById('workoutTableBody'); // Updated to the correct ID
+
+                workoutTableBody.innerHTML = ''; // Clear previous content
+
+                workouts.forEach((workout) => {
+                    const row = document.createElement('tr'); // Create a new table row
+
+                    row.innerHTML = `
+                        <td>${workout.userame}</td> <!-- Assuming userName is part of the workout object -->
+                        <td>${workout.name}</td>
+                        <td>${workout.description}</td>
+                        <td><img src="${workout.image}" alt="${workout.name}" class="workout-image" style="width: 50px;"></td> <!-- Set a width for better display -->
+                        <td>${workout.intensity}</td>
+                        <td>${workout.duration}</td>
+                        <td>
+                            <button onclick="confirmDelete(${workout.id})">Delete</button> <!-- Assuming id is part of the workout object -->
+                        </td>
+                    `;
+
+                    workoutTableBody.appendChild(row); // Append the new row to the table body
+                });
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+            }
+        }
+
+        // Confirm and delete a workout
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this workout?')) {
+                deleteWorkout(id);
+            }
+        }
+    
+       // Delete workout from the backend
+       async function deleteWorkout(id) {
+    console.log('Deleting workout with id:', id); // Check the id value
+    try {
+        const response = await fetch(`/user-workouts/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Workout deleted successfully');
+            fetchWorkouts(); // Refresh workout list after deletion
+        } else {
+            alert('Failed to delete workout');
+        }
+    } catch (error) {
+        console.error('Error deleting workout:', error);
+    }
+}
+
+
+        fetchWorkouts();
+    </script>
+    
+    
+</body>
+</html>

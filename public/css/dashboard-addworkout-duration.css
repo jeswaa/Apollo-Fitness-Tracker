@@ -1,0 +1,154 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Header */
+.header{
+    background-color: #111827;
+}
+.header .logo{
+    display: flex;
+    justify-content: space-between;
+}
+.header .logo img{
+    height: 100px;
+    width: 100px;
+    margin-left: 50px;
+}
+.header .logo h1{
+    margin-top: 30px;
+    color: white;
+    text-align: center;
+    margin-right: 30px;
+}
+.content{
+    display: flex;
+}
+/* Side panel */
+.side-panel{
+    display: flex;
+    flex-direction: column; 
+    height: 90vh;
+    width: 232px; 
+    background-color: #111827;
+}
+.side-panel a{
+    color: white;
+    text-decoration: none;
+    margin-top: 50px;
+    padding: 20px;
+}
+.side-panel a:hover{
+    background-color: #1f2937;
+    padding: 20px;
+}
+.side-panel .logoutbtn{
+    margin-top: 30px;
+}
+.side-panel .logoutbtn a{
+    font-size: 30px;
+    margin-left: 30%;
+}
+.side-panel .logoutbtn a:hover{
+    color: #1f2937;
+    background-color: transparent;
+}
+.side-panel a:hover{
+    background-color: #1f2937;
+    padding: 20px;
+}
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+    margin-top: 50px;
+}
+.dropdown:hover{
+    background-color: #1f2937;
+}
+.dropdown-toggle {
+    cursor: pointer;
+    padding: 20px;
+    color: white;
+}
+.dropdown p:hover{
+    min-width: 230px;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%; /* Align below the parent link */
+    left: 0;
+    background-color: #1f2937;
+    width: 230px; /* Same width as the panel */
+    z-index: 1;
+    flex-direction: column;
+}
+
+.dropdown-content a {
+    margin: 0; /* Override side-panel margin */
+    padding: 15px 20px;
+    background-color: #111827;
+    color: white;
+}
+
+.dropdown-content a:hover {
+    background-color: #374151;
+}
+
+.dropdown:hover .dropdown-content {
+    display: flex;
+}
+
+/* Main Column */
+
+.main-col {
+    flex-grow: 1;
+    padding: 25px;
+    overflow-y: auto; 
+    height: 80vh;
+}
+.main-col .main-sec {
+    margin-top: 3%;
+    padding: 20px;
+    border-radius: 15px;
+}
+.main-col .main-sec table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 10px; 
+  }
+.main-col .main-sec  thead tr {
+    background-color: #111827;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+} 
+.main-col .main-sec th, td{
+    padding: 15px;
+    text-align: center;
+}
+.main-col .main-sec table tbody tr:last-child td {
+    border-bottom: none;
+}
+.main-col .main-sec img {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+  }
+.action-btn button {
+    padding: 8px 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.action-btn button:hover {
+    background-color: #45a049;
+  }
+  

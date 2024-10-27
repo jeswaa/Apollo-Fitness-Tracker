@@ -26,20 +26,20 @@
 .content {
     display: flex;
 }
-.side-panel {
+.side-panel{
     display: flex;
     flex-direction: column; 
     height: 90vh;
-    width: 230px; 
+    width: 232px; 
     background-color: #111827;
 }
-.side-panel a {
+.side-panel a{
     color: white;
     text-decoration: none;
     margin-top: 50px;
     padding: 20px;
 }
-.side-panel a:hover {
+.side-panel a:hover{
     background-color: #1f2937;
     padding: 20px;
 }
@@ -57,6 +57,44 @@
 .side-panel a:hover{
     background-color: #1f2937;
     padding: 20px;
+}
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+    margin-top: 50px;
+}
+.dropdown:hover{
+    background-color: #1f2937;
+}
+.dropdown-toggle {
+    cursor: pointer;
+    padding: 20px;
+    color: white;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%; /* Align below the parent link */
+    left: 0;
+    background-color: #1f2937;
+    width: 230px; /* Same width as the panel */
+    z-index: 1;
+    flex-direction: column;
+}
+
+.dropdown-content a {
+    margin: 0; /* Override side-panel margin */
+    padding: 15px 20px;
+    background-color: #111827;
+    color: white;
+}
+
+.dropdown-content a:hover {
+    background-color: #374151;
+}
+
+.dropdown:hover .dropdown-content {
+    display: flex;
 }
 /* Main Content */
 .main-col {

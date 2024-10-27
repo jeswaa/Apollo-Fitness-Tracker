@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import User from '../models/User.js';
 import Workout from '../models/Workout.js';
+import UserWorkout from '../models/Workout-duration.js';
 import Food from '../models/Food.js';
 import bcrypt from 'bcrypt'; 
 import flash from 'connect-flash'; 
@@ -48,6 +49,7 @@ router.get('/', (req, res) => renderWithFlash(res, 'index', req));
 router.get('/login', (req, res) => res.render('login'));
 router.get('/signup', (req, res) => res.render('signup'));
 router.get('/add-workout', (req, res) => res.render('adminWorkout'));
+router.get('/workout-user', (req, res) => res.render('adminWorkout-duration'));
 router.get('/add-food', (req, res) => res.render('adminNutrition'));
 router.get('/admin-usertbl', (req, res) => res.render('adminUser'));
 router.get('/admin-review', (req, res) => res.render('adminReview'));
@@ -212,7 +214,59 @@ router.delete('/workouts/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to delete workout' });
     }
 });
+// Add Workouts from UserWorkout Table
+router.post('/add-users-workout', async (req, res) => {
+    const { name, description, image, intensity, duration } = req.body;
+    const userId = req.session.userId; // Assuming userId is stored in session
 
+    if (!userId) {
+        req.flash('error_msg', 'You need to be logged in to add a workout.');
+        return res.redirect('/login');
+    }
+
+    try {
+        const newWorkout = new UserWorkout({
+            userId, // Associate workout with the logged-in user
+            name,
+            description,
+            image,
+            intensity,
+            duration,
+        });
+        await newWorkout.save();
+        req.flash('success_msg', 'Workout added successfully!');
+        res.redirect('/workout-user');
+    } catch (error) {
+        console.error('Error adding workout:', error);
+        req.flash('error_msg', 'Error adding workout: ' + error.message);
+        res.redirect('/user-workout');
+    }
+});
+// Get workouts from UserWorkout table
+router.get('/user-workouts', async (req, res) => {
+    try {
+        // Fetch all workouts with their corresponding users
+        const workouts = await UserWorkout.find().populate('userId', 'fullname');
+
+        res.json(workouts);
+    } catch (error) {
+        console.error('Error fetching workouts:', error);
+        res.status(500).json({ error: 'Failed to fetch workouts' });
+    }
+});
+// Route for deleting a user workout
+router.delete('/user-workouts/:id', async (req, res) => {
+    try {
+        const deletedUserWorkout = await UserWorkout.findByIdAndDelete(req.params.id);
+        if (!deletedUserWorkout) return res.status(404).send('User workout not found');
+
+        req.flash('success_msg', 'User workout deleted successfully!');
+        res.sendStatus(204); // No content
+    } catch (error) {
+        console.error('Error deleting user workout:', error);
+        res.status(500).json({ error: 'Failed to delete user workout' });
+    }
+});
 // Add New Food
 router.post('/add-food', upload.single('image'), async (req, res) => {
     const { name, description, calories, carbs, protein , fats } = req.body;
@@ -307,30 +361,49 @@ router.post('/signup', async (req, res) => {
         res.redirect('/signup');
     }
 });
-
-// User/Admin Login
+// Assuming you have a login route
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    try {
+        const user = await User.findOne({ username }); // Fetch the user by username
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            req.flash('error_msg', 'Invalid username or password');
+            return res.redirect('/login');
+        }
+
+        // Store username and user ID in the session
+        req.session.username = user.username; // Store username
+        req.session.userId = user._id; // Store user ID if needed
+        req.flash('success_msg', 'You are now logged in');
+        res.redirect('/user-dashboard'); // Redirect to the desired page after login
+    } catch (error) {
+        console.error('Error during login:', error);
+        req.flash('error_msg', 'Error logging in');
+        res.redirect('/login');
+    }
+});
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
 
     try {
-        if (username === 'admin' && password === 'admin12345') {
-            req.flash('success_msg', 'Welcome, Admin!');
-            return res.redirect('/admin-dashboard');
+        const user = await User.findOne({ email });
+
+        // Check if user exists and validate password
+        if (!user || user.password !== password) {
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        const user = await User.findOne({ username });
-        if (user && await bcrypt.compare(password, user.password)) {
-            req.flash('success_msg', 'Successfully logged in.');
-            res.redirect('/user-dashboard');
-        } else {
-            req.flash('error_msg', 'Invalid username or password.');
-            res.redirect('/login');
-        }
+        // Store user data in session
+        req.session.email = user.email;
+        req.session.fullname = user.fullname;
+
+        // Send a success response or redirect
+        res.json({ message: 'Login successful', username: user.fullname });
     } catch (error) {
-        console.error('Error logging in:', error);
-        req.flash('error_msg', 'Error logging in: ' + error.message);
-        res.redirect('/login');
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Failed to log in' });
     }
 });
 
 export default router;
+

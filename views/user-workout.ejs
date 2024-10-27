@@ -17,7 +17,7 @@
             <img src="/images/logo.png" alt="Logo">
         </div>
         <div class="welcome-text">
-            <h1>Welcome Back, User!</h1>
+            <h1>Welcome Back, <span id="user-fullname">User</span>!</h1> <!-- Placeholder for user fullname -->
         </div>
         <div class="profile-icon">
             <i class="fa-solid fa-circle-user"></i>
@@ -29,7 +29,7 @@
         <nav>
             <ul>
                 <li><a href="/user-dashboard">DASHBOARD</a></li>
-                <li><a href="/user-workout">WORKOUT</a></li>
+                <li><a href="/user-workout"  class="active">WORKOUT</a></li>
                 <li><a href="/user-nutrition">NUTRITION</a></li>
                 <li><a href="/user-profile">PROFILE</a></li>
             </ul>
@@ -65,9 +65,8 @@
                         <label for="workout-duration">Duration (in minutes)</label>
                         <input type="number" id="workout-duration" name="workout-duration" required>
                         <button type="submit">Add Workout</button>
-                </form>
                     </div>
-                    
+                </form>
             </div>
         </div>
     </div>
@@ -91,14 +90,13 @@
                     workoutDiv.className = 'workout-item';
 
                     workoutDiv.innerHTML = `
-                        <button class="add-workout-btn" data-image="${workout.image}" data-name="${workout.name}" data-description="${workout.description}" data-intensity="${workout.intensity}" ><i class="fas fa-plus"></i></button>
+                        <button class="add-workout-btn" data-image="${workout.image}" data-name="${workout.name}" data-description="${workout.description}" data-intensity="${workout.intensity}"><i class="fas fa-plus"></i></button>
                         <img src="${workout.image}" alt="${workout.name}" class="workout-image">
                         <div class="workout-text">
                             <h3>${workout.name}</h3>
                             <p>${workout.description}</p>
                             <p><strong>Intensity:</strong> ${workout.intensity}</p>
                         </div>
-                        
                     `;
 
                     // Attach event listener to the Add Workout button
@@ -106,7 +104,7 @@
                     workoutList.appendChild(workoutDiv);
                 });
             } catch (error) {
-                console.error('Error fetching workouts:', error);
+                console.error('Error fetching workouts:', error.message);
                 document.getElementById('workout-list').innerHTML = 
                     '<p>Error loading workouts. Please try again later.</p>';
             }
@@ -144,7 +142,7 @@
             };
 
             try {
-                const response = await fetch('/add-workout', {
+                const response = await fetch('/add-users-workout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(workoutData)
@@ -161,9 +159,9 @@
                 console.error('Error adding workout:', error);
             }
         }
-
         // Fetch workouts when the page loads
         fetchWorkouts();
     </script>
 </body>
 </html>
+

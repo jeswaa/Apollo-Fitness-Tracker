@@ -62,23 +62,29 @@ body {
     font-size: larger;
     font-weight: bold;
     display: block;
-    padding: 10px 20px;
+    padding: 20px;
     color: #ffffff;
     text-decoration: none;
+    width: 210px;
+    border-top-left-radius: 50rem;
+    border-bottom-left-radius: 50rem;
     transition: background-color 0.3s ease;
 }
 
 /* Hover effect */
 .navbar nav ul li a:hover {
-    background-color: #333a46;
+    background-color: #111827;
+    width: 210px;
     color: #ffffff;
 }
 
 /* Active page link */
 .navbar nav ul li a.active {
-    background-color: #333a46;
+    background-color: #111827;
+    width: 210px;
     color: #ffffff;
 }
+
 
 /* Main Content Container (Beside Navbar) */
 .content-container {
@@ -91,7 +97,7 @@ body {
 .overview-card {
     margin-top: 19px;
     margin-left: 200px;
-    background-color: #1a1a2e;
+    background-color: #111827;
     border-radius: 15px;
     padding: 45px;
     width: 87%;
