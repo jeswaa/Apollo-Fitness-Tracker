@@ -10,30 +10,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-    <style>
-        /* Inline styles for demonstration; move to CSS file for production */
-        .workout-image {
-            width: 50px;
-            height: auto; /* Maintain aspect ratio */
-        }
-        .main-sec {
-            padding: 20px;
-        }
-        .logoutbtn {
-            margin-top: 20px;
-        }
-        .logoutbtn a {
-            text-decoration: none;
-            color: red; /* Color for logout link */
-        }
-        button {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
     <!-- Header & Side Panel -->
@@ -46,6 +22,7 @@
     <div class="content">
         <aside class="side-panel">
             <a href="/admin-dashboard">Dashboard</a>
+
             <div class="dropdown">
                 <p class="dropdown-toggle">Workout</p>
                 <div class="dropdown-content">
@@ -106,8 +83,8 @@
                         <td>${workout.description}</td>
                         <td><img src="${workout.image}" alt="${workout.name}" class="workout-image"></td>
                         <td>${workout.intensity}</td>
-                        <td>${workout.duration}</td>
-                        <td>
+                        <td>${workout.duration}<p>min</p></td>
+                        <td class="action-btn">
                             <button onclick="confirmDelete('${workout._id}')">Delete</button>
                         </td>
                     `;
@@ -129,7 +106,7 @@
         async function deleteWorkout(id) {
             console.log('Deleting workout with id:', id);
             try {
-                const response = await fetch(`/user-workouts/${id}`, {
+                const response = await fetch(`/workouts-user/${id}`, {
                     method: 'DELETE',
                 });
 

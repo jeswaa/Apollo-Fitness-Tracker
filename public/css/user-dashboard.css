@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
 }
 
 body {
@@ -62,16 +63,25 @@ body {
     font-size: larger;
     font-weight: bold;
     display: block;
-    padding: 10px 20px;
+    padding: 20px;
     color: #ffffff;
     text-decoration: none;
+    width: 210px;
+    border-top-left-radius: 50rem;
+    border-bottom-left-radius: 50rem;
     transition: background-color 0.3s ease;
 }
 
 /* Hover effect */
-.navbar nav ul li a:hover,
-.navbar nav ul li a.active {
+.navbar nav ul li a:hover {
     background-color: #333a46;
+    color: #ffffff;
+}
+
+/* Active page link */
+.navbar nav ul li a.active {
+    background-color: #111827;
+    width: 210px;
     color: #ffffff;
 }
 
@@ -199,6 +209,17 @@ h2 {
     height: 400px;
 }
 
+.lower-right-container h3 {
+    font-size: 18px;
+    color:white;
+}
+
+.lower-right-container p {
+    font-size: 12px;
+    color:white;
+}
+
+/* Modal styles */
 /* Modal styles */
 .modal {
     display: none; /* Hidden by default */
@@ -330,5 +351,5 @@ textarea {
 }
 
 .bmi-category {
-    color: white; /* Adjust color to match your theme */
-}
+color: white; /* Adjust color to match your theme */
+ }

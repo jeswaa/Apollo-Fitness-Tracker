@@ -31,7 +31,7 @@
     display: flex;
     flex-direction: column; 
     height: 90vh;
-    width: 232px; 
+    width: 260px; 
     background-color: #111827;
 }
 .side-panel a{
@@ -60,6 +60,7 @@
     padding: 20px;
 }
 /* Dropdown Styles */
+/* Dropdown Styles */
 .dropdown {
     position: relative;
     margin-top: 50px;
@@ -71,9 +72,6 @@
     cursor: pointer;
     padding: 20px;
     color: white;
-}
-.dropdown p:hover{
-    min-width: 230px;
 }
 .dropdown-content {
     display: none;
@@ -100,7 +98,6 @@
 .dropdown:hover .dropdown-content {
     display: flex;
 }
-
 /* Main Column */
 
 .main-col {
@@ -139,9 +136,12 @@
     height: 100px;
     border-radius: 5px;
   }
+.actiionbtn{
+    display: flex;
+}
 .action-btn button {
     padding: 8px 12px;
-    background-color: #4caf50;
+    background-color: #b84242;
     color: white;
     border: none;
     border-radius: 5px;
@@ -149,6 +149,6 @@
     transition: background-color 0.3s;
 }
 .action-btn button:hover {
-    background-color: #45a049;
+    background-color: #b61212;
   }
   

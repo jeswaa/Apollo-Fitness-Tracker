@@ -60,6 +60,7 @@
     padding: 20px;
 }
 /* Dropdown Styles */
+/* Dropdown Styles */
 .dropdown {
     position: relative;
     margin-top: 50px;
@@ -170,8 +171,16 @@
     width: 100px;
     height: 100px;
     border-radius: 5px;
-  }
-.action-btn button {
+}
+.actionbtn {
+    display: flex;
+    flex-direction: column; /* Align items vertically */
+    justify-content: center; /* Center vertically */
+    gap: 10px; /* Add spacing between buttons */
+    height: 100%; /* Make it stretch to full td height */
+}
+
+.edit button {
     padding: 8px 12px;
     background-color: #4caf50;
     color: white;
@@ -180,10 +189,28 @@
     cursor: pointer;
     transition: background-color 0.3s;
 }
-.action-btn button:hover {
+.edit button:hover {
     background-color: #45a049;
   }
-  
+.delete button {
+    padding: 8px 12px;
+    background-color: #b84242;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.delete button:hover {
+    background-color: #b61212;
+  }
+
+input[type="text"] , textarea {
+    border: none;
+    background-color: transparent;
+    font-size: 14px;
+    color: white;
+}
 /* Modal Styling */
 .modal {
     display: none; /* Hidden by default */
