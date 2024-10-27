@@ -98,9 +98,7 @@ body {
     background-color: #111827;
     border-radius: 15px;
     padding: 45px;
-    width: 87%;
     height: 100vh;
-    text-align: center;
     overflow-y: scroll;
     border-top-right-radius: 60px; 
 }
@@ -266,14 +264,41 @@ th {
 }
 
 .modal-content {
-    background-color: #fefefe; /* White background */
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
+    background-color: #111827; /* Dark background */
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 30px;
+    align-items: center;
     border: 1px solid #888; /* Grey border */
     width: 80%; /* Could be more or less, depending on screen size */
     max-width: 600px; /* Maximum width for larger screens */
     border-radius: 8px; /* Rounded corners */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+.modal-body {
+    display: flex; /* Use flexbox to align items side by side */
+    align-items: center; /* Center items vertically */
+}
+
+.modal-image {
+    margin-right: 20px; /* Space between the image and text */
+    border-radius: 5px; /* Optional: round the image corners */
+}
+
+.modal-details {
+    flex-grow: 1; 
+    margin-left: 20px;
+}
+
+.modal-content h2 {
+    text-transform: capitalize;
+    color: white;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.modal-content p {
+    color: white;
 }
 
 .close {
@@ -290,14 +315,10 @@ th {
     cursor: pointer; /* Pointer cursor */
 }
 
-h2 {
-    margin: 0; /* Remove margin */
-}
-
 .add-button {
-    background-color: #28a745; /* Green background */
+    background-color: transparent;
     color: white; /* White text */
-    border: none; /* No border */
+    border: 2px solid white; /* White border */
     padding: 10px 20px; /* Padding */
     text-align: center; /* Center text */
     text-decoration: none; /* No underline */
@@ -306,9 +327,56 @@ h2 {
     margin-top: 10px; /* Space above */
     cursor: pointer; /* Pointer cursor */
     border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s; /* Transition effect */
+    transition: 0.3s; /* Transition effect */
 }
 
 .add-button:hover {
     background-color: #218838; /* Darker green on hover */
+}
+
+
+.foods-card h2{
+    padding: 30px;
+}
+.food-container {
+    display: flex;
+    flex-wrap: wrap; /* Center items in the container */
+    margin-left: 6%;
+    padding: 30px;
+}
+
+.food-item {
+    border: 1px solid #333; /* Light grey border */
+    border-radius: 30px; /* Rounded corners */
+    padding: 40px; /* Padding inside each item */
+    margin: 10px; /* Space between items */
+    display: flex;
+    width: 500px; /* Fixed width for each food item */
+    transition: transform 0.2s; /* Animation for hover effect */
+}
+.food-item:hover {
+    transform: translateY(-5px); 
+    background-color: #111827;
+}
+.food-content {
+    display: flex; /* Use flexbox to arrange items side by side */
+    align-items: center; /* Center items vertically */
+    margin-bottom: 10px; /* Add spacing between food items */
+}
+.food-thumb {
+    border-radius: 5px; /* Slight rounding on images */
+    margin-bottom: 10px; /* Space below the image */
+    margin-right: 30px;
+}
+.food-item .food-details h1{
+    font-family: 30px;
+    margin-left: 30px;
+    margin-top: -50px;
+    text-transform: capitalize;
+    color: white;
+}
+.food-item  p{
+    color: white;
+    margin-left: 30px;
+    text-align: ends;
 }

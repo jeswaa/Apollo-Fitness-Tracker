@@ -1,82 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <!-- CSS Link -->
-    <link rel="stylesheet" href="css/user-dashboard.css" />
-    <!-- Font Awesome CDN -->
-    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
-  <body>
+    <link rel="stylesheet" href="css/user-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
     <!-- Header -->
     <div class="custom-header">
-      <div class="logo">
-        <img src="/images/logo.png" alt="Logo" />
-      </div>
-      <div class="welcome-text">
-        <h1>Welcome Back, <%= user.username %>!</h1> 
-      </div>
-      <div class="profile-icon">
-        <i class="fa-solid fa-circle-user"></i>
-      </div>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo" />
+        </div>
+        <div class="welcome-text">
+            <h1>Welcome Back, <%= user.username %>!</h1> 
+        </div>
+        <div class="profile-icon">
+            <i class="fa-solid fa-circle-user"></i>
+        </div>
     </div>
 
     <!-- Side Navbar -->
     <div class="navbar">
-      <nav>
-        <ul>
-          <li><a href="/user-dashboard">DASHBOARD</a></li>
-          <li><a href="/user-workout">WORKOUT</a></li>
-          <li><a href="/user-nutrition">NUTRITION</a></li>
-          <li><a href="/user-profile">PROFILE</a></li>
-        </ul>
-      </nav>
+        <nav>
+            <ul>
+                <li><a href="/user-dashboard">DASHBOARD</a></li>
+                <li><a href="/user-workout">WORKOUT</a></li>
+                <li><a href="/user-nutrition">NUTRITION</a></li>
+                <li><a href="/user-profile">PROFILE</a></li>
+            </ul>
+        </nav>
     </div>
 
     <!-- Main Content: Container beside Navbar -->
     <div class="content-container">
-      <div class="overview-card">
-        <h2>Overview</h2>
-
-        <!-- Inner Container Wrapper -->
-        <div class="inner-container-wrapper">
-          <!-- First Inner Container -->
-          <div class="inner-container">
-            <h3>Workout Summary</h3>
-          </div>
-
-          <!-- Second Inner Container -->
-          <div class="inner-container">
-            <h3>Nutrition Summary</h3>
-          </div>
-        </div>
-
-        <!-- Additional Container Below -->
-        <div class="inner-container-below">
-          <h3>Progress Tracker</h3>
-        </div>
-      </div>
+        <div class="overview-card">
+            <div class="overview-header">
+                <h2>Overview</h2>
+                <button class="overview-button" onclick="openBMIModal()">BMI CALCULATOR</button>
+            </div>
+            <div class="inner-container-wrapper">
+                <div class="inner-container">
+                    <h3>Workout Summary</h3>
+                </div>
+                <div class="inner-container">
+                    <h3>Nutrition Summary</h3>
+                </div>
+            </div>
+            <div class="inner-container-below">
+                <h3>Progress Tracker</h3>
+            </div>
+        </div>  
     </div>
 
     <!-- Right Side New Container -->
     <div class="right-side-container">
-      <h3>UPCOMING WORKOUT</h3>
-
-      <!-- New Lower Container -->
-      <div class="lower-right-container">
-        <h3>Next Goal</h3>
-        <p>Goal:</p>
-        <p>Calories Burned:</p>
-        <p>Fats:</p>
-        <p>Protein:</p>
-        <p>Carbs:</p>
-      </div>
+        <h3>UPCOMING WORKOUT</h3>
+        <div id="upcomingWorkoutContainer"></div> <!-- Container for displaying all workouts -->
     </div>
-  </body>
+
+    <!-- Workout Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Workout Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Intensity</th>
+                <th>Duration</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="workoutTableBody"></tbody>
+    </table>
+
+    <!-- BMI Calculator Modal -->
+    <div id="bmiModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeBMIModal()">&times;</span>
+            <h2>BMI Calculator</h2>
+            <form onsubmit="calculateBMI(event)">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" required>
+                <label for="height">Height (cm):</label>
+                <input type="number" id="height" step="0.01" required> 
+                <button type="submit">Calculate</button>
+            </form>
+            <div id="bmiResultContainer">
+                <p class="bmi-value" id="bmiValue"></p>
+                <p class="bmi-category" id="bmiCategory"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BMI Modal Functions
+        function openBMIModal() {
+            document.getElementById("bmiModal").style.display = "block";
+        }
+    
+        function closeBMIModal() {
+            document.getElementById("bmiModal").style.display = "none";
+            document.getElementById("bmiValue").innerText = ""; 
+            document.getElementById("bmiCategory").innerText = "";
+        }
+    
+        function calculateBMI(event) {
+            event.preventDefault();
+            const weight = parseFloat(document.getElementById("weight").value);
+            const height = parseFloat(document.getElementById("height").value) / 100;
+    
+            if (weight > 0 && height > 0) {
+                const bmi = (weight / (height * height)).toFixed(1);
+                let category = '';
+    
+                if (bmi < 18.5) {
+                    category = 'Underweight';
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    category = 'Normal weight';
+                } else if (bmi >= 25 && bmi <= 29.9) {
+                    category = 'Overweight';
+                } else {
+                    category = 'Obesity';
+                }
+    
+                document.getElementById("bmiValue").innerText = `Your BMI is ${bmi}`;
+                document.getElementById("bmiCategory").innerText = `Category: ${category}`;
+            } else {
+                document.getElementById("bmiValue").innerText = "Please enter valid values.";
+                document.getElementById("bmiCategory").innerText = "";
+            }
+        }
+
+        // Get the current user's username from the server
+        const currentUser = "<%= user.username %>";
+
+        // Fetch all workouts for the current user
+        async function fetchWorkouts() {
+            try {
+                const response = await fetch('/workouts-user');
+                if (!response.ok) {
+                    console.error('Error fetching workouts:', response.status);
+                    return;
+                }
+
+                const workouts = await response.json();
+                const upcomingWorkoutContainer = document.getElementById('upcomingWorkoutContainer');
+                
+                // Clear previous workouts
+                upcomingWorkoutContainer.innerHTML = '';
+
+                // Filter workouts for the current user only
+                const userWorkouts = workouts.filter(workout => workout.userId?.username === currentUser);
+
+                // Append each workout to upcomingWorkoutContainer
+                if (userWorkouts.length > 0) {
+                    userWorkouts.forEach(workout => {
+                        const workoutElement = document.createElement('div');
+                        workoutElement.classList.add('upcoming-workout');
+                        workoutElement.innerHTML = `
+                            <h4>${workout.name}</h4>
+                            <img src="${workout.image}" alt="${workout.name}" class="workout-image" style="width: 100px; height: auto;">
+                        `;
+                        upcomingWorkoutContainer.appendChild(workoutElement);
+                    });
+                } else {
+                    upcomingWorkoutContainer.innerHTML = `<p>No upcoming workouts</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+            }
+        }
+
+        // Call fetchWorkouts on page load
+        document.addEventListener("DOMContentLoaded", fetchWorkouts);
+    </script>
+</body>
 </html>

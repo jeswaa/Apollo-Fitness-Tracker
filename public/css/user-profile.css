@@ -92,18 +92,17 @@ body {
     margin-left: 180px; /* Adjust space for narrower navbar */
     padding: 20px;
     height: 100vh;
-    overflow-y: auto;
 }
 
 /* Overview Card */
 .overview-card {
-    background-color: #1a1a2e;
-    border-radius: 15px; /* Softer rounded edges */
+    background-color: #111827;
+    position: fixed;
     padding: 45px;
-    width: calc(115% - 200px); /* Fit remaining space */
-    margin-left: 10px;
+    border-top-right-radius: 60px;
+    width: 85%; /* Fit remaining space */
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
 /* Overview Header */
