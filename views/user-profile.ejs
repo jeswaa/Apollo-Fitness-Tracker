@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Profile</title>
-    <!-- CSS Link -->
     <link rel="stylesheet" href="css/user-profile.css" />
-    <!-- Font Awesome CDN -->
     <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
     <link
       rel="stylesheet"
@@ -46,7 +44,21 @@
 
         <!-- Profile Header -->
         <div class="profile-header">
-          <img src="/images/BGBG.jpg" alt="User Avatar" class="avatar" />
+          <div class="avatar-container">
+            <img
+              id="avatar"
+              src="/images/BGBG.jpg"
+              alt="User Avatar"
+              class="avatar"
+            />
+            <label for="file-input" class="upload-button">+</label>
+            <input
+              type="file"
+              id="file-input"
+              accept="image/*"
+              style="display: none"
+            />
+          </div>
           <div class="user-info">
             <h2><%= user.fullname %></h2> <!-- Display full name -->
             <p><%= user.email %></p> <!-- Display email -->
@@ -76,5 +88,24 @@
         </div>
       </div>
     </div>
+
+    <script>
+      const fileInput = document.getElementById("file-input");
+      const avatar = document.getElementById("avatar");
+
+      // Handle the file input change event
+      fileInput.addEventListener("change", function () {
+        const file = this.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            avatar.src = e.target.result; // Set avatar source to the uploaded image
+            avatar.style.display = "block"; // Ensure the avatar is displayed
+          };
+          reader.readAsDataURL(file); // Read the uploaded file as a Data URL
+        }
+      });
+    </script>
   </body>
 </html>
