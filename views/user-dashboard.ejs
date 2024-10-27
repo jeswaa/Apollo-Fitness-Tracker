@@ -4,23 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <!-- CSS Link -->
     <link rel="stylesheet" href="css/user-dashboard.css">
-    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Header -->
     <div class="custom-header">
-      <div class="logo">
-        <img src="/images/logo.png" alt="Logo" />
-      </div>
-      <div class="welcome-text">
-        <h1>Welcome Back, <%= user.username %>!</h1> 
-      </div>
-      <div class="profile-icon">
-        <i class="fa-solid fa-circle-user"></i>
-      </div>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo" />
+        </div>
+        <div class="welcome-text">
+            <h1>Welcome Back, <%= user.username %>!</h1> 
+        </div>
+        <div class="profile-icon">
+            <i class="fa-solid fa-circle-user"></i>
+        </div>
     </div>
 
     <!-- Side Navbar -->
@@ -59,12 +57,24 @@
     <!-- Right Side New Container -->
     <div class="right-side-container">
         <h3>UPCOMING WORKOUT</h3>
-        
-        <div class="lower-right-container">
-            <h3>Next Goal</h3>
-            <p>Goal description or task details</p>
-        </div>
+        <div id="upcomingWorkoutContainer"></div> <!-- Container for displaying all workouts -->
     </div>
+
+    <!-- Workout Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Workout Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Intensity</th>
+                <th>Duration</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="workoutTableBody"></tbody>
+    </table>
 
     <!-- BMI Calculator Modal -->
     <div id="bmiModal" class="modal">
@@ -74,10 +84,8 @@
             <form onsubmit="calculateBMI(event)">
                 <label for="weight">Weight (kg):</label>
                 <input type="number" id="weight" required>
-
                 <label for="height">Height (cm):</label>
                 <input type="number" id="height" step="0.01" required> 
-
                 <button type="submit">Calculate</button>
             </form>
             <div id="bmiResultContainer">
@@ -88,6 +96,7 @@
     </div>
 
     <script>
+        // BMI Modal Functions
         function openBMIModal() {
             document.getElementById("bmiModal").style.display = "block";
         }
@@ -104,7 +113,7 @@
             const height = parseFloat(document.getElementById("height").value) / 100;
     
             if (weight > 0 && height > 0) {
-                const bmi = (weight / (height * height)).toFixed(1); // Display BMI with one decimal
+                const bmi = (weight / (height * height)).toFixed(1);
                 let category = '';
     
                 if (bmi < 18.5) {
@@ -124,7 +133,49 @@
                 document.getElementById("bmiCategory").innerText = "";
             }
         }
+
+        // Get the current user's username from the server
+        const currentUser = "<%= user.username %>";
+
+        // Fetch all workouts for the current user
+        async function fetchWorkouts() {
+            try {
+                const response = await fetch('/workouts-user');
+                if (!response.ok) {
+                    console.error('Error fetching workouts:', response.status);
+                    return;
+                }
+
+                const workouts = await response.json();
+                const upcomingWorkoutContainer = document.getElementById('upcomingWorkoutContainer');
+                
+                // Clear previous workouts
+                upcomingWorkoutContainer.innerHTML = '';
+
+                // Filter workouts for the current user only
+                const userWorkouts = workouts.filter(workout => workout.userId?.username === currentUser);
+
+                // Append each workout to upcomingWorkoutContainer
+                if (userWorkouts.length > 0) {
+                    userWorkouts.forEach(workout => {
+                        const workoutElement = document.createElement('div');
+                        workoutElement.classList.add('upcoming-workout');
+                        workoutElement.innerHTML = `
+                            <h4>${workout.name}</h4>
+                            <img src="${workout.image}" alt="${workout.name}" class="workout-image" style="width: 100px; height: auto;">
+                        `;
+                        upcomingWorkoutContainer.appendChild(workoutElement);
+                    });
+                } else {
+                    upcomingWorkoutContainer.innerHTML = `<p>No upcoming workouts</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+            }
+        }
+
+        // Call fetchWorkouts on page load
+        document.addEventListener("DOMContentLoaded", fetchWorkouts);
     </script>
-           
 </body>
 </html>
