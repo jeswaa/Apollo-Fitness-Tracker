@@ -30,7 +30,7 @@
         <nav>
             <ul>
                 <li><a href="/user-dashboard">DASHBOARD</a></li>
-                <li><a href="/user-workout"  class="active">WORKOUT</a></li>
+                <li><a href="/user-workout" class="active">WORKOUT</a></li>
                 <li><a href="/user-nutrition">NUTRITION</a></li>
                 <li><a href="/user-profile">PROFILE</a></li>
             </ul>
@@ -52,19 +52,20 @@
             <h2>Workout</h2>
             <div class="modal-section">
                 <form id="add-workout-form">
+                    <input type="hidden" id="workout-id" name="workout-id">
                     <img id="workout-image" class="modal-workout-image" alt="Workout Image">
                     <div class="modal-text">
                         <label for="workout-name">Workout Name</label>
                         <input type="text" id="workout-name" name="workout-name" readonly>
-        
+
                         <label for="workout-description">Description</label>
                         <textarea id="workout-description" name="workout-description" readonly></textarea>
-        
+
                         <label for="workout-intensity">Intensity</label>
                         <input type="text" id="workout-intensity" name="workout-intensity" readonly>
-        
+
                         <label for="workout-duration">Duration (in minutes)</label>
-                        <input type="number" id="workout-duration" name="workout-duration" required>
+                        <input type="number" id="workout-duration" name="workout-duration" min="1" required>
                         <button type="submit">Add Workout</button>
                     </div>
                 </form>
@@ -91,7 +92,14 @@
                     workoutDiv.className = 'workout-item';
 
                     workoutDiv.innerHTML = `
-                        <button class="add-workout-btn" data-image="${workout.image}" data-name="${workout.name}" data-description="${workout.description}" data-intensity="${workout.intensity}"><i class="fas fa-plus"></i></button>
+                        <button class="add-workout-btn" 
+                            data-id="${workout._id}" 
+                            data-image="${workout.image}" 
+                            data-name="${workout.name}" 
+                            data-description="${workout.description}" 
+                            data-intensity="${workout.intensity}">
+                            <i class="fas fa-plus"></i>
+                        </button>
                         <img src="${workout.image}" alt="${workout.name}" class="workout-image">
                         <div class="workout-text">
                             <h3>${workout.name}</h3>
@@ -106,7 +114,7 @@
                 });
             } catch (error) {
                 console.error('Error fetching workouts:', error.message);
-                document.getElementById('workout-list').innerHTML = 
+                document.getElementById('workout-list').innerHTML =
                     '<p>Error loading workouts. Please try again later.</p>';
             }
         }
@@ -116,31 +124,41 @@
             const button = event.currentTarget;
 
             // Fill modal fields with workout data
+            document.getElementById('workout-id').value = button.getAttribute('data-id');
             document.getElementById('workout-image').src = button.getAttribute('data-image');
             document.getElementById('workout-name').value = button.getAttribute('data-name');
             document.getElementById('workout-description').value = button.getAttribute('data-description');
             document.getElementById('workout-intensity').value = button.getAttribute('data-intensity');
 
+            document.getElementById('workout-duration').value = ''; // Reset duration field
+
             // Display the modal
             document.getElementById('workout-modal').style.display = 'block';
-        }
-
-        // Close the modal
-        function closeModal() {
-            document.getElementById('workout-modal').style.display = 'none';
         }
 
         // Add workout via form submission
         async function addWorkout(event) {
             event.preventDefault();
 
+            const durationValue = document.getElementById('workout-duration').value;
+            
+            // Validate duration
+            if (!durationValue || isNaN(durationValue) || durationValue <= 0) {
+                console.error('Duration is required and must be a positive number.');
+                alert('Please enter a valid duration.');
+                return; // Exit the function if duration is not valid
+            }
+
             const workoutData = {
+                workoutId: document.getElementById('workout-id').value,
                 name: document.getElementById('workout-name').value,
                 description: document.getElementById('workout-description').value,
                 intensity: document.getElementById('workout-intensity').value,
-                duration: document.getElementById('workout-duration').value,
+                duration: parseInt(durationValue, 10), // Ensure duration is an integer
                 image: document.getElementById('workout-image').src
             };
+
+            console.log('Submitting workout data:', workoutData); // Debug log
 
             try {
                 const response = await fetch('/add-users-workout', {
@@ -154,15 +172,22 @@
                     closeModal();
                     fetchWorkouts(); // Refresh workout list
                 } else {
-                    alert('Failed to add workout.');
+                    const errorResponse = await response.json();
+                    console.error('Error details:', errorResponse);
+                    alert(`Failed to add workout: ${errorResponse.message}`);
                 }
             } catch (error) {
                 console.error('Error adding workout:', error);
             }
         }
+
+        // Close the modal
+        function closeModal() {
+            document.getElementById('workout-modal').style.display = 'none';
+        }
+
         // Fetch workouts when the page loads
         fetchWorkouts();
     </script>
 </body>
 </html>
-

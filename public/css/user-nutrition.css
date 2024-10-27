@@ -87,16 +87,14 @@ body {
 
 
 /* Main Content Container (Beside Navbar) */
-.content-container {
-    margin-left: 180px; /* Make space for the navbar */
+.content-container { /* Make space for the navbar */
     padding: 20px;
-    height: 200;
 }
 
 /* Overview Card Styles */
 .overview-card {
     margin-top: 19px;
-    margin-left: 200px;
+    margin-left: 190px;
     background-color: #111827;
     border-radius: 15px;
     padding: 45px;
@@ -159,26 +157,78 @@ h2 {
     background-color: #cc0000;
 }
 
-/* Meal Details Container */
+/* Meal Details Section */
 .meal-details {
-    background-color: #2c3e50;
-    border-radius: 10px;
     padding: 20px;
-    margin-top: 20px;
-    color: white;
+    background-color: #1f2937; /* Light background for contrast */
+    border-radius: 8px; /* Rounded corners */
+    margin-top: 20px; /* Space from other elements */
 }
 
+/* Meal Info */
 .meal-info {
-    display: flex;
-    justify-content: flex-start;
-    margin-bottom: 15px;
+    display: flex; /* Use flexbox for layout */
+    flex-wrap: wrap; /* Wrap items if needed */
+    gap: 20px; /* Space between flex items */
 }
 
-.meal-info .meal-info-content  span {
-    font-size: 22px;
-    margin-left: 70px;
+/* Meal Info Content */
+.meal-info-content {
+    flex: 1; /* Allow this section to grow */
+    min-width: 300px; /* Minimum width for responsiveness */
 }
 
+/* Added Foods Section */
+.added-foods-section {
+    background-color: #ffffff; /* White background for contrast */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.added-foods-section h3 {
+    margin: 0 0 15px; /* Margin below heading */
+    font-size: 1.5em; /* Increase font size */
+    color: #333; /* Dark text color */
+}
+
+/* Table Styles */
+table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* No space between borders */
+}
+
+th, td {
+    padding: 10px; /* Padding in table cells */
+    text-align: left; /* Left align text */
+    border-bottom: 1px solid #ddd; /* Bottom border */
+}
+
+th {
+    background-color: #f2f2f2; /* Light grey background for header */
+    color: #555; /* Darker text for header */
+}
+
+/* Totals Section */
+.totals-section {
+    margin-top: 20px; /* Space above */
+    background-color: #ffffff; /* White background for contrast */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.totals-section h3 {
+    margin: 0 0 10px; /* Margin below heading */
+    font-size: 1.5em; /* Increase font size */
+    color: #333; /* Dark text color */
+}
+
+.totals-section p {
+    margin: 5px 0; /* Margin for paragraphs */
+    font-size: 1.1em; /* Font size */
+    color: #666; /* Grey text color */
+}
 
 /* Chart container styles */
 .chart-container {
@@ -200,4 +250,65 @@ h2 {
     padding: 20px;
     margin-top: 20px;
     height: 500px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe; /* White background */
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888; /* Grey border */
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px; /* Maximum width for larger screens */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+}
+
+.close {
+    color: #aaa; /* Grey color */
+    float: right; /* Positioning */
+    font-size: 28px; /* Size */
+    font-weight: bold; /* Weight */
+}
+
+.close:hover,
+.close:focus {
+    color: black; /* Change color on hover */
+    text-decoration: none; /* No underline */
+    cursor: pointer; /* Pointer cursor */
+}
+
+h2 {
+    margin: 0; /* Remove margin */
+}
+
+.add-button {
+    background-color: #28a745; /* Green background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding */
+    text-align: center; /* Center text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline block */
+    font-size: 16px; /* Font size */
+    margin-top: 10px; /* Space above */
+    cursor: pointer; /* Pointer cursor */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Transition effect */
+}
+
+.add-button:hover {
+    background-color: #218838; /* Darker green on hover */
 }

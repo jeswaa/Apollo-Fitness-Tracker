@@ -3,6 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import User from '../models/User.js';
 import Workout from '../models/Workout.js';
+import UserWorkout from '../models/Workout-duration.js';
 import Food from '../models/Food.js';
 import bcrypt from 'bcrypt'; 
 import flash from 'connect-flash'; 
@@ -48,6 +49,7 @@ router.get('/', (req, res) => renderWithFlash(res, 'index', req));
 router.get('/login', (req, res) => res.render('login'));
 router.get('/signup', (req, res) => res.render('signup'));
 router.get('/add-workout', (req, res) => res.render('adminWorkout'));
+router.get('/workout-user', (req, res) => res.render('adminWorkout-duration'));
 router.get('/add-food', (req, res) => res.render('adminNutrition'));
 router.get('/admin-usertbl', (req, res) => res.render('adminUser'));
 router.get('/admin-review', (req, res) => res.render('adminReview'));
@@ -396,8 +398,72 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Add New User Workout
+router.post('/add-users-workout', async (req, res) => {
+    const { workoutId, duration } = req.body; // Include duration here
+    const usernameOrEmail = req.session.user?.username || req.session.user?.email;
 
+    console.log(`Received workoutId: ${workoutId}`);
+    console.log(`Received duration: ${duration}`);
+    console.log(`Session data - Username/Email: ${usernameOrEmail}`);
 
+    try {
+        // Fetch the user
+        const user = await User.findOne({
+            $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+        });
 
+        if (!user) {
+            console.error('User not found.');
+            req.flash('error_msg', 'User not found');
+            return res.redirect('/user-workout');
+        }
+
+        console.log(`User found: ${user._id}`);
+
+        // Fetch the workout details
+        const workout = await Workout.findById(workoutId);
+        if (!workout) {
+            console.error('Workout not found.');
+            req.flash('error_msg', 'Workout not found');
+            return res.redirect('/user-workout');
+        }
+
+        console.log(`Workout found: ${workout.name}`);
+
+        // Create a new UserWorkout entry
+        const newUserWorkout = new UserWorkout({
+            userId: user._id,
+            name: workout.name,
+            description: workout.description,
+            intensity: workout.intensity,
+            image: workout.image,
+            duration: duration, // Use the duration from the request body
+            createdAt: new Date()
+        });
+
+        await newUserWorkout.save();
+        console.log('New UserWorkout added:', newUserWorkout);
+
+        req.flash('success_msg', 'Workout added successfully to your log!');
+        res.redirect('/user-workout');
+    } catch (error) {
+        console.error('Error adding user workout:', error);
+        req.flash('error_msg', 'Error adding workout: ' + error.message);
+        res.redirect('/user-workout');
+    }
+});
+
+router.get('/workouts-user', async (req, res) => {
+    console.log('Fetching workouts...');
+    try {
+        const workouts = await UserWorkout.find().populate('userId'); // Assuming userId is the reference to the User table
+        console.log('Workouts fetched:', workouts);
+        res.json(workouts);
+    } catch (error) {
+        console.error('Error fetching workouts:', error);
+        res.status(500).json({ error: 'Failed to fetch workouts', details: error.message });
+    }
+});
 
 export default router;

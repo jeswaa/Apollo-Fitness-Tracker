@@ -11,89 +11,6 @@
     <!-- Chart.js CDN -->
     <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            overflow: auto; 
-            background-color: rgb(0,0,0); 
-            background-color: rgba(0,0,0,0.4); 
-        }
-        
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto; 
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%; 
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .add-button {
-            background-color: #4CAF50; /* Green */
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-
-        .add-button:hover {
-            background-color: #45a049;
-        }
-
-        /* Additional styles for table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-
-        .foods-details {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
-        .food-item {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px;
-            border-radius: 5px;
-            flex: 0 0 30%; /* 3 items per row */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
     <!-- Header -->
@@ -151,7 +68,7 @@
             <div class="meal-info">
                 <div class="meal-info-content">
                     <div class="added-foods-section">
-                        <h3>Added Foods</h3>
+                        <h3>Foods</h3>
                         <table>
                             <thead>
                                 <tr>
@@ -166,7 +83,7 @@
                         </table>
                     </div>
                     <div class="totals-section">
-                        <h3>Total Nutritional Values</h3>
+                        <h3>Nutritional Values</h3>
                         <p>Total Calories: <span id="totalCalories">0</span></p>
                         <p>Total Carbs: <span id="totalCarbs">0</span></p>
                         <p>Total Protein: <span id="totalProtein">0</span></p>
@@ -178,7 +95,6 @@
                 <div class="chart-container">
                     <canvas id="mealChart"></canvas>
                 </div>
-                <button id="saveButton" class="add-button">Save Meal Tracker</button>
             </div>
         </div>  
 
@@ -340,40 +256,40 @@
         document.addEventListener('DOMContentLoaded', fetchFoods);
 
         // Function to add food to meal tracker
-async function addToMealTracker(food) {
-    addedFoods.push(food); // Add food to the list
-    totalCalories += food.calories;
-    totalCarbs += food.carbs;
-    totalProtein += food.protein;
-    totalFats += food.fats;
+        async function addToMealTracker(food) {
+            addedFoods.push(food); // Add food to the list
+            totalCalories += food.calories;
+            totalCarbs += food.carbs;
+            totalProtein += food.protein;
+            totalFats += food.fats;
 
-    // Save to the database
-    try {
-        const response = await fetch('/api/meal-tracker', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                userId: '<%= user._id %>', // Assuming you have the user ID available
-                food: food
-            })
-        });
+            // Save to the database
+            try {
+                const response = await fetch('/api/meal-tracker', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: '<%= user._id %>', // Assuming you have the user ID available
+                        food: food
+                    })
+                });
 
-        if (!response.ok) {
-            throw new Error('Failed to save food to meal tracker');
+                if (!response.ok) {
+                    throw new Error('Failed to save food to meal tracker');
+                }
+
+                // Optionally, handle success (e.g., show a message)
+            } catch (error) {
+                console.error('Error saving food:', error);
+            }
+
+            updateAddedFoodsList();
+            updateTotals();
+            updateChart();
+            closeModal();
         }
-
-        // Optionally, handle success (e.g., show a message)
-    } catch (error) {
-        console.error('Error saving food:', error);
-    }
-
-    updateAddedFoodsList();
-    updateTotals();
-    updateChart();
-    closeModal();
-}
 
     </script>
 </body>
