@@ -10,6 +10,59 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .add-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -18,7 +71,7 @@
             <img src="/images/logo.png" alt="Logo">
         </div>
         <div class="welcome-text">
-            <h1>Welcome Back, User!</h1>
+            <h1>Welcome Back, User!</h1> <!-- Display user name -->
         </div>
         <div class="profile-icon">
             <i class="fa-solid fa-circle-user"></i>
@@ -41,21 +94,37 @@
     <div class="overview-card">
         <div class="header-section">
             <h2>MEAL TRACKER</h2>
+            <!-- Search Form -->
             <form class="search-form">
-                <input type="text" placeholder="Search...">
-                <button type="submit"><i class="fa fa-search"></i></button>
+                <input type="text" placeholder="Search foods..." />
+                <button type="submit">Search</button>
             </form>
         </div>
-    
-        <!-- New container below the header-section -->
+        
+
+        <!-- Modal Structure -->
+        <div id="foodModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="foodName"></h2>
+                <img id="foodImage" src="" alt="" width="200">
+                <p id="foodDescription"></p>
+                <p>Calories: <span id="foodCalories"></span></p>
+                <p>Carbs: <span id="foodCarbs"></span></p>
+                <p>Protein: <span id="foodProtein"></span></p>
+                <p>Fats: <span id="foodFats"></span></p>
+                <button class="add-button" id="addButton">Add to Meal Tracker</button>
+            </div>
+        </div>
+        
         <div class="meal-details">
             <div class="meal-info">
                 <div class="meal-info-content">
-                    <span>Carbs: </span>
-                    <span>Protein: </span>
-                    <span>Fats: </span>
-                    <span>Calories: </span>
-                    <span>Total Cal: </span>
+                    <span>Carbs: <span id="totalCarbs">0</span>g</span>
+                    <span>Protein: <span id="totalProtein">0</span>g</span>
+                    <span>Fats: <span id="totalFats">0</span>g</span>
+                    <span>Calories: <span id="totalCalories">0</span></span>
+                    <span>Total Cal: <span id="totalMealCalories">0</span></span>
                 </div>
                 <!-- Donut Chart Canvas -->
                 <div class="chart-container">
@@ -67,22 +136,96 @@
         <div class="foods-card">
             <div class="foods-section">
                 <h2>FOODS</h2>
+                <!-- Foods Display Area -->
+                <div class="foods-details"></div>
             </div>
         </div>
+    </div>
 
+    <!-- JavaScript -->
+    <script>
+        let totalCalories = 0;
+        let totalCarbs = 0;
+        let totalProtein = 0;
+        let totalFats = 0;
 
-        <div class="foods-details">
-        </div>  
-        
-           <!-- Script to generate the donut chart -->
-           <script>
+        // Function to search foods based on user input
+        async function searchFoods(query) {
+            try {
+                const response = await fetch(`/foods?search=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('Failed to fetch foods');
+
+                const foods = await response.json();
+                displayFoods(foods);
+            } catch (error) {
+                console.error('Error during search:', error);
+            }
+        }
+
+        // Event listener for the search form
+        document.querySelector('.search-form').onsubmit = (event) => {
+            event.preventDefault();
+            const searchInput = document.querySelector('.search-form input[type="text"]').value;
+            searchFoods(searchInput);
+        };
+
+        // Display function to show search results
+        function displayFoods(foods) {
+            const foodsContainer = document.querySelector('.foods-details');
+            foodsContainer.innerHTML = ''; // Clear previous results
+
+            foods.forEach(food => {
+                const foodElement = document.createElement('div');
+                foodElement.className = 'food-item';
+                foodElement.innerHTML = `
+                    <h3>${food.name}</h3>
+                    <img src="${food.image}" alt="${food.name}" width="100" class="food-thumb" />
+                `;
+
+                // Add click event to open the modal
+                foodElement.onclick = () => {
+                    document.getElementById('foodName').innerText = food.name;
+                    document.getElementById('foodImage').src = food.image;
+                    document.getElementById('foodDescription').innerText = food.description;
+                    document.getElementById('foodCalories').innerText = food.calories;
+                    document.getElementById('foodCarbs').innerText = food.carbs;
+                    document.getElementById('foodProtein').innerText = food.protein;
+                    document.getElementById('foodFats').innerText = food.fats;
+                    document.getElementById('addButton').onclick = () => addToMealTracker(food);
+                    document.getElementById('foodModal').style.display = 'block'; // Open modal
+                };
+
+                foodsContainer.appendChild(foodElement);
+            });
+        }
+
+        // Function to add food to meal tracker
+        function addToMealTracker(food) {
+            totalCalories += food.calories;
+            totalCarbs += food.carbs;
+            totalProtein += food.protein;
+            totalFats += food.fats;
+
+            // Update displayed totals
+            document.getElementById('totalCalories').innerText = totalCalories;
+            document.getElementById('totalCarbs').innerText = totalCarbs;
+            document.getElementById('totalProtein').innerText = totalProtein;
+            document.getElementById('totalFats').innerText = totalFats;
+            document.getElementById('totalMealCalories').innerText = totalCalories;
+
+            // Update the chart
+            updateChart();
+        }
+
+        // Function to update the donut chart
+        function updateChart() {
             const ctx = document.getElementById('mealChart').getContext('2d');
             const mealChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Carbs', 'Protein', 'Fats'],
                     datasets: [{
-                        data: [60, 20, 20], // Example data
+                        data: [totalCarbs, totalProtein, totalFats],
                         backgroundColor: ['#f39c12', '#27ae60', '#e74c3c'],
                         borderColor: '#fff',
                         borderWidth: 2
@@ -93,6 +236,34 @@
                     cutout: '70%', // This controls the size of the donut hole
                 }
             });
-        </script>
+        }
+
+        // Close the modal when the user clicks on <span> (x)
+        document.querySelector('.close').onclick = () => {
+            document.getElementById('foodModal').style.display = 'none';
+        };
+
+        // Close the modal if user clicks outside of it
+        window.onclick = (event) => {
+            if (event.target === document.getElementById('foodModal')) {
+                document.getElementById('foodModal').style.display = 'none';
+            }
+        };
+
+        // Fetch and display foods on page load
+        window.onload = fetchFoods;
+
+        async function fetchFoods() {
+            try {
+                const response = await fetch('/foods'); // Replace with your backend endpoint
+                if (!response.ok) throw new Error('Failed to fetch foods');
+
+                const foods = await response.json();
+                displayFoods(foods);
+            } catch (error) {
+                console.error('Error fetching foods:', error);
+            }
+        }
+    </script>
 </body>
 </html>

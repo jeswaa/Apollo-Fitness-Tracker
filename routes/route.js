@@ -69,6 +69,24 @@ router.get('/logout', (req, res) => {
     });
 });
 
+// New search route for foods
+router.get('/foods', async (req, res) => {
+    const searchQuery = req.query.search || '';
+    try {
+        const foods = await Food.find({
+            $or: [
+                { name: { $regex: searchQuery, $options: 'i' } },
+                { description: { $regex: searchQuery, $options: 'i' } }
+            ]
+        });
+        res.json(foods);
+    } catch (error) {
+        console.error('Error fetching foods:', error);
+        res.status(500).json({ error: 'Failed to fetch foods' });
+    }
+});
+
+
 // Fetch Recent Activities
 router.get('/activities', async (req, res) => {
     try {
