@@ -44,6 +44,7 @@ const renderWithFlash = (res, view, req, data = {}) => {
     const errorMessage = req.flash('error_msg');
     res.render(view, { successMessage, errorMessage, ...data });
 };
+
 // Routes
 router.get('/', (req, res) => renderWithFlash(res, 'index', req));
 router.get('/login', (req, res) => res.render('login'));
@@ -54,60 +55,69 @@ router.get('/add-food', (req, res) => res.render('adminNutrition'));
 router.get('/admin-usertbl', (req, res) => res.render('adminUser'));
 router.get('/admin-review', (req, res) => res.render('adminReview'));
 router.get('/', (req, res) => res.render('index'));
-//binura yung sa user-dashboard pinalitan basta yung may mga user
-
 
 // Dashboard route
-router.get('/user-dashboard', (req, res) => {
-    // Check if user is authenticated
-    if (req.session.user) {
-        // User is authenticated
-        res.render('user-dashboard', { user: req.session.user }); // Pass user data to the view
-    } else {
-        // User is not authenticated
-        res.redirect('/login'); // Redirect to login page
+router.get('/user-dashboard', async (req, res) => {
+    try {
+        const username = req.session.username; // Assuming you store the username in the session
+        
+        if (!username) {
+            return res.status(400).send('No username found in session');
+        }
+
+        console.log('Searching for user with username:', username); // Debugging log
+
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            console.log('User not found for username:', username);
+            return res.status(404).send('User not found');
+        }
+
+        res.render('user-dashboard', { user });
+    } catch (error) {
+        console.error('Error fetching user:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
-//user nnutrition route
+
 router.get('/user-nutrition', (req, res) => {
-    // Check if user is authenticated
     if (req.session.user) {
-        // User is authenticated
-        res.render('user-nutrition', { user: req.session.user }); // Pass user data to the view
+        res.render('user-nutrition', { user: req.session.user });
     } else {
-        // User is not authenticated
-        res.redirect('/login'); // Redirect to login page
+        res.redirect('/login');
     }
 });
-//user workout route
+
+// User workout route
 router.get('/user-workout', (req, res) => {
-    // Check if user is authenticated
     if (req.session.user) {
-        // User is authenticated
-        res.render('user-workout', { user: req.session.user }); // Pass user data to the view
+        res.render('user-workout', { user: req.session.user });
     } else {
-        // User is not authenticated
-        res.redirect('/login'); // Redirect to login page
+        res.redirect('/login');
     }
 });
-//user profile route
+
+// User profile route
 router.get('/user-profile', (req, res) => {
-    // Check if user is authenticated
+    // Check if the user is authenticated
     if (req.session.user) {
-        // User is authenticated
-        res.render('user-profile', { user: req.session.user }); // Pass user data to the view
+        // Render the user profile page with the user's data
+        res.render('user-profile', { user: req.session.user });
     } else {
-        // User is not authenticated
-        res.redirect('/login'); // Redirect to login page
+        // If not authenticated, redirect to the login page
+        req.flash('error_msg', 'Please log in to access your profile.'); // Optional: use flash messages
+        res.redirect('/login');
     }
 });
+
 
 router.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             console.error('Error logging out:', err);
             req.flash('error_msg', 'Error logging out.');
-            return res.redirect('/'); // Or admin dashboard if needed
+            return res.redirect('/'); 
         }
         req.flash('success_msg', 'You have successfully logged out.');
         res.redirect('/login');
@@ -130,7 +140,6 @@ router.get('/foods', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch foods' });
     }
 });
-
 
 // Fetch Recent Activities
 router.get('/activities', async (req, res) => {
@@ -160,6 +169,7 @@ router.get('/activities', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch activities' });
     }
 });
+
 // Fetch All Users
 router.get('/users', async (req, res) => {
     try {
@@ -170,6 +180,7 @@ router.get('/users', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch users' });
     }
 });
+
 // Admin Dashboard - Fetching User and Workout Counts
 router.get('/admin-dashboard', async (req, res) => {
     try {
@@ -181,13 +192,11 @@ router.get('/admin-dashboard', async (req, res) => {
         const workoutCount = await Workout.countDocuments(); 
         const FoodCount = await Food.countDocuments(); 
 
-
-        // Render the view with counts passed as variables
-        renderWithFlash(res, 'adminDashboard', req, { userCount, workoutCount,FoodCount });
+        renderWithFlash(res, 'adminDashboard', req, { userCount, workoutCount, FoodCount });
     } catch (error) {
         console.error('Error fetching counts:', error);
         req.flash('error_msg', 'Error loading dashboard.');
-        res.redirect('/'); // Redirect to home on error
+        res.redirect('/'); 
     }
 });
 
@@ -222,13 +231,14 @@ router.get('/workouts', async (req, res) => {
 
 router.get('/user-workout', async (req, res) => {
     try {
-        const workouts = await Workout.find(); // Fetch workouts from the database
-        res.render('user-workout', { workouts }); // Pass the workouts to the EJS template
+        const workouts = await Workout.find();
+        res.render('user-workout', { workouts });
     } catch (error) {
         console.error('Error fetching workouts:', error);
         res.status(500).send('Server Error');
     }
 });
+
 router.get('/workouts/:id', async (req, res) => {
     try {
         const workout = await Workout.findById(req.params.id);
@@ -240,7 +250,6 @@ router.get('/workouts/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch workout' });
     }
 });
-
 
 router.put('/workouts/:id', upload.single('image'), async (req, res) => {
     const { name, description, intensity } = req.body;
@@ -254,87 +263,41 @@ router.put('/workouts/:id', upload.single('image'), async (req, res) => {
         );
 
         if (!updatedWorkout) return res.status(404).json({ error: 'Workout not found' });
-
-        req.flash('success_msg', 'Workout updated successfully!');
-        res.redirect('/add-workout');
+        
+        res.json(updatedWorkout);
     } catch (error) {
         console.error('Error updating workout:', error);
-        req.flash('error_msg', 'Error updating workout: ' + error.message);
-        res.redirect(`/workouts/${req.params.id}`);
+        res.status(500).json({ error: 'Failed to update workout' });
     }
 });
 
 router.delete('/workouts/:id', async (req, res) => {
     try {
         const deletedWorkout = await Workout.findByIdAndDelete(req.params.id);
-        if (!deletedWorkout) return res.status(404).send('Workout not found');
+        if (!deletedWorkout) return res.status(404).json({ error: 'Workout not found' });
 
-        res.sendStatus(204); // No content
+        res.json({ message: 'Workout deleted successfully' });
     } catch (error) {
         console.error('Error deleting workout:', error);
         res.status(500).json({ error: 'Failed to delete workout' });
     }
 });
-// Add Workouts from UserWorkout Table
-router.post('/add-users-workout', async (req, res) => {
-    const { name, description, image, intensity, duration } = req.body;
-    const userId = req.session.userId; // Assuming userId is stored in session
 
-    if (!userId) {
-        req.flash('error_msg', 'You need to be logged in to add a workout.');
-        return res.redirect('/login');
-    }
-
-    try {
-        const newWorkout = new UserWorkout({
-            userId, // Associate workout with the logged-in user
-            name,
-            description,
-            image,
-            intensity,
-            duration,
-        });
-        await newWorkout.save();
-        req.flash('success_msg', 'Workout added successfully!');
-        res.redirect('/workout-user');
-    } catch (error) {
-        console.error('Error adding workout:', error);
-        req.flash('error_msg', 'Error adding workout: ' + error.message);
-        res.redirect('/user-workout');
-    }
-});
-// Get workouts from UserWorkout table
-router.get('/user-workouts', async (req, res) => {
-    try {
-        // Fetch all workouts with their corresponding users
-        const workouts = await UserWorkout.find().populate('userId', 'fullname');
-
-        res.json(workouts);
-    } catch (error) {
-        console.error('Error fetching workouts:', error);
-        res.status(500).json({ error: 'Failed to fetch workouts' });
-    }
-});
-// Route for deleting a user workout
-router.delete('/user-workouts/:id', async (req, res) => {
-    try {
-        const deletedUserWorkout = await UserWorkout.findByIdAndDelete(req.params.id);
-        if (!deletedUserWorkout) return res.status(404).send('User workout not found');
-
-        req.flash('success_msg', 'User workout deleted successfully!');
-        res.sendStatus(204); // No content
-    } catch (error) {
-        console.error('Error deleting user workout:', error);
-        res.status(500).json({ error: 'Failed to delete user workout' });
-    }
-});
 // Add New Food
 router.post('/add-food', upload.single('image'), async (req, res) => {
-    const { name, description, calories, carbs, protein , fats } = req.body;
+    const { name, description, calories, protein, fats, carbs } = req.body; // Extract all necessary fields
     const imagePath = req.file ? `/uploads/${req.file.filename}` : '';
 
     try {
-        const newFood = new Food({ name, description, image: imagePath, calories, carbs, protein , fats });
+        const newFood = new Food({
+            name,
+            description,
+            image: imagePath,
+            calories,
+            protein,
+            fats,   
+            carbs 
+        });
         await newFood.save();
 
         req.flash('success_msg', 'Food added successfully!');
@@ -346,7 +309,7 @@ router.post('/add-food', upload.single('image'), async (req, res) => {
     }
 });
 
-// Fetch, Update, and Delete Foods
+// Fetch All Foods
 router.get('/foods', async (req, res) => {
     try {
         const foods = await Food.find();
@@ -357,118 +320,58 @@ router.get('/foods', async (req, res) => {
     }
 });
 
-router.get('/foods/:id', async (req, res) => {
-    try {
-        const food = await Food.findById(req.params.id);
-        if (!food) return res.status(404).json({ error: 'Food not found' });
 
-        res.json(food);
-    } catch (error) {
-        console.error('Error fetching food:', error);
-        res.status(500).json({ error: 'Failed to fetch food' });
-    }
-});
-
-router.put('/foods/:id', upload.single('image'), async (req, res) => {
-    const { name, description, calories, nutrients } = req.body;
-    const imagePath = req.file ? `/uploads/${req.file.filename}` : undefined;
-
-    try {
-        const updatedFood = await Food.findByIdAndUpdate(
-            req.params.id,
-            { name, description, calories, nutrients, ...(imagePath && { image: imagePath }) },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedFood) return res.status(404).json({ error: 'Food not found' });
-
-        req.flash('success_msg', 'Food updated successfully!');
-        res.redirect('/add-food');
-    } catch (error) {
-        console.error('Error updating food:', error);
-        req.flash('error_msg', 'Error updating food: ' + error.message);
-        res.redirect(`/foods/${req.params.id}`);
-    }
-});
-
-router.delete('/foods/:id', async (req, res) => {
-    try {
-        const deletedFood = await Food.findByIdAndDelete(req.params.id);
-        if (!deletedFood) return res.status(404).send('Food not found');
-
-        res.sendStatus(204); // No content
-    } catch (error) {
-        console.error('Error deleting food:', error);
-        res.status(500).json({ error: 'Failed to delete food' });
-    }
-});
-
-// User Signup
+// Add User
 router.post('/signup', async (req, res) => {
-    const { fullname, email, username, password } = req.body;
+    const { username, password, email } = req.body;
 
     try {
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            req.flash('error_msg', 'Username already exists');
+            return res.redirect('/signup');
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ fullname, email, username, password: hashedPassword });
+        const newUser = new User({ username, password: hashedPassword, email });
         await newUser.save();
 
-        req.flash('success_msg', 'Successfully registered! You can now log in.');
+        req.flash('success_msg', 'User registered successfully');
         res.redirect('/login');
     } catch (error) {
         console.error('Error registering user:', error);
-        if (error.code === 11000) return res.status(409).send('User already exists.');
-
         req.flash('error_msg', 'Error registering user: ' + error.message);
         res.redirect('/signup');
     }
 });
-// Assuming you have a login route
+
+// Login User
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
+
     try {
-        const user = await User.findOne({ username }); // Fetch the user by username
-        if (!user || !(await bcrypt.compare(password, user.password))) {
+        const user = await User.findOne({ username });
+        if (!user) {
             req.flash('error_msg', 'Invalid username or password');
             return res.redirect('/login');
         }
 
-        // Store username and user ID in the session
-        req.session.username = user.username; // Store username
-        req.session.userId = user._id; // Store user ID if needed
-        req.flash('success_msg', 'You are now logged in');
-        res.redirect('/user-dashboard'); // Redirect to the desired page after login
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            req.flash('error_msg', 'Invalid username or password');
+            return res.redirect('/login');
+        }
+
+        req.session.username = user.username; // Store username in session
+        req.session.user = user; // Store user details in session
+
+        req.flash('success_msg', 'Login successful');
+        res.redirect('/user-dashboard');
     } catch (error) {
-        console.error('Error during login:', error);
-        req.flash('error_msg', 'Error logging in');
+        console.error('Error logging in:', error);
+        req.flash('error_msg', 'Error logging in: ' + error.message);
         res.redirect('/login');
     }
 });
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await User.findOne({ email });
-
-        // Check if user exists and validate password
-        if (!user || user.password !== password) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        // Store user data in session
-        req.session.email = user.email;
-        req.session.fullname = user.fullname;
-
-        // Send a success response or redirect
-        res.json({ message: 'Login successful', username: user.fullname });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Failed to log in' });
-    }
-});
-
-
-
-
 
 export default router;
-
