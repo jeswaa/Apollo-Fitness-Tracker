@@ -9,6 +9,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #f4f4f4;
 }
 
 /* Header Styles */
@@ -33,15 +34,16 @@ body {
 }
 
 .profile-icon i {
-    font-size: 50px;
-    color: black;
+    font-size: 40px;
+    color: white;
+    margin-right: 20px;
 }
 
 /* Side Navbar Styles */
 .navbar {
     background-color: #1f2937;
     width: 210px;
-    height:100vh;
+    height: 100vh;
     position: fixed;
     top: 80px; /* Starts right below the header */
     left: 0;
@@ -49,7 +51,7 @@ body {
     margin-top: 20px;
 }
 
-.navbar nav ul {    
+.navbar nav ul {
     list-style: none;
     padding: 10px;
 }
@@ -83,4 +85,141 @@ body {
     background-color: #111827;
     width: 210px;
     color: #ffffff;
+}
+
+/* Main Content Container */
+.content-container {
+    margin-left: 180px; /* Adjust space for narrower navbar */
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Overview Card */
+.overview-card {
+    background-color: #1a1a2e;
+    border-radius: 15px; /* Softer rounded edges */
+    padding: 45px;
+    width: calc(115% - 200px); /* Fit remaining space */
+    margin-left: 10px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Overview Header */
+.overview-card h2 {
+    text-align: left;
+    font-size: 36px;
+    color: #ff3333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    background-image: url('/images/BGBG.jpg'); /* Background image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.8); /* Darkened background effect */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Avatar Container */
+.avatar-container {
+    position: relative; /* Allow absolute positioning of the button */
+}
+
+/* Avatar Styles */
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover;
+}
+
+/* Upload Button Styles */
+.upload-button {
+    position: absolute; /* Position relative to the avatar */
+    bottom: 0; /* Position at the bottom */
+    right: 0; /* Position at the right */
+    background-color: #ff3333; /* Background color for the button */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    border-radius: 50%; /* Make it round */
+    width: 30px; /* Button width */
+    height: 30px; /* Button height */
+    display: flex; /* Center the "+" sign */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 20px; /* Font size for "+" sign */
+}
+
+/* User Info Styles */
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-info h2 {
+    font-size: 28px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.user-info p {
+    font-size: 16px;
+    color: #d1d1d1;
+}
+
+/* File Input Hidden */
+#file-input {
+    display: none; /* Hide the actual file input */
+}
+
+/* Progress Section */
+.progress-section {
+    margin-top: 30px;
+    width: 100%;
+    background-color: #1f2937;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+}
+
+.progress-section h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Image Gallery Styles */
+.image-gallery {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.gallery-item {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.gallery-item img {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.gallery-item p {
+    color: #d1d1d1;
+    font-size: 16px;
 }

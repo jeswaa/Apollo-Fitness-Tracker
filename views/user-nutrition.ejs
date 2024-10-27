@@ -9,7 +9,91 @@
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Chart.js CDN -->
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .add-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Additional styles for table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .foods-details {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .food-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            flex: 0 0 30%; /* 3 items per row */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -18,7 +102,7 @@
             <img src="/images/logo.png" alt="Logo">
         </div>
         <div class="welcome-text">
-            <h1>Welcome Back, User!</h1>
+            <h1>Welcome Back, <%= user.username %>!</h1> 
         </div>
         <div class="profile-icon">
             <i class="fa-solid fa-circle-user"></i>
@@ -41,58 +125,256 @@
     <div class="overview-card">
         <div class="header-section">
             <h2>MEAL TRACKER</h2>
+            <!-- Search Form -->
             <form class="search-form">
-                <input type="text" placeholder="Search...">
-                <button type="submit"><i class="fa fa-search"></i></button>
+                <input type="text" placeholder="Search foods..." />
+                <button type="submit">Search</button>
             </form>
         </div>
-    
-        <!-- New container below the header-section -->
+        
+        <!-- Modal Structure -->
+        <div id="foodModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="foodName"></h2>
+                <img id="foodImage" src="" alt="" width="200">
+                <p id="foodDescription"></p>
+                <p>Calories: <span id="foodCalories"></span></p>
+                <p>Carbs: <span id="foodCarbs"></span></p>
+                <p>Protein: <span id="foodProtein"></span></p>
+                <p>Fats: <span id="foodFats"></span></p>
+                <button class="add-button" id="addButton">Add to Meal Tracker</button>
+            </div>
+        </div>
+        
         <div class="meal-details">
             <div class="meal-info">
                 <div class="meal-info-content">
-                    <span>Carbs: </span>
-                    <span>Protein: </span>
-                    <span>Fats: </span>
-                    <span>Calories: </span>
-                    <span>Total Cal: </span>
+                    <div class="added-foods-section">
+                        <h3>Added Foods</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Food Name</th>
+                                    <th>Calories</th>
+                                    <th>Carbs</th>
+                                    <th>Protein</th>
+                                    <th>Fats</th>
+                                </tr>
+                            </thead>
+                            <tbody id="addedFoodsList"></tbody>
+                        </table>
+                    </div>
+                    <div class="totals-section">
+                        <h3>Total Nutritional Values</h3>
+                        <p>Total Calories: <span id="totalCalories">0</span></p>
+                        <p>Total Carbs: <span id="totalCarbs">0</span></p>
+                        <p>Total Protein: <span id="totalProtein">0</span></p>
+                        <p>Total Fats: <span id="totalFats">0</span></p>
+                        <p>Total Meal Calories: <span id="totalMealCalories">0</span></p>
+                    </div>
                 </div>
                 <!-- Donut Chart Canvas -->
                 <div class="chart-container">
                     <canvas id="mealChart"></canvas>
                 </div>
+                <button id="saveButton" class="add-button">Save Meal Tracker</button>
             </div>
         </div>  
 
         <div class="foods-card">
             <div class="foods-section">
                 <h2>FOODS</h2>
+                <!-- Foods Display Area -->
+                <div class="foods-details"></div>
             </div>
         </div>
+    </div>
 
-
-        <div class="foods-details">
-        </div>  
-        
-           <!-- Script to generate the donut chart -->
-           <script>
+    <!-- JavaScript -->
+    <script>
+        let totalCalories = 0;
+        let totalCarbs = 0;
+        let totalProtein = 0;
+        let totalFats = 0;
+        let addedFoods = []; // Array to keep track of added foods
+    
+        // Function to search foods based on user input
+        async function searchFoods(query) {
+            try {
+                const response = await fetch(`/foods?search=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('Failed to fetch foods');
+    
+                const foods = await response.json();
+                displayFoods(foods);
+            } catch (error) {
+                console.error('Error during search:', error);
+            }
+        }
+    
+        // Event listener for the search form
+        document.querySelector('.search-form').onsubmit = (event) => {
+            event.preventDefault();
+            const searchInput = document.querySelector('.search-form input[type="text"]').value;
+            searchFoods(searchInput);
+        };
+    
+        // Display function to show search results
+        function displayFoods(foods) {
+            console.log('Displaying foods:', foods); // Debugging line
+            const foodsContainer = document.querySelector('.foods-details');
+            foodsContainer.innerHTML = ''; // Clear previous results
+    
+            foods.forEach(food => {
+                const foodElement = document.createElement('div');
+                foodElement.className = 'food-item';
+                foodElement.innerHTML = `
+                    <h3>${food.name}</h3>
+                    <img src="${food.image}" alt="${food.name}" width="100" class="food-thumb" />
+                `;
+    
+                // Add click event to open the modal
+                foodElement.onclick = () => {
+                    document.getElementById('foodName').innerText = food.name;
+                    document.getElementById('foodImage').src = food.image;
+                    document.getElementById('foodDescription').innerText = food.description;
+                    document.getElementById('foodCalories').innerText = food.calories;
+                    document.getElementById('foodCarbs').innerText = food.carbs;
+                    document.getElementById('foodProtein').innerText = food.protein;
+                    document.getElementById('foodFats').innerText = food.fats;
+                    document.getElementById('addButton').onclick = () => addToMealTracker(food);
+                    document.getElementById('foodModal').style.display = 'block'; // Open modal
+                };
+    
+                foodsContainer.appendChild(foodElement);
+            });
+        }
+    
+        // Function to add food to meal tracker
+        function addToMealTracker(food) {
+            addedFoods.push(food); // Add food to the list
+            totalCalories += food.calories;
+            totalCarbs += food.carbs;
+            totalProtein += food.protein;
+            totalFats += food.fats;
+            updateAddedFoodsList();
+            updateTotals();
+            updateChart();
+            closeModal();
+        }
+    
+        // Function to update the list of added foods in the table
+        function updateAddedFoodsList() {
+            const addedFoodsList = document.getElementById('addedFoodsList');
+            addedFoodsList.innerHTML = ''; // Clear previous entries
+            addedFoods.forEach(addedFood => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${addedFood.name}</td>
+                    <td>${addedFood.calories}</td>
+                    <td>${addedFood.carbs}</td>
+                    <td>${addedFood.protein}</td>
+                    <td>${addedFood.fats}</td>
+                `;
+                addedFoodsList.appendChild(row);
+            });
+        }
+    
+        // Function to update total nutritional values
+        function updateTotals() {
+            document.getElementById('totalCalories').innerText = totalCalories;
+            document.getElementById('totalCarbs').innerText = totalCarbs;
+            document.getElementById('totalProtein').innerText = totalProtein;
+            document.getElementById('totalFats').innerText = totalFats;
+            document.getElementById('totalMealCalories').innerText = totalCalories; // Assuming total calories as meal calories
+        }
+    
+        // Function to update the chart with total values
+        function updateChart() {
             const ctx = document.getElementById('mealChart').getContext('2d');
             const mealChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Carbs', 'Protein', 'Fats'],
+                    labels: ['Calories', 'Carbs', 'Protein', 'Fats'],
                     datasets: [{
-                        data: [60, 20, 20], // Example data
-                        backgroundColor: ['#f39c12', '#27ae60', '#e74c3c'],
-                        borderColor: '#fff',
-                        borderWidth: 2
+                        label: 'Nutritional Values',
+                        data: [totalCalories, totalCarbs, totalProtein, totalFats],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4CAF50'],
                     }]
                 },
                 options: {
                     responsive: true,
-                    cutout: '70%', // This controls the size of the donut hole
+                    maintainAspectRatio: false
                 }
             });
-        </script>
+        }
+    
+        // Function to close the modal
+        function closeModal() {
+            document.getElementById('foodModal').style.display = 'none';
+        }
+    
+        // Add event listener for closing modal
+        document.querySelector('.close').onclick = closeModal;
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('foodModal')) {
+                closeModal();
+            }
+        };
+    
+        // Function to fetch foods on page load
+        async function fetchFoods() {
+            try {
+                const response = await fetch('/foods');
+                if (!response.ok) throw new Error('Failed to fetch foods');
+    
+                const foods = await response.json();
+                console.log('Fetched foods:', foods); // Debugging line
+                displayFoods(foods);
+            } catch (error) {
+                console.error('Error fetching foods:', error);
+            }
+        }
+    
+        // Fetch foods when the page loads
+        document.addEventListener('DOMContentLoaded', fetchFoods);
+
+        // Function to add food to meal tracker
+async function addToMealTracker(food) {
+    addedFoods.push(food); // Add food to the list
+    totalCalories += food.calories;
+    totalCarbs += food.carbs;
+    totalProtein += food.protein;
+    totalFats += food.fats;
+
+    // Save to the database
+    try {
+        const response = await fetch('/api/meal-tracker', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userId: '<%= user._id %>', // Assuming you have the user ID available
+                food: food
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save food to meal tracker');
+        }
+
+        // Optionally, handle success (e.g., show a message)
+    } catch (error) {
+        console.error('Error saving food:', error);
+    }
+
+    updateAddedFoodsList();
+    updateTotals();
+    updateChart();
+    closeModal();
+}
+
+    </script>
 </body>
 </html>
