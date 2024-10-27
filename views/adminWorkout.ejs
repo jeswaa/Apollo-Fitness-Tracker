@@ -136,7 +136,7 @@
         // Display fetched workouts in the table
         function displayWorkouts(workouts) {
             const tableBody = document.getElementById('workoutTableBody');
-            tableBody.innerHTML = ''; // Clear any existing content
+            tableBody.innerHTML = ''; 
 
             workouts.forEach(workout => {
                 const row = document.createElement('tr');
@@ -146,9 +146,15 @@
                     <td>${workout.description}</td>
                     <td><img src="${workout.image}" alt="${workout.name}" width="100"></td>
                     <td>${workout.intensity}</td>
-                    <td class="action-btn">
-                        <button onclick="editWorkout('${workout._id}')">Edit</button>
-                        <button onclick="deleteWorkout('${workout._id}')">Delete</button>
+                    <td>
+                        <div class="actionbtn">
+                            <div class="edit">
+                                <button onclick="editWorkout('${workout._id}')">Edit</button>
+                            </div>
+                            <div class="delete">
+                                <button  onclick="deleteWorkout('${workout._id}')">Delete</button>
+                            </div>
+                        </div>
                     </td>
                 `;
                 tableBody.appendChild(row);

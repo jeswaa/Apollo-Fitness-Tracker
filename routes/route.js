@@ -466,4 +466,17 @@ router.get('/workouts-user', async (req, res) => {
     }
 });
 
+// Delete User Workout
+router.delete('/workouts-user/:id', async (req, res) => {
+    try {
+        const deletedUserWorkout = await UserWorkout.findByIdAndDelete(req.params.id);
+        if (!deletedUserWorkout) return res.status(404).json({ error: 'User workout not found' });
+
+        res.sendStatus(204); // No Content on successful deletion
+    } catch (error) {
+        console.error('Error deleting user workout:', error);
+        res.status(500).json({ error: 'Failed to delete user workout' });
+    }
+});
+
 export default router;
