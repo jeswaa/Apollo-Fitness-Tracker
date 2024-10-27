@@ -274,7 +274,7 @@
 
             // Save to the database
             try {
-                const response = await fetch('/api/meal-tracker', {
+                const response = await fetch('/meal-tracker', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -299,7 +299,8 @@
             updateChart();
             closeModal();
         }
-
+        
+        
     </script>
 </body>
 </html>

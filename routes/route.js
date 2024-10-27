@@ -5,6 +5,7 @@ import User from '../models/User.js';
 import Workout from '../models/Workout.js';
 import UserWorkout from '../models/Workout-duration.js';
 import Food from '../models/Food.js';
+import Meal from '../models/Meal.js';
 import bcrypt from 'bcrypt'; 
 import flash from 'connect-flash'; 
 import session from 'express-session'; 
@@ -463,6 +464,51 @@ router.get('/workouts-user', async (req, res) => {
     } catch (error) {
         console.error('Error fetching workouts:', error);
         res.status(500).json({ error: 'Failed to fetch workouts', details: error.message });
+    }
+});
+
+
+
+
+// POST endpoint to add meal to the tracker basta sa save db in meal to
+router.post('/meal-tracker', async (req, res) => {
+    const { userId, food } = req.body;
+
+    // Validate input
+    if (!userId || !food) {
+        return res.status(400).json({ message: 'User ID and food information are required' });
+    }
+
+    try {
+        const newMeal = new Meal({
+            userId: userId,
+            name: food.name,
+            description: food.description,
+            calories: food.calories,
+            carbs: food.carbs,
+            protein: food.protein,
+            fats: food.fats,
+            date: new Date() // Store the current date
+        });
+
+        await newMeal.save();
+        res.status(201).json(newMeal); // Respond with the created meal
+    } catch (error) {
+        console.error('Error saving meal:', error.message); // Log error message
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// Route to get meals for a specific user
+router.get('/api/meal-tracker', async (req, res) => {
+    const { userId } = req.query; // Get user ID from query parameters
+
+    try {
+        const meals = await Meal.find({ userId }); // Find meals for the user
+        res.json(meals);
+    } catch (error) {
+        console.error('Error fetching meals:', error);
+        res.status(500).json({ message: 'Error fetching meals' });
     }
 });
 
