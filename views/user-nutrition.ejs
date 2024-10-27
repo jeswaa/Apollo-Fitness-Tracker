@@ -53,14 +53,18 @@
         <div id="foodModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2 id="foodName"></h2>
-                <img id="foodImage" src="" alt="" width="200">
-                <p id="foodDescription"></p>
-                <p>Calories: <span id="foodCalories"></span></p>
-                <p>Carbs: <span id="foodCarbs"></span></p>
-                <p>Protein: <span id="foodProtein"></span></p>
-                <p>Fats: <span id="foodFats"></span></p>
-                <button class="add-button" id="addButton">Add to Meal Tracker</button>
+                <div class="modal-body">
+                    <img id="foodImage" src="" alt="" width="200" class="modal-image">
+                    <div class="modal-details">
+                        <h2 id="foodName"></h2>
+                        <p id="foodDescription"></p>
+                        <p>Calories: <span id="foodCalories"></span></p>
+                        <p>Carbs: <span id="foodCarbs"></span></p>
+                        <p>Protein: <span id="foodProtein"></span></p>
+                        <p>Fats: <span id="foodFats"></span></p>
+                        <button class="add-button" id="addButton">Add to Meal Tracker</button>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -102,7 +106,7 @@
             <div class="foods-section">
                 <h2>FOODS</h2>
                 <!-- Foods Display Area -->
-                <div class="foods-details"></div>
+                <div id="food-container" class="food-container"></div>
             </div>
         </div>
     </div>
@@ -138,17 +142,21 @@
         // Display function to show search results
         function displayFoods(foods) {
             console.log('Displaying foods:', foods); // Debugging line
-            const foodsContainer = document.querySelector('.foods-details');
+            const foodsContainer = document.getElementById('food-container'); // Use the correct container
             foodsContainer.innerHTML = ''; // Clear previous results
-    
+
             foods.forEach(food => {
                 const foodElement = document.createElement('div');
                 foodElement.className = 'food-item';
                 foodElement.innerHTML = `
-                    <h3>${food.name}</h3>
-                    <img src="${food.image}" alt="${food.name}" width="100" class="food-thumb" />
+                    <div class="food-content">
+                        <img src="${food.image}" alt="${food.name}" width="100" class="food-thumb" />
+                        <div class="food-details">
+                            <h1>${food.name}</h1>
+                            <p>${food.description}</p>
+                        </div>
+                    </div>
                 `;
-    
                 // Add click event to open the modal
                 foodElement.onclick = () => {
                     document.getElementById('foodName').innerText = food.name;
@@ -161,7 +169,8 @@
                     document.getElementById('addButton').onclick = () => addToMealTracker(food);
                     document.getElementById('foodModal').style.display = 'block'; // Open modal
                 };
-    
+
+                // Append the food element to the correct container
                 foodsContainer.appendChild(foodElement);
             });
         }

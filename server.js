@@ -32,7 +32,6 @@ app.use(
         secret: process.env.SESSION_SECRET || 'your-secret-key', // Use an environment variable for security
         resave: false,
         saveUninitialized: true,
-        cookie: { maxAge: 60000 } // Session expires in 1 minute for demonstration
     })
 );
 

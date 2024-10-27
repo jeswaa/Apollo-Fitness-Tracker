@@ -103,8 +103,6 @@ body {
     position: fixed;
     overflow-y: scroll;
 }
-
-/* Header inside overview card */
 h2 {
     text-align: left;
     font-size: 50px;
