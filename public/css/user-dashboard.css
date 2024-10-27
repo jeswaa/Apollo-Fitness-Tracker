@@ -62,26 +62,21 @@ body {
     font-size: larger;
     font-weight: bold;
     display: block;
-    padding: 20px;
+    padding: 10px 20px;
     color: #ffffff;
     text-decoration: none;
-    width: 210px;
-    border-top-left-radius: 50rem;
-    border-bottom-left-radius: 50rem;
     transition: background-color 0.3s ease;
 }
 
 /* Hover effect */
 .navbar nav ul li a:hover {
-    background-color: #111827;
-    width: 210px;
+    background-color: #333a46;
     color: #ffffff;
 }
 
 /* Active page link */
 .navbar nav ul li a.active {
-    background-color: #111827;
-    width: 210px;
+    background-color: #333a46;
     color: #ffffff;
 }
 
@@ -89,16 +84,17 @@ body {
 .content-container {
     margin-left: 210px; /* Adjusted to align with the navbar */
     padding: 20px;
+    height: 200;
 }
 
 /* Overview Card Styles */
 .overview-card {
     left: 210px;
-    background-color: #111827;
+    background-color: #1a1a2e;
     border-top-right-radius: 60px;
     padding: 45px;
     width: 60%;
-    height: 89vh;
+    height: 100vh;
     text-align: center;
     position: fixed;
     overflow-y: scroll;
@@ -112,6 +108,30 @@ h2 {
     margin-bottom: 20px;
     font-weight: bold;
 }
+
+/* Existing CSS */
+
+/* Styles for the overview header */
+.overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.overview-button {
+    padding: 8px 16px;
+    background-color: #4CAF50; /* Customize as needed */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.overview-button:hover {
+    background-color: #45a049;
+}
+
+
 /* Flex container for inner cards */
 .overview-card .inner-container-wrapper {
     display: flex;
@@ -153,7 +173,7 @@ h2 {
 .right-side-container {
     border-radius: 20px;
     background-color: #111827;
-    padding-top: 20px;
+    padding: 20px;
     position: fixed;
     right: 10px;
     top: 80px;
@@ -185,26 +205,124 @@ h2 {
 .lower-right-container {
     background-color: #1f2937;
     padding: 15px;
-    border-top-left-radius: 70px;
-    border-top-right-radius: 70px;
+    border-radius: 10px;
+    text-align: center;
     position: absolute; /* Position it absolutely */
-    bottom: 0px;
+    bottom: 50px; /* Distance from the bottom of its parent container */
     left: 50%; /* Center it horizontally */
     transform: translateX(-50%); /* Adjust for centering */
-    width:360px; /* Full width minus padding */
-    height: 300px;
+    width:300px; /* Full width minus padding */
+    height: 400px;
 }
 
 .lower-right-container h3 {
-    text-transform: uppercase;
-    font-size: 30px;
-    margin-top: 30px;
+    font-size: 18px;
     color:white;
 }
 
 .lower-right-container p {
-    margin-top: 10px;
-    font-size: 20px;
+    font-size: 12px;
     color:white;
 }
 
+/* Modal styles */
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(28, 42, 58, 0.9); /* Dark background with slight transparency */
+}
+
+.modal-content {
+    background-color: #1f2937; /* Match with the navbar color */
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 400px;
+    color: white; /* Text color */
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+}
+
+.close-btn {
+    color: #ffffff;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #ff3333; /* Accent color for hover */
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    font-size: 24px;
+    color: #ff3333; /* Match heading color in overview card */
+    text-align: center;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.modal-content label {
+    color: #c5c5c5; /* Lighter gray for label */
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.modal-content input {
+    padding: 10px;
+    background-color: #333a46;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.modal-content input:focus {
+    outline: 2px solid #4CAF50; /* Green outline on focus */
+}
+
+.modal-content button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.modal-content button:hover {
+    background-color: #45a049;
+}
+
+/* Additional CSS for BMI Result Styling */
+#bmiResultContainer {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-top: 15px;
+font-size: 1.1em;
+padding: 15px;
+border: 1px solid #ddd;
+border-radius: 8px;
+background-color: #333a46;
+}
+.bmi-value, .bmi-category {
+margin: 5px 0;
+font-weight: bold;
+}
+.bmi-category {
+color: white; /* Adjust color to match your theme */
+ }
