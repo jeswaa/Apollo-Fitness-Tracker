@@ -356,30 +356,26 @@ router.post('/add-users-workout', async (req, res) => {
     }
 });
 
-// Add User
+// User Signup
 router.post('/signup', async (req, res) => {
-    const { username, password, email } = req.body;
+    const { fullname, email, username, password } = req.body;
 
     try {
-        const existingUser = await User.findOne({ username });
-        if (existingUser) {
-            req.flash('error_msg', 'Username already exists');
-            return res.redirect('/signup');
-        }
-
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, password: hashedPassword, email });
+        const newUser = new User({ fullname, email, username, password: hashedPassword });
         await newUser.save();
 
-        req.flash('success_msg', 'User registered successfully');
+        req.flash('success_msg', 'Successfully registered! You can now log in.');
         res.redirect('/login');
     } catch (error) {
         console.error('Error registering user:', error);
+        if (error.code === 11000) return res.status(409).send('User already exists.');
+
         req.flash('error_msg', 'Error registering user: ' + error.message);
         res.redirect('/signup');
     }
 });
-
+  
 // Login User
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
