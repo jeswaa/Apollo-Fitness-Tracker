@@ -320,6 +320,41 @@ router.get('/foods', async (req, res) => {
     }
 });
 
+// Add New User Workout
+router.post('/add-users-workout', async (req, res) => {
+    const { workoutId } = req.body; // Assuming the workout ID is sent in the request body
+    const usernameOrEmail = req.session.user.username || req.session.user.email; // Get user's username or email from session
+
+    try {
+        // Fetch the user using the username or email stored in the session
+        const user = await User.findOne({
+            $or: [
+                { username: usernameOrEmail }, // Check by username
+                { email: usernameOrEmail }      // Check by email
+            ]
+        });
+
+        if (!user) {
+            req.flash('error_msg', 'User not found');
+            return res.redirect('/user-workout'); // Redirect or handle the error appropriately
+        }
+
+        // Create a new UserWorkout entry
+        const newUserWorkout = new UserWorkout({
+            userId: user._id, // Use the user's ID
+            workoutId,        // The workout ID passed in the request
+            createdAt: new Date() // Optionally add a timestamp
+        });
+
+        await newUserWorkout.save();
+        req.flash('success_msg', 'Workout added successfully to your log!');
+        res.redirect('/user-workout'); // Redirect after successful addition
+    } catch (error) {
+        console.error('Error adding user workout:', error);
+        req.flash('error_msg', 'Error adding workout: ' + error.message);
+        res.redirect('/user-workout'); // Redirect or handle the error appropriately
+    }
+});
 
 // Add User
 router.post('/signup', async (req, res) => {
