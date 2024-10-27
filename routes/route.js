@@ -447,7 +447,6 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-<<<<<<< HEAD
         const user = await User.findOne({ email });
 
         // Check if user exists and validate password
@@ -461,23 +460,6 @@ router.post('/login', async (req, res) => {
 
         // Send a success response or redirect
         res.json({ message: 'Login successful', username: user.fullname });
-=======
-        if (username === 'admin' && password === 'admin12345') {
-            req.session.user = { username: 'Admin', fullname: 'Admin Name', email: 'admin@example.com' }; // Store admin info
-            req.flash('success_msg', 'Welcome, Admin!');
-            return res.redirect('/admin-dashboard');
-        }
-
-        const user = await User.findOne({ username });
-        if (user && await bcrypt.compare(password, user.password)) {
-            req.session.user = { username: user.username, fullname: user.fullname, email: user.email }; // Store user info
-            req.flash('success_msg', 'Successfully logged in.');
-            res.redirect('/user-dashboard');
-        } else {
-            req.flash('error_msg', 'Invalid username or password.');
-            res.redirect('/login');
-        }
->>>>>>> 1d1ce081bea10a35f9c8534ab28ff5ed53f391eb
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Failed to log in' });
