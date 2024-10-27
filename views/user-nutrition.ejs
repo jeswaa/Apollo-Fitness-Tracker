@@ -9,6 +9,7 @@
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Chart.js CDN -->
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .modal {
@@ -71,7 +72,7 @@
             <img src="/images/logo.png" alt="Logo">
         </div>
         <div class="welcome-text">
-            <h1>Welcome Back, User!</h1> <!-- Display user name -->
+            <h1>Welcome Back, <%= user.username %>!</h1> 
         </div>
         <div class="profile-icon">
             <i class="fa-solid fa-circle-user"></i>

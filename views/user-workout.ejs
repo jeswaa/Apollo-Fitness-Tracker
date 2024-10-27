@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/user-workout.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +18,7 @@
             <img src="/images/logo.png" alt="Logo">
         </div>
         <div class="welcome-text">
-            <h1>Welcome Back, User!</h1>
+            <h1>Welcome Back, <%= user.username %>!</h1> 
         </div>
         <div class="profile-icon">
             <i class="fa-solid fa-circle-user"></i>

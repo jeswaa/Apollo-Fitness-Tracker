@@ -1,153 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/dashboard.css">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/dashboard.css" />
+  </head>
+  <body>
     <div class="header">
-        <div class="logo">
-            <img src="./images/logo.png" alt="">
-            <h1>Admin Name</h1>
-        </div>
+      <div class="logo">
+        <img src="./images/logo.png" alt="" />
+        <h1>Admin Name</h1>
+      </div>
     </div>
     <div class="content">
-        <div class="side-panel">
-            <a href="/admin-dashboard">Dashboard</a>
-    
-            <div class="dropdown">
-                <p class="dropdown-toggle">Workout</p>
-                <div class="dropdown-content">
-                    <a href="/user-workout">User Workout</a>
-                    <a href="/add-workout">Workouts</a>
-                </div>
-            </div>
-    
-            <a href="/add-food">Food</a>
-            <a href="/admin-usertbl">Users</a>
-            <a href="/admin-review">Reviews</a>
-    
-            <div class="logoutbtn">
-                <a href="/"><i class="fas fa-sign-out-alt"></i></a>
-            </div>
+      <div class="side-panel">
+        <a href="/admin-dashboard">Dashboard</a>
+
+        <div class="dropdown">
+          <p class="dropdown-toggle">Workout</p>
+          <div class="dropdown-content">
+            <a href="/user-workout">User Workout</a>
+            <a href="/add-workout">Workouts</a>
+          </div>
         </div>
 
-        <div class="main-col">
-            <h1>Welcome, Admin</h1>
-            <div class="first-col">
-                <div class="summary">
-                    <div class="card">
-                        <h1>Total Users</h1>
-                        <p><%= userCount %></p> <!-- Dynamic User Count -->
-                    </div>
-                    <div class="card">
-                        <h1>Total Workouts</h1>
-                        <p><%= workoutCount %></p> <!-- Dynamic Workout Count -->
-                    </div>
-                    <div class="card">
-                        <h1>Total Food</h1>
-                        <p><%= FoodCount %></p>
-                    </div>
-                    <div class="card">
-                        <h1>Total Active Users</h1>
-                        <p><%= userCount %></p>
-                    </div>
-                </div>
-            </div>
-            <div class="second-col">
-                <div class="recentAct">
-                    <h1>Recent Activities</h1>
-                    <ul id="activity-list"></ul>
-                </div>
-            </div>
-            <div class="review-sec">
-                <h1>Reviews</h1>
-                <div class="review-sec-col">
-                    <p>No reviews...</p>
-                </div>
-            </div>
+        <a href="/add-food">Food</a>
+        <a href="/admin-usertbl">Users</a>
+        <a href="/admin-review">Reviews</a>
+
+        <div class="logoutbtn">
+          <a href="/"><i class="fas fa-sign-out-alt"></i></a>
         </div>
+      </div>
+
+      <div class="main-col">
+        <h1>Welcome, Admin</h1>
+        <div class="first-col">
+          <div class="summary">
+            <div class="card">
+              <h1>Total Users</h1>
+              <p><%= userCount %></p>
+              <!-- Dynamic User Count -->
+            </div>
+            <div class="card">
+              <h1>Total Workouts</h1>
+              <p><%= workoutCount %></p>
+              <!-- Dynamic Workout Count -->
+            </div>
+            <div class="card">
+              <h1>Total Food</h1>
+              <p><%= FoodCount %></p>
+            </div>
+            <div class="card">
+              <h1>Total Active Users</h1>
+              <p><%= userCount %></p>
+            </div>
+          </div>
+        </div>
+        <div class="second-col">
+          <div class="recentAct">
+            <h1>Recent Activities</h1>
+            <ul id="activity-list"></ul>
+          </div>
+        </div>
+        <div class="review-sec">
+          <h1>Reviews</h1>
+          <div class="review-sec-col">
+            <p>No reviews...</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Function to fetch and display activities
-        async function fetchActivities() {
-            try {
-                const response = await fetch('/activities');
-                const activities = await response.json();
-    
-                const activityList = document.getElementById('activity-list');
-                activityList.innerHTML = ''; 
-    
-                const now = new Date(); // Current time
-    
-                // Split activities into recent (≤ 30 mins) and older (> 30 mins)
-                const recentActivities = activities.filter(activity => {
-                    const activityTime = new Date(activity.createdAt);
-                    const diffInMinutes = (now - activityTime) / (1000 * 60); // Convert ms to minutes
-                    return diffInMinutes <= 30;
-                });
-    
-                const olderActivities = activities.filter(activity => {
-                    const activityTime = new Date(activity.createdAt);
-                    const diffInMinutes = (now - activityTime) / (1000 * 60); // Convert ms to minutes
-                    return diffInMinutes > 30;
-                });
-    
-                // Render recent activities
-                if (recentActivities.length > 0) {
-                    const recentHeader = document.createElement('h3');
-                    recentHeader.textContent = 'Recent Activities';
-                    activityList.appendChild(recentHeader);
-    
-                    recentActivities.forEach(activity => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `${activity.activity}`;
-                        activityList.appendChild(listItem);
-                    });
-                }
-    
-                // Add a horizontal line if there are both recent and older activities
-                if (recentActivities.length > 0 && olderActivities.length > 0) {
-                    const line = document.createElement('hr');
-                    activityList.appendChild(line);
-                }
-    
-                // Render older activities
-                if (olderActivities.length > 0) {
-                    const olderHeader = document.createElement('h3');
-                    olderHeader.textContent = 'Activities';
-                    activityList.appendChild(olderHeader);
-    
-                    olderActivities.forEach(activity => {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = `${activity.activity}`;
-                        activityList.appendChild(listItem);
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching activities:', error);
-            }
+      // Function to fetch and display activities
+      async function fetchActivities() {
+        try {
+          const response = await fetch("/activities");
+          const activities = await response.json();
+
+          const activityList = document.getElementById("activity-list");
+          activityList.innerHTML = "";
+
+          const now = new Date(); // Current time
+
+          // Split activities into recent (≤ 30 mins) and older (> 30 mins)
+          const recentActivities = activities.filter((activity) => {
+            const activityTime = new Date(activity.createdAt);
+            const diffInMinutes = (now - activityTime) / (1000 * 60); // Convert ms to minutes
+            return diffInMinutes <= 30;
+          });
+
+          const olderActivities = activities.filter((activity) => {
+            const activityTime = new Date(activity.createdAt);
+            const diffInMinutes = (now - activityTime) / (1000 * 60); // Convert ms to minutes
+            return diffInMinutes > 30;
+          });
+
+          // Render recent activities
+          if (recentActivities.length > 0) {
+            const recentHeader = document.createElement("h3");
+            recentHeader.textContent = "Recent Activities";
+            activityList.appendChild(recentHeader);
+
+            recentActivities.forEach((activity) => {
+              const listItem = document.createElement("li");
+              listItem.textContent = `${activity.activity}`;
+              activityList.appendChild(listItem);
+            });
+          }
+
+          // Add a horizontal line if there are both recent and older activities
+          if (recentActivities.length > 0 && olderActivities.length > 0) {
+            const line = document.createElement("hr");
+            activityList.appendChild(line);
+          }
+
+          // Render older activities
+          if (olderActivities.length > 0) {
+            const olderHeader = document.createElement("h3");
+            olderHeader.textContent = "Activities";
+            activityList.appendChild(olderHeader);
+
+            olderActivities.forEach((activity) => {
+              const listItem = document.createElement("li");
+              listItem.textContent = `${activity.activity}`;
+              activityList.appendChild(listItem);
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching activities:", error);
         }
-    
-        // Function to refresh activities every 30 seconds
-        function startFetchingActivities() {
-            fetchActivities(); // Initial fetch
-            setInterval(fetchActivities, 30000); // Refresh every 30 seconds
-        }
-    
-        // Start fetching activities when the page loads
-        window.onload = startFetchingActivities;
+      }
+
+      // Function to refresh activities every 30 seconds
+      function startFetchingActivities() {
+        fetchActivities(); // Initial fetch
+        setInterval(fetchActivities, 30000); // Refresh every 30 seconds
+      }
+
+      // Start fetching activities when the page loads
+      window.onload = startFetchingActivities;
     </script>
-    
-    
-    
-</body>
+  </body>
 </html>

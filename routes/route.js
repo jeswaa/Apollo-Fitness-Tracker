@@ -52,10 +52,53 @@ router.get('/add-food', (req, res) => res.render('adminNutrition'));
 router.get('/admin-usertbl', (req, res) => res.render('adminUser'));
 router.get('/admin-review', (req, res) => res.render('adminReview'));
 router.get('/', (req, res) => res.render('index'));
-router.get('/user-dashboard', (req, res) => res.render('user-dashboard'));
-router.get('/user-workout', (req, res) => res.render('user-workout'));
-router.get('/user-nutrition', (req, res) => res.render('user-nutrition'));
-router.get('/user-profile', (req, res) => res.render('user-profile'));
+//binura yung sa user-dashboard pinalitan basta yung may mga user
+
+
+// Dashboard route
+router.get('/user-dashboard', (req, res) => {
+    // Check if user is authenticated
+    if (req.session.user) {
+        // User is authenticated
+        res.render('user-dashboard', { user: req.session.user }); // Pass user data to the view
+    } else {
+        // User is not authenticated
+        res.redirect('/login'); // Redirect to login page
+    }
+});
+//user nnutrition route
+router.get('/user-nutrition', (req, res) => {
+    // Check if user is authenticated
+    if (req.session.user) {
+        // User is authenticated
+        res.render('user-nutrition', { user: req.session.user }); // Pass user data to the view
+    } else {
+        // User is not authenticated
+        res.redirect('/login'); // Redirect to login page
+    }
+});
+//user workout route
+router.get('/user-workout', (req, res) => {
+    // Check if user is authenticated
+    if (req.session.user) {
+        // User is authenticated
+        res.render('user-workout', { user: req.session.user }); // Pass user data to the view
+    } else {
+        // User is not authenticated
+        res.redirect('/login'); // Redirect to login page
+    }
+});
+//user profile route
+router.get('/user-profile', (req, res) => {
+    // Check if user is authenticated
+    if (req.session.user) {
+        // User is authenticated
+        res.render('user-profile', { user: req.session.user }); // Pass user data to the view
+    } else {
+        // User is not authenticated
+        res.redirect('/login'); // Redirect to login page
+    }
+});
 
 router.get('/logout', (req, res) => {
     req.session.destroy((err) => {
@@ -332,12 +375,14 @@ router.post('/login', async (req, res) => {
 
     try {
         if (username === 'admin' && password === 'admin12345') {
+            req.session.user = { username: 'Admin', fullname: 'Admin Name', email: 'admin@example.com' }; // Store admin info
             req.flash('success_msg', 'Welcome, Admin!');
             return res.redirect('/admin-dashboard');
         }
 
         const user = await User.findOne({ username });
         if (user && await bcrypt.compare(password, user.password)) {
+            req.session.user = { username: user.username, fullname: user.fullname, email: user.email }; // Store user info
             req.flash('success_msg', 'Successfully logged in.');
             res.redirect('/user-dashboard');
         } else {
@@ -350,5 +395,7 @@ router.post('/login', async (req, res) => {
         res.redirect('/login');
     }
 });
+
+
 
 export default router;
