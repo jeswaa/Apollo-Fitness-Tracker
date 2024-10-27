@@ -10,6 +10,7 @@ import bcrypt from 'bcrypt';
 import flash from 'connect-flash'; 
 import session from 'express-session'; 
 
+
 const router = express.Router();
 
 // Multer Storage Setup
@@ -511,5 +512,59 @@ router.get('/api/meal-tracker', async (req, res) => {
         res.status(500).json({ message: 'Error fetching meals' });
     }
 });
+// In your router file
+
+import Review from '../models/Reviews.js'; // Import the Review model
+
+// Add a new review
+router.post('/reviews', async (req, res) => {
+    const { rating, comment } = req.body;
+
+    // Check for missing fields
+    if (!rating || !comment) {
+        console.error('Validation Error: Missing fields', req.body);
+        return res.status(400).json({ message: 'Rating and comment are required' });
+    }
+
+    try {
+        const newReview = new Review({
+            rating,
+            comment,
+        });
+
+        await newReview.save();
+        req.flash('success_msg', 'Review added successfully!');
+        res.status(201).json(newReview);
+    } catch (error) {
+        console.error('Error adding review:', error);
+        req.flash('error_msg', 'Error adding review: ' + error.message);
+        res.status(500).json({ message: 'Failed to add review', error: error.message });
+    }
+});
+
+// Get all reviews
+router.get('/reviews', async (req, res) => {
+    try {
+        const reviews = await Review.find(); // Fetch all reviews
+        res.json(reviews);
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+        res.status(500).json({ message: 'Failed to fetch reviews' });
+    }
+});
+
+// Delete a review
+router.delete('/reviews/:id', async (req, res) => {
+    try {
+        const deletedReview = await Review.findByIdAndDelete(req.params.id);
+        if (!deletedReview) return res.status(404).json({ message: 'Review not found' });
+
+        res.sendStatus(204); // No content
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        res.status(500).json({ message: 'Failed to delete review' });
+    }
+});
+
 
 export default router;

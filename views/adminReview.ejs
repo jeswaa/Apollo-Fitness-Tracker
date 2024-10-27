@@ -1,45 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/dashboard-reviews.css">
-</head>
-<body>
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/dashboard-reviews.css" />
+  </head>
+  <body>
     <div class="header">
-        <div class="logo">
-            <img src="./images/logo.png" alt="">
-            <h1>Admin Name</h1>
-        </div>
+      <div class="logo">
+        <img src="./images/logo.png" alt="" />
+        <h1>Admin Name</h1>
+      </div>
     </div>
     <div class="wrapper">
-        <div class="side-panel">
-            <a href="/admin-dashboard">Dashboard</a>
-            <div class="dropdown">
-                <p class="dropdown-toggle">Workout</p>
-                <div class="dropdown-content">
-                    <a href="/workout-user">User Workout</a>
-                    <a href="/add-workout">Workouts</a>
-                </div>
-            </div>
-            <a href="/add-food">Food</a>
-            <a href="/admin-usertbl">Users</a>
-            <a href="/admin-review">Reviews</a>
-            <div class="logoutbtn">
-                <a href="/"><i class="fas fa-sign-out-alt"></i></a>
-            </div>
+      <div class="side-panel">
+        <a href="/admin-dashboard">Dashboard</a>
+        <div class="dropdown">
+          <p class="dropdown-toggle">Workout</p>
+          <div class="dropdown-content">
+            <a href="/workout-user">User Workout</a>
+            <a href="/add-workout">Workouts</a>
+          </div>
         </div>
+        <a href="/add-food">Food</a>
+        <a href="/admin-usertbl">Users</a>
+        <a href="/admin-review">Reviews</a>
+        <div class="logoutbtn">
+          <a href="/"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
+      </div>
 
-        <div class="main-col">
-            <div class="review-section">
-
-            </div>
+      <div class="main-col">
+        <div class="review-section">
+          <h2>User Reviews</h2>
+          <div id="reviewsContainer"></div>
+          <!-- Container to hold the reviews -->
+        </div>
+      </div>
     </div>
-</body>
+
+    <script>
+      // Function to fetch and display reviews
+      function fetchReviews() {
+        fetch("/reviews") // Adjust the URL as necessary
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((reviews) => {
+            const reviewsContainer =
+              document.getElementById("reviewsContainer");
+            reviewsContainer.innerHTML = ""; // Clear existing content
+
+            // Check if there are any reviews
+            if (reviews.length === 0) {
+              reviewsContainer.innerHTML = "<p>No reviews yet.</p>";
+              return;
+            }
+
+            // Loop through the reviews and create HTML elements to display them
+            reviews.forEach((review) => {
+              const reviewDiv = document.createElement("div");
+              reviewDiv.className = "review"; // Add a class for styling
+              reviewDiv.innerHTML = `
+                            <p><strong>Rating:</strong> ${review.rating}</p>
+                            <p><strong>Comment:</strong> ${review.comment}</p>
+                            <hr />
+                        `;
+              reviewsContainer.appendChild(reviewDiv);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching reviews:", error);
+            alert("Could not load reviews. Please try again later.");
+          });
+      }
+
+      // Call the function to fetch reviews when the page loads
+      document.addEventListener("DOMContentLoaded", fetchReviews);
+    </script>
+  </body>
 </html>
