@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="css/user-dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -43,6 +46,7 @@
             <div class="inner-container-wrapper">
                 <div class="inner-container">
                     <h3>Workout Summary</h3>
+                    <div id="workoutSummaryContainer"></div> <!-- Placeholder for workouts -->
                 </div>
                 <div class="inner-container">
                     <h3>Nutrition Summary</h3>
@@ -139,40 +143,50 @@
 
         // Fetch all workouts for the current user
         async function fetchWorkouts() {
-            try {
-                const response = await fetch('/workouts-user');
-                if (!response.ok) {
-                    console.error('Error fetching workouts:', response.status);
-                    return;
-                }
-
-                const workouts = await response.json();
-                const upcomingWorkoutContainer = document.getElementById('upcomingWorkoutContainer');
-                
-                // Clear previous workouts
-                upcomingWorkoutContainer.innerHTML = '';
-
-                // Filter workouts for the current user only
-                const userWorkouts = workouts.filter(workout => workout.userId?.username === currentUser);
-
-                // Append each workout to upcomingWorkoutContainer
-                if (userWorkouts.length > 0) {
-                    userWorkouts.forEach(workout => {
-                        const workoutElement = document.createElement('div');
-                        workoutElement.classList.add('upcoming-workout');
-                        workoutElement.innerHTML = `
-                            <h4>${workout.name}</h4>
-                            <img src="${workout.image}" alt="${workout.name}" class="workout-image" style="width: 100px; height: auto;">
-                        `;
-                        upcomingWorkoutContainer.appendChild(workoutElement);
-                    });
-                } else {
-                    upcomingWorkoutContainer.innerHTML = `<p>No upcoming workouts</p>`;
-                }
-            } catch (error) {
-                console.error('Error fetching workouts:', error);
-            }
+    try {
+        const response = await fetch('/workouts-user');
+        if (!response.ok) {
+            console.error('Error fetching workouts:', response.status);
+            return;
         }
+
+        const workouts = await response.json();
+        const upcomingWorkoutContainer = document.getElementById('upcomingWorkoutContainer');
+        const workoutSummaryContainer = document.getElementById('workoutSummaryContainer');
+
+        // Clear previous workouts
+        upcomingWorkoutContainer.innerHTML = '';
+        workoutSummaryContainer.innerHTML = '';
+
+        // Filter workouts for the current user only
+        const userWorkouts = workouts.filter(workout => workout.userId?.username === currentUser);
+
+        // Append each workout to upcomingWorkoutContainer
+        if (userWorkouts.length > 0) {
+            userWorkouts.forEach(workout => {
+                // Upcoming Workouts
+                const workoutElement = document.createElement('div');
+                workoutElement.classList.add('upcoming-workout');
+                workoutElement.innerHTML = `
+                    <img src="${workout.image}" alt="${workout.name}" class="workout-image" style="width: 100px; height: 100px;">
+                    <div class="workout-col">
+                        <p>${workout.name}</p>
+                        <p>${workout.description}</p>
+                    </div>
+                `;
+                upcomingWorkoutContainer.appendChild(workoutElement);
+            });
+
+            // Display the count of user workouts
+            workoutSummaryContainer.innerHTML = `<strong>${userWorkouts.length}</strong>`;
+        } else {
+            upcomingWorkoutContainer.innerHTML = `<p>No upcoming workouts</p>`;
+            workoutSummaryContainer.innerHTML = `<p>No workouts recorded</p>`;
+        }
+    } catch (error) {
+        console.error('Error fetching workouts:', error);
+    }
+}
 
         // Call fetchWorkouts on page load
         document.addEventListener("DOMContentLoaded", fetchWorkouts);

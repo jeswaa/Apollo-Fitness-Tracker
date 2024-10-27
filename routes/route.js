@@ -466,6 +466,18 @@ router.get('/workouts-user', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch workouts', details: error.message });
     }
 });
+router.get('/workouts-user/:userId', async (req, res) => {
+    const userId = req.params.userId;
+
+    try {
+        const workouts = await UserWorkout.find({ userId }); // Assuming you have a Workout model
+        res.json(workouts);
+    } catch (error) {
+        console.error('Error fetching user workouts:', error);
+        res.status(500).json({ error: 'Failed to fetch workouts.' });
+    }
+});
+
 
 // Delete User Workout
 router.delete('/workouts-user/:id', async (req, res) => {
@@ -479,45 +491,44 @@ router.delete('/workouts-user/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to delete user workout' });
     }
 });
-// POST endpoint to add meal to the tracker basta sa save db in meal to
-router.post('/meal-tracker', async (req, res) => {
-    const { userId, food } = req.body;
 
-    // Validate input
-    if (!userId || !food) {
-        return res.status(400).json({ message: 'User ID and food information are required' });
+// Add New Meal
+router.post('/add-meal', async (req, res) => {
+    const userId = req.session.userId;
+
+    const { name, description, calories, carbs, protein, fats, image } = req.body;
+
+    if (!userId) {
+        return res.status(401).json({ error: 'User is not authenticated' });
+    }
+
+    if (!name || !description || !calories || !carbs || !protein || !fats) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
 
     try {
-        const newMeal = new Meal({
-            userId: userId,
-            name: food.name,
-            description: food.description,
-            calories: food.calories,
-            carbs: food.carbs,
-            protein: food.protein,
-            fats: food.fats,
-            date: new Date() // Store the current date
+        const newMeal = { userId, name, description, calories, carbs, protein, fats, image };
+
+        // Save the meal data to the database
+        // Example: await Meals.create(newMeal);
+        
+        res.status(201).json({ message: 'Meal added successfully' });
+    } catch (error) {
+        console.error('Error saving meal:', {
+            message: error.message,
+            stack: error.stack, // Include stack trace for more context
+            data: {
+                userId,
+                name,
+                description,
+                calories,
+                carbs,
+                protein,
+                fats,
+                image
+            } // Include the input data for better debugging
         });
-
-        await newMeal.save();
-        res.status(201).json(newMeal); // Respond with the created meal
-    } catch (error) {
-        console.error('Error saving meal:', error.message); // Log error message
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
-
-// Route to get meals for a specific user
-router.get('/api/meal-tracker', async (req, res) => {
-    const { userId } = req.query; // Get user ID from query parameters
-
-    try {
-        const meals = await Meal.find({ userId }); // Find meals for the user
-        res.json(meals);
-    } catch (error) {
-        console.error('Error fetching meals:', error);
-        res.status(500).json({ message: 'Error fetching meals' });
+        res.status(500).json({ error: 'Failed to save meal. Please try again later.' });
     }
 });
 

@@ -56,6 +56,7 @@
                 <div class="modal-body">
                     <img id="foodImage" src="" alt="" width="200" class="modal-image">
                     <div class="modal-details">
+                        <input type="hidden" name="userId" value="<%= user._id %>">
                         <h2 id="foodName"></h2>
                         <p id="foodDescription"></p>
                         <p>Calories: <span id="foodCalories"></span></p>
@@ -176,7 +177,7 @@
         }
     
         // Function to add food to meal tracker
-        function addToMealTracker(food) {
+        function addToMeal(food) {
             addedFoods.push(food); // Add food to the list
             totalCalories += food.calories;
             totalCarbs += food.carbs;
@@ -266,41 +267,61 @@
 
         // Function to add food to meal tracker
         async function addToMealTracker(food) {
-            addedFoods.push(food); // Add food to the list
-            totalCalories += food.calories;
-            totalCarbs += food.carbs;
-            totalProtein += food.protein;
-            totalFats += food.fats;
+    try {  
+        const userId = '<%= user ? user._id : "" %>';  
+        console.log('User ID:', userId);  // Log the User ID to check its value
 
-            // Save to the database
-            try {
-                const response = await fetch('/meal-tracker', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userId: '<%= user._id %>', // Assuming you have the user ID available
-                        food: food
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to save food to meal tracker');
-                }
-
-                // Optionally, handle success (e.g., show a message)
-            } catch (error) {
-                console.error('Error saving food:', error);
-            }
-
-            updateAddedFoodsList();
-            updateTotals();
-            updateChart();
-            closeModal();
+        // Validate User ID
+        if (!userId || typeof userId !== 'string') {
+            throw new Error('User ID is missing or invalid');
         }
-        
-        
+
+        // Prepare the request body
+        const mealData = {
+            userId: userId,  // Pass the user ID correctly
+            name: food.name,
+            description: food.description,
+            calories: food.calories,
+            carbs: food.carbs,
+            protein: food.protein,
+            fats: food.fats,
+        };
+
+        // Send the request to add a meal
+        const response = await fetch('/add-meal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(mealData),
+        });
+
+        // Check if the response is ok
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error response data:', errorData); // Log error details
+            throw new Error(errorData.error || 'Failed to save food to meal tracker');
+        }
+
+        console.log('Meal added successfully');
+    } catch (error) {
+        console.error('Error saving food:', error.message); // Log the error message
+    }
+
+    // Update the local state for added foods
+    addedFoods.push(food); // Add food to the list
+    totalCalories += food.calories;
+    totalCarbs += food.carbs;
+    totalProtein += food.protein;
+    totalFats += food.fats;
+
+    updateAddedFoodsList();
+    updateTotals();
+    updateChart();
+    closeModal();
+}
+
+                
     </script>
 </body>
 </html>

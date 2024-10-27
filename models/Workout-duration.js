@@ -8,7 +8,7 @@ const WorkoutUser_Duration = new mongoose.Schema({
     name: { type: String, required: true }, // Workout name
     description: { type: String, required: true }, // Workout description
     image: { type: String }, // Store image URL or path
-    intensity: { type: String, required: true }, // Intensity level
+    intensity: { type: String, required: true }, // Intensity leveluser
     duration: { type: Number, required: true }, // Duration in minutes
     date: { type: Date, default: Date.now } // Date of the workout
 });

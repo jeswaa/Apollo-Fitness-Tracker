@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
 }
 
 body {
@@ -62,21 +63,26 @@ body {
     font-size: larger;
     font-weight: bold;
     display: block;
-    padding: 10px 20px;
+    padding: 20px;
     color: #ffffff;
     text-decoration: none;
+    width: 210px;
+    border-top-left-radius: 50rem;
+    border-bottom-left-radius: 50rem;
     transition: background-color 0.3s ease;
 }
 
 /* Hover effect */
 .navbar nav ul li a:hover {
-    background-color: #333a46;
+    background-color: #111827;
+    width: 210px;
     color: #ffffff;
 }
 
 /* Active page link */
 .navbar nav ul li a.active {
-    background-color: #333a46;
+    background-color: #111827;
+    width: 210px;
     color: #ffffff;
 }
 
@@ -224,7 +230,6 @@ h2 {
 }
 
 /* Modal styles */
-/* Modal styles */
 .modal {
     display: none; /* Hidden by default */
     position: fixed;
@@ -324,3 +329,22 @@ font-weight: bold;
 .bmi-category {
 color: white; /* Adjust color to match your theme */
  }
+.upcoming-workout{
+    display: flex;
+    margin-top: 20px;
+    padding: 10px;
+}
+.workout-col {
+    margin-top: 30px;
+    margin-left: 20px;
+    color: white;
+}
+.workout-col p{
+    color: rgb(179, 179, 179);
+    font-size: 10px;
+}
+strong{
+    text-align: center ;
+    padding-top: 50%;
+    font-size: 190px;
+}
