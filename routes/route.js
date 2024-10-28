@@ -6,7 +6,7 @@ import Workout from '../models/Workout.js';
 import UserWorkout from '../models/Workout-duration.js';
 import Food from '../models/Food.js';
 import Meal from '../models/Meal.js';
-import bcrypt from 'bcrypt'; 
+import bcrypt from 'bcryptjs';
 import flash from 'connect-flash'; 
 import session from 'express-session'; 
 
