@@ -61,6 +61,10 @@ app.use((req, res, next) => {
     res.status(404).send('404 FILE NOT FOUND');
 });
 
+app.get('/', (req, res) => {
+  res.send('Hello from Vercel!');
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);

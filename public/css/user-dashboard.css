@@ -42,7 +42,7 @@ body {
 .navbar {
     background-color: #1f2937;
     width: 210px;
-    height:100vh;
+    height: 100vh;
     position: fixed;
     top: 80px; /* Starts right below the header */
     left: 0;
@@ -74,8 +74,7 @@ body {
 
 /* Hover effect */
 .navbar nav ul li a:hover {
-    background-color: #111827;
-    width: 210px;
+    background-color: #333a46;
     color: #ffffff;
 }
 
@@ -89,8 +88,9 @@ body {
 /* Main Content Container (Beside Navbar) */
 .content-container {
     margin-left: 210px; /* Adjusted to align with the navbar */
+    margin-right: 180px; /* Adjust to make space for the right-side container */
     padding: 20px;
-    height: 200;
+    height: 100vh;
 }
 
 /* Overview Card Styles */
@@ -105,6 +105,7 @@ body {
     position: fixed;
     overflow-y: scroll;
 }
+
 h2 {
     text-align: left;
     font-size: 50px;
@@ -113,9 +114,7 @@ h2 {
     font-weight: bold;
 }
 
-/* Existing CSS */
-
-/* Styles for the overview header */
+/* Overview header styles */
 .overview-header {
     display: flex;
     justify-content: space-between;
@@ -135,7 +134,6 @@ h2 {
     background-color: #45a049;
 }
 
-
 /* Flex container for inner cards */
 .overview-card .inner-container-wrapper {
     display: flex;
@@ -144,29 +142,26 @@ h2 {
 }
 
 /* Inner container styles */
-.inner-container {
+.inner-container, .inner-container-below {
     background-color: #1f2937;
-    color:white;
+    color: white;
     padding: 20px;
     border-radius: 10px;
-    flex: 1; /* Make both containers take equal space */
-    height: 300px; /* Fixed height to keep them aligned */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto; /* Enable scrolling inside the container if needed */
 }
 
-/* Styles for the additional container below */
-.inner-container-below {
-    background-color: #1f2937;
-    color:white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 20px; /* Space from the two top containers */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-    height: 300px; /* Fixed height for consistency */
-    overflow-y: auto; /* Enable scrolling if needed */
+.inner-container {
+    flex: 1; /* Make both containers take equal space */
+    height: 300px; /* Fixed height to keep them aligned */
 }
 
+.inner-container-below {
+    margin-top: 20px; /* Space from the two top containers */
+    height: 300px; /* Fixed height for consistency */
+}
+
+/* Inner container heading styles */
 .inner-container-below h3 {
     font-weight: bolder;
     font-size: 30px;
@@ -187,25 +182,20 @@ h2 {
     height: 600px;
 }
 
-.right-side-container h3 {
+.right-side-container h3,
+.lower-right-container h3 {
     font-size: 20px;
-    color:white;
+    color: white;
     text-align: center;
 }
 
-.right-side-container p {
+.right-side-container p,
+.lower-right-container p {
     font-size: 14px;
     color: white;
 }
 
-/* Adjust content container to make room for the right container */
-.content-container {
-    margin-right: 180px; /* Adjust to make space for the right-side container */
-    margin-left: 210px; /* Still keep space for the navbar */
-    padding: 20px;
-    height: 100vh;
-}
-
+/* Lower Right Container */
 .lower-right-container {
     background-color: #1f2937;
     padding: 15px;
@@ -215,7 +205,7 @@ h2 {
     bottom: 50px; /* Distance from the bottom of its parent container */
     left: 50%; /* Center it horizontally */
     transform: translateX(-50%); /* Adjust for centering */
-    width:300px; /* Full width minus padding */
+    width: 300px; /* Full width minus padding */
     height: 400px;
 }
 
@@ -230,35 +220,36 @@ h2 {
 }
 
 /* Modal styles */
+/* Modal styles */
 .modal {
     display: none; /* Hidden by default */
     position: fixed;
-    z-index: 1;
+    z-index: 1; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
     background-color: rgba(28, 42, 58, 0.9); /* Dark background with slight transparency */
 }
 
 .modal-content {
     background-color: #1f2937; /* Match with the navbar color */
-    margin: 10% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 400px;
+    margin: 10% auto; /* 10% from the top and centered */
+    padding: 20px; /* Some padding */
+    border-radius: 10px; /* Rounded corners */
+    width: 80%; /* Width of the modal */
+    max-width: 400px; /* Maximum width */
     color: white; /* Text color */
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
 }
 
 .close-btn {
-    color: #ffffff;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
+    color: #ffffff; /* Close button color */
+    float: right; /* Float to the right */
+    font-size: 28px; /* Font size */
+    font-weight: bold; /* Bold */
+    cursor: pointer; /* Pointer cursor on hover */
 }
 
 .close-btn:hover {
@@ -266,10 +257,17 @@ h2 {
 }
 
 .modal-content h2 {
-    margin-top: 0;
-    font-size: 24px;
-    color: #ff3333; /* Match heading color in overview card */
-    text-align: center;
+    margin-top: 0; /* Remove margin from the top */
+    font-size: 24px; /* Font size for header */
+    color: #ff3333; /* Header color */
+    text-align: center; /* Center align */
+    margin-top: 50px;
+}
+
+.modal-content p {
+    font-size: 16px; /* Font size for paragraph */
+    text-align: center; /* Center align text */
+    margin: 15px 0; /* Margin for spacing */
 }
 
 .modal-content form {
@@ -296,55 +294,62 @@ h2 {
     outline: 2px solid #4CAF50; /* Green outline on focus */
 }
 
-.modal-content button {
+/* Buttons */
+.modal-content button,
+.button-container button {
     padding: 10px;
+    margin: 5px;
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 15px;
     cursor: pointer;
     font-size: 16px;
+    width: 80%;
+    margin-left: 10%;
 }
 
-.modal-content button:hover {
-    background-color: #45a049;
+.modal-content button:hover,
+.button-container button:hover {
+    background-color: #45a049; /* Darker shade on hover */
+}
+
+/* Textarea styles */
+textarea {
+    width: 100%; /* Full width */
+    height: 100px; /* Set height */
+    margin: 10px 0; /* Some margin for spacing */
+    padding: 10px; /* Padding for text */
+    border: 1px solid #ccc; /* Border style */
+    border-radius: 5px; /* Rounded corners */
+    resize: none; /* Prevent resizing */
+}
+
+/* Button Container for Modal */
+.button-container {
+    display: flex; /* Use flexbox for horizontal alignment */
+    justify-content: space-between; /* Distribute space between buttons */
+    margin-top: 20px; /* Space above the button container */
 }
 
 /* Additional CSS for BMI Result Styling */
 #bmiResultContainer {
-display: flex;
-flex-direction: column;
-align-items: center;
-margin-top: 15px;
-font-size: 1.1em;
-padding: 15px;
-border: 1px solid #ddd;
-border-radius: 8px;
-background-color: #333a46;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 1.1em;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #333a46;
 }
+
 .bmi-value, .bmi-category {
-margin: 5px 0;
-font-weight: bold;
+    margin: 5px 0;
+    font-weight: bold;
 }
+
 .bmi-category {
 color: white; /* Adjust color to match your theme */
  }
-.upcoming-workout{
-    display: flex;
-    margin-top: 20px;
-    padding: 10px;
-}
-.workout-col {
-    margin-top: 30px;
-    margin-left: 20px;
-    color: white;
-}
-.workout-col p{
-    color: rgb(179, 179, 179);
-    font-size: 10px;
-}
-strong{
-    text-align: center ;
-    padding-top: 50%;
-    font-size: 190px;
-}
