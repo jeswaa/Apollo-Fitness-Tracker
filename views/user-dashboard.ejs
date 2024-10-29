@@ -1,287 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/user-dashboard.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
-  <body>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
     <!-- Header -->
     <div class="custom-header">
-      <div class="logo">
-        <img src="/images/logo.png" alt="Logo" />
-      </div>
-      <div class="welcome-text">
-        <h1>Welcome Back, <%= user.username %>!</h1>
-      </div>
-      <div class="profile-icon">
-        <i class="fa-solid fa-circle-user"></i>
-      </div>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo" />
+        </div>
+        <div class="welcome-text">
+            <h1>Welcome Back, <%= user.username %>!</h1>
+        </div>
+        <div class="profile-icon">
+            <i class="fa-solid fa-circle-user"></i>
+        </div>
     </div>
 
     <!-- Side Navbar -->
     <div class="navbar">
-      <nav>
-        <ul>
-          <li><a href="/user-dashboard">DASHBOARD</a></li>
-          <li><a href="/user-workout">WORKOUT</a></li>
-          <li><a href="/user-nutrition">NUTRITION</a></li>
-          <li><a href="/user-profile">PROFILE</a></li>
-        </ul>
-      </nav>
+        <nav>
+            <ul>
+                <li><a href="/user-dashboard" class="active">DASHBOARD</a></li>
+                <li><a href="/user-workout">WORKOUT</a></li>
+                <li><a href="/user-profile">PROFILE</a></li>
+            </ul>
+        </nav>
     </div>
 
     <!-- Main Content: Container beside Navbar -->
     <div class="content-container">
-      <div class="overview-card">
-        <div class="overview-header">
-          <h2>Overview</h2>
-          <button class="overview-button" onclick="openBMIModal()">
-            BMI CALCULATOR
-          </button>
+        <div class="overview-card">
+            <div class="overview-header">
+                <h2>Overview</h2>
+                <button class="overview-button" onclick="openBMIModal()"><i class="fas fa-calculator"></i></button>
+            </div>
+            <div class="inner-container-wrapper">
+                <div class="inner-container">
+                    <h3>Workout</h3>
+                    <p id="workout-total"></p>
+                    <script>
+                        (async () => {
+                            const response = await fetch('/workouts-user');
+                            const userWorkouts = await response.json();
+                            document.getElementById('workout-total').innerText = `${userWorkouts.length} workouts.`;
+                        })();
+                    </script>
+                </div>
+                <div class="inner-container">
+                    <h3>Workouts Completed</h3>
+                    <p id="workout-count"></p>
+                    <script>
+                        (async () => {
+                            const response = await fetch('/completed-workouts');
+                            const completedWorkouts = await response.json();
+                            document.getElementById('workout-count').innerText = `${completedWorkouts.length} completed workouts.`;
+                        })();
+                    </script>
+                </div>
+                <div class="inner-container">
+                    <h3>Workout Hours</h3>
+                    <p id="workout-hours"></p>
+                    <script>
+                        (async () => {
+                            const response = await fetch('/workouts-user-hours');
+                            const userWorkoutHours = await response.json();
+                            document.getElementById('workout-hours').innerText = `Worked out for ${userWorkoutHours} hours.`;
+                        })();
+                    </script>
+                </div>
+                <div class="inner-container">
+                    <h3>Favorite Workout</h3>
+                    <p id="favorite-workout"></p>
+                    <script>
+                        (async () => {
+                            try {
+                                const response = await fetch('/favorite-workout');
+                                if (!response.ok) {
+                                    throw new Error('Failed to fetch favorite workout.');
+                                }
+                                const data = await response.json();
+                                document.getElementById('favorite-workout').innerText = data.favoriteWorkout || 'No favorite workout found';
+                            } catch (error) {
+                                console.error('Error:', error);
+                                document.getElementById('favorite-workout').innerText = 'Error fetching favorite workout';
+                            }
+                        })();
+                    </script>
+                </div>
+            </div>
+            <div class="inner-container-below">
+                <h3>Workout Completed This Week</h3>
+                <canvas id="myChart"></canvas>
+                <script>
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            datasets: [{
+                                label: 'Workouts Completed',
+                                data: [],
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true
+                                },
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                    (async () => {
+                        const response = await fetch('/workouts-user-week');
+                        const userWorkouts = await response.json();
+                        myChart.data.datasets[0].data = userWorkouts.map(workout => workout.workouts);
+                        myChart.update();
+                    })();
+                </script>
+            </div>
         </div>
-        <div class="inner-container-wrapper">
-          <div class="inner-container">
-            <h3>Workout Summary</h3>
-            <div id="workoutSummaryContainer"></div>
-            <!-- Placeholder for workouts -->
-          </div>
-          <div class="inner-container">
-            <h3>Nutrition Summary</h3>
-          </div>
-        </div>
-        <div class="inner-container-below">
-          <h3>Progress Tracker</h3>
-        </div>
-      </div>
     </div>
 
     <!-- Right Side New Container -->
     <div class="right-side-container">
-      <h3>UPCOMING WORKOUT</h3>
-      <div id="upcomingWorkoutContainer"></div>
-      <!-- Container for displaying all workouts -->
+        <h3>UPCOMING WORKOUT</h3>
+        <div id="upcomingWorkoutContainer">
+            <script>
+                (async () => {
+                    const response = await fetch('/workouts-user');
+                    const userWorkouts = await response.json();
+                    const workoutContainer = document.getElementById('upcomingWorkoutContainer');
+
+                    userWorkouts.forEach(workout => {
+                        const workoutDiv = document.createElement('div');
+                        workoutDiv.className = 'workout-item';
+                        workoutDiv.innerHTML = `
+                            <div class="workout-container">
+                              <img src="${workout.image}" alt="${workout.name}" class="workout-image">
+                              <div class="workout-details">
+                                <h1>${workout.name}</h1>
+                                <p>${workout.description}</p>
+                                <p>${workout.intensity}</p>
+                                <p><strong>Duration:</strong> ${workout.duration} minutes</p>
+                              </div>
+                            </div>
+                        `;
+                        workoutContainer.appendChild(workoutDiv);
+                    });
+                })();
+            </script>
+        </div>
     </div>
-
-    <!-- Workout Table -->
-    <table>
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Workout Name</th>
-          <th>Description</th>
-          <th>Image</th>
-          <th>Intensity</th>
-          <th>Duration</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="workoutTableBody"></tbody>
-    </table>
-
     <!-- BMI Calculator Modal -->
     <div id="bmiModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeBMIModal()">&times;</span>
-        <h2>BMI Calculator</h2>
-        <form onsubmit="calculateBMI(event)">
-          <label for="weight">Weight (kg):</label>
-          <input type="number" id="weight" required />
-          <label for="height">Height (cm):</label>
-          <input type="number" id="height" step="0.01" required />
-          <button type="submit">Calculate</button>
-        </form>
-        <div id="bmiResultContainer">
-          <p class="bmi-value" id="bmiValue"></p>
-          <p class="bmi-category" id="bmiCategory"></p>
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeBMIModal()">&times;</span>
+            <h2>BMI Calculator</h2>
+            <form onsubmit="calculateBMI(event)">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" required />
+                <label for="height">Height (cm):</label>
+                <input type="number" id="height" step="0.01" required />
+                <button type="submit">Calculate</button>
+            </form>
+            <div id="bmiResultContainer">
+                <p class="bmi-value" id="bmiValue"></p>
+                <p class="bmi-category" id="bmiCategory"></p>
+            </div>
         </div>
-      </div>
     </div>
 
     <!-- Review Prompt Modal -->
     <div id="reviewModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeReviewModal()">&times;</span>
-        <h2>Would you like to leave a review?</h2>
-        <p>Your feedback helps us improve!</p>
-        <form id="reviewForm" onsubmit="submitReview(event)">
-          <textarea
-            id="reviewText"
-            placeholder="Enter your review here..."
-            required
-          ></textarea>
-          <div class="button-container">
-            <button type="submit">Submit Review</button>
-          </div>
-        </form>
-      </div>
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeReviewModal()">&times;</span>
+            <h2>Would you like to leave a review?</h2>
+            <p>Your feedback helps us improve!</p>
+            <form id="reviewForm" onsubmit="submitReview(event)">
+                <textarea id="reviewText" placeholder="Enter your review here..." required></textarea>
+                <div class="button-container">
+                    <button type="submit">Submit Review</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
-      // BMI Modal Functions
-      function openBMIModal() {
-        document.getElementById("bmiModal").style.display = "block";
-      }
-
-      function closeBMIModal() {
-        document.getElementById("bmiModal").style.display = "none";
-        document.getElementById("bmiValue").innerText = "";
-        document.getElementById("bmiCategory").innerText = "";
-      }
-
-      function calculateBMI(event) {
-        event.preventDefault();
-        const weight = parseFloat(document.getElementById("weight").value);
-        const height =
-          parseFloat(document.getElementById("height").value) / 100;
-
-        if (weight > 0 && height > 0) {
-          const bmi = (weight / (height * height)).toFixed(1);
-          let category = "";
-
-          if (bmi < 18.5) {
-            category = "Underweight";
-          } else if (bmi >= 18.5 && bmi <= 24.9) {
-            category = "Normal weight";
-          } else if (bmi >= 25 && bmi <= 29.9) {
-            category = "Overweight";
-          } else {
-            category = "Obesity";
-          }
-
-          document.getElementById("bmiValue").innerText = `Your BMI is ${bmi}`;
-          document.getElementById(
-            "bmiCategory"
-          ).innerText = `Category: ${category}`;
-        }
-      }
-
-      // Review Modal Functions
-      function openReviewModal() {
-        document.getElementById("reviewModal").style.display = "block";
-      }
-
-      function closeReviewModal() {
-        document.getElementById("reviewModal").style.display = "none";
-      }
-
-      function submitReview(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        const reviewText = document.getElementById("reviewText").value; // Get review text
-        const rating = 5; // Assume a fixed rating, modify as needed
-
-        // Basic validation
-        if (!reviewText.trim()) {
-          alert("Please enter your review.");
-          return; // Prevent submission
+        // BMI Modal Functions
+        function openBMIModal() {
+            document.getElementById("bmiModal").style.display = "block";
         }
 
-        // Prepare the data to send
-        const reviewData = {
-          rating: rating, // Fixed rating for simplicity
-          comment: reviewText, // The review text
+        function closeBMIModal() {
+            document.getElementById("bmiModal").style.display = "none";
+            document.getElementById("bmiValue").innerText = "";
+            document.getElementById("bmiCategory").innerText = "";
+        }
+
+        function calculateBMI(event) {
+            event.preventDefault();
+            const weight = parseFloat(document.getElementById("weight").value);
+            const height = parseFloat(document.getElementById("height").value) / 100;
+
+            if (weight > 0 && height > 0) {
+                const bmi = (weight / (height * height)).toFixed(1);
+                let category = "";
+
+                if (bmi < 18.5) {
+                    category = "Underweight";
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    category = "Normal weight";
+                } else if (bmi >= 25 && bmi <= 29.9) {
+                    category = "Overweight";
+                } else {
+                    category = "Obesity";
+                }
+
+                document.getElementById("bmiValue").innerText = `Your BMI is ${bmi}`;
+                document.getElementById("bmiCategory").innerText = `Category: ${category}`;
+            }
+        }
+
+        // Review Modal Functions
+        function openReviewModal() {
+            document.getElementById("reviewModal").style.display = "block";
+        }
+
+        function closeReviewModal() {
+            document.getElementById("reviewModal").style.display = "none";
+        }
+
+        function submitReview(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const reviewText = document.getElementById("reviewText").value; // Get review text
+            const rating = 5; // Assume a fixed rating, modify as needed
+
+            // Basic validation
+            if (!reviewText.trim()) {
+                alert("Please enter your review.");
+                return; // Prevent submission
+            }
+
+            // Prepare the data to send
+            const reviewData = {
+                rating: rating, // Fixed rating for simplicity
+                comment: reviewText, // The review text
+            };
+
+            // Send the review data to the server
+            fetch("/reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(reviewData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Thank you for your review!");
+                    closeReviewModal();
+                } else {
+                    alert("Error submitting review.");
+                }
+            })
+            .catch(error => {
+                console.error("Error submitting review:", error);
+                alert("An error occurred. Please try again later.");
+            });
+        }
+
+        // Fetch the count of completed workouts on page load
+        async function fetchCompletedWorkoutCount() {
+            try {
+                const response = await fetch('/completed-workouts');
+                const completedWorkouts = await response.json();
+                const workoutCount = completedWorkouts.length;
+                
+                // Update the completed workout count in the dashboard
+                document.getElementById('workout-count').textContent = workoutCount;
+            } catch (error) {
+                console.error('Error fetching completed workout count:', error);
+            }
+        }
+
+        // Call fetchCompletedWorkoutCount on page load
+        window.onload = function() {
+            fetchWorkouts(); // Fetch workouts as before
+            fetchCompletedWorkoutCount(); // Fetch completed workouts count
         };
 
-        // Send the review data to the server
-        fetch("/reviews", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(reviewData),
-        })
-          .then((response) => {
-            console.log("Response received:", response); // Log the response
-            if (!response.ok) {
-              throw new Error(
-                "Network response was not ok: " + response.statusText
-              );
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Review submitted successfully:", data);
-            closeReviewModal(); // Close the modal after submission
-            alert("Thank you for your feedback!"); // Notify user of success
-          })
-          .catch((error) => {
-            console.error("Error submitting review:", error);
-            alert(
-              "There was an error submitting your review. Please try again."
-            ); // Alert user
-          });
-      }
-
-      // Get the current user's username from the server
-      const currentUser = "<%= user.username %>";
-
-      // Fetch all workouts for the current user
-      async function fetchWorkouts() {
-        try {
-          const response = await fetch("/workouts-user");
-          if (!response.ok) {
-            console.error("Error fetching workouts:", response.status);
-            return;
-          }
-
-          const workouts = await response.json();
-          const upcomingWorkoutContainer = document.getElementById(
-            "upcomingWorkoutContainer"
-          );
-          const workoutSummaryContainer = document.getElementById(
-            "workoutSummaryContainer"
-          );
-
-          // Clear previous workouts
-          upcomingWorkoutContainer.innerHTML = "";
-          workoutSummaryContainer.innerHTML = "";
-
-          // Filter workouts for the current user only
-          const userWorkouts = workouts.filter(
-            (workout) => workout.userId?.username === currentUser
-          );
-
-          // Append each workout to upcomingWorkoutContainer
-          if (userWorkouts.length > 0) {
-            userWorkouts.forEach((workout) => {
-              // Upcoming Workouts
-              const workoutElement = document.createElement("div");
-              workoutElement.classList.add("upcoming-workout");
-              workoutElement.innerHTML = `
-                    <img src="${workout.image}" alt="${workout.name}" class="workout-image" style="width: 100px; height: 100px;">
-                    <div class="workout-col">
-                        <p>${workout.name}</p>
-                        <p>${workout.description}</p>
-                    </div>
-                `;
-              upcomingWorkoutContainer.appendChild(workoutElement);
-            });
-
-            // Display the count of user workouts
-            workoutSummaryContainer.innerHTML = `<strong>${userWorkouts.length}</strong>`;
-          } else {
-            upcomingWorkoutContainer.innerHTML = `<p>No upcoming workouts</p>`;
-            workoutSummaryContainer.innerHTML = `<p>No workouts recorded</p>`;
-          }
-        } catch (error) {
-          console.error("Error fetching workouts:", error);
-        }
-      }
-
-      // Call fetchWorkouts on page load
-      document.addEventListener("DOMContentLoaded", fetchWorkouts);
+        // Your existing fetchWorkouts and other functions here
     </script>
-  </body>
+</body>
 </html>

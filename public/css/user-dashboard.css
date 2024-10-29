@@ -74,7 +74,7 @@ body {
 
 /* Hover effect */
 .navbar nav ul li a:hover {
-    background-color: #333a46;
+    background-color: #111827;
     color: #ffffff;
 }
 
@@ -103,7 +103,6 @@ body {
     height: 100vh;
     text-align: center;
     position: fixed;
-    overflow-y: scroll;
 }
 
 h2 {
@@ -137,7 +136,6 @@ h2 {
 /* Flex container for inner cards */
 .overview-card .inner-container-wrapper {
     display: flex;
-    justify-content: space-between; /* Ensure horizontal alignment */
     gap: 20px; /* Add space between the two containers */
 }
 
@@ -150,24 +148,27 @@ h2 {
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
     overflow-y: auto; /* Enable scrolling inside the container if needed */
 }
-
-.inner-container {
-    flex: 1; /* Make both containers take equal space */
-    height: 300px; /* Fixed height to keep them aligned */
-}
-
 .inner-container-below {
     margin-top: 20px; /* Space from the two top containers */
-    height: 300px; /* Fixed height for consistency */
+    height: 340px; /* Fixed height for consistency */
 }
 
 /* Inner container heading styles */
 .inner-container-below h3 {
+    text-align: left;
+    margin-left: 20px;
     font-weight: bolder;
     font-size: 30px;
-    padding-right: 500px;
+    margin-bottom: 20px;
+    text-align: center;
 }
-
+.inner-container-below canvas{
+    width: 120%;
+    border-radius: 10px;
+    border: 1px solid #374151;
+    display: block;
+    margin: auto;
+}
 /* New Right Side Container */
 .right-side-container {
     border-radius: 20px;
@@ -180,6 +181,7 @@ h2 {
     margin-top: 30px;
     width: 360px;
     height: 600px;
+    overflow-y: scroll;
 }
 
 .right-side-container h3,
@@ -353,3 +355,32 @@ textarea {
 .bmi-category {
 color: white; /* Adjust color to match your theme */
  }
+.workout-container {
+    margin-top: 20px;
+    background-color: #1f2937;
+    padding: 10px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center; /* Aligns the content vertically */
+    gap: 15px; /* Adds space between the image and text */
+    margin-bottom: 20px; /* Adds some spacing between items */
+}
+  
+.workout-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover; /* Ensures the image maintains aspect ratio */
+    border-radius: 8px; /* Optional: Rounds the corners of the image */
+}
+  
+.workout-details {
+    flex: 1; /* Allows the text section to take up remaining space */
+}
+.workout-details h1{
+    font-size: 15px;
+    color: #c5c5c5;
+}
+.workout-details p{
+    font-size: 12px;
+}
+  

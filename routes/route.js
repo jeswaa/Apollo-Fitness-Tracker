@@ -5,10 +5,14 @@ import User from '../models/User.js';
 import Workout from '../models/Workout.js';
 import UserWorkout from '../models/Workout-duration.js';
 import Food from '../models/Food.js';
-import Meal from '../models/Meal.js';
+import Review from '../models/Reviews.js'; // Import the Review model
+import CompletedWorkout from '../models/CompletedWorkout.js';
 import bcrypt from 'bcryptjs';
 import flash from 'connect-flash'; 
 import session from 'express-session'; 
+import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
+const { connection } = mongoose;
 
 
 const router = express.Router();
@@ -532,9 +536,6 @@ router.post('/add-meal', async (req, res) => {
         res.status(500).json({ error: 'Failed to save meal. Please try again later.' });
     }
 });
-// In your router file
-
-import Review from '../models/Reviews.js'; // Import the Review model
 
 // Add a new review
 router.post('/reviews', async (req, res) => {
@@ -586,5 +587,206 @@ router.delete('/reviews/:id', async (req, res) => {
     }
 });
 
+// Route to save completed workouts
+router.post('/complete-workout', async (req, res) => {
+    console.log('Request body:', req.body); // Log the incoming request body
+    const { workoutId } = req.body;
 
+    // Validate that workoutId is provided
+    if (!workoutId) {
+        console.error('Error: Workout ID is required but not provided.');
+        return res.status(400).json({ message: 'Workout ID is required.' });
+    }
+
+    // Check if workoutId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(workoutId)) {
+        console.error('Error: Invalid workout ID format.');
+        return res.status(400).json({ message: 'Invalid workout ID format.' });
+    }
+
+    try {
+        // Fetch the workout from the UserWorkout collection
+        const userWorkout = await UserWorkout.findById(workoutId).populate({
+            path: 'workoutId',
+            strictPopulate: false
+        });
+        if (!userWorkout) {
+            console.error(`Error: Workout not found for ID: ${workoutId}`);
+            return res.status(404).json({ message: 'Workout not found.' });
+        }
+
+        // Create a new CompletedWorkout entry
+        const completedWorkout = new CompletedWorkout({
+            workoutId: userWorkout.workoutId?._id,
+            name: userWorkout.name,
+            description: userWorkout.description,
+            intensity: userWorkout.intensity,
+            duration: userWorkout.duration,
+            image: userWorkout.image,
+            userId: req.session.userId // Assuming userId is stored in the session
+        });
+
+        await completedWorkout.save();
+        console.log('Workout marked as completed and saved:', completedWorkout);
+
+        // Delete the workout from the UserWorkout collection
+        await UserWorkout.findByIdAndDelete(workoutId);
+        console.log('Workout deleted from UserWorkout collection.')
+
+        res.status(200).json({ message: 'Workout marked as completed successfully.' });
+    } catch (error) {
+        console.error('Error marking workout as completed:', error);
+
+        // Handle specific error types
+        if (error.name === 'CastError') {
+            console.error('Error: Invalid workout ID format during database operation.');
+            return res.status(400).json({ message: 'Invalid workout ID format.' });
+        }
+
+        res.status(500).json({ message: 'Server error.', error: error.message });
+    }
+});
+// Route to display completed workouts
+router.get('/completed-workouts', async (req, res) => {
+    try {
+        // Fetch all completed workouts for the current user
+        const completedWorkouts = await CompletedWorkout.find({ userId: req.session.userId }).populate('workoutId');
+
+        res.status(200).json(completedWorkouts);
+    } catch (error) {
+        console.error('Error fetching completed workouts:', error);
+        res.status(500).json({ message: 'Failed to fetch completed workouts.' });
+    }
+});
+
+// Function to compute the total hours of a user
+router.get('/workouts-user-hours', async (req, res) => {
+    try {
+        // Fetch all completed workouts for the current user
+        const completedWorkouts = await CompletedWorkout.find({ userId: req.session.userId });
+
+        // Compute the total hours of the user
+        const totalHours = Math.floor(completedWorkouts.reduce((acc, curr) => acc + curr.duration / 60, 0));
+
+        res.status(200).json(totalHours);
+    } catch (error) {
+        console.error('Error fetching completed workouts:', error);
+        res.status(500).json({ message: 'Failed to fetch completed workouts.' });
+    }
+});
+
+// Function to generate a weekly chart
+router.get('/workouts-user-week', async (req, res) => {
+    try {
+        // Fetch all completed workouts for the current user
+        const completedWorkouts = await CompletedWorkout.find({ userId: req.session.userId }).sort({ completedAt: -1 });
+
+        // Generate the chart data
+        const today = new Date();
+        const chartData = Array.from({ length: 7 }, (_, i) => {
+            const date = new Date(today.getTime() - (i * 24 * 60 * 60 * 1000));
+            const day = date.getDate();
+            const workouts = completedWorkouts.filter(workout => {
+                const workoutDate = new Date(workout.completedAt);
+                return workoutDate.getDate() === day;
+            });
+
+            return { day, workouts: workouts.length };
+        });
+
+        res.status(200).json(chartData.reverse());
+    } catch (error) {
+        console.error('Error fetching completed workouts:', error);
+        res.status(500).json({ message: 'Failed to fetch completed workouts.' });
+    }
+});
+
+// Function to get the most workout being performed
+router.get('/most-workout', async (req, res) => {
+    try {
+        // Fetch all completed workouts for the current user
+        const completedWorkouts = await CompletedWorkout.find({ userId: req.session.userId });
+
+        // Generate the chart data
+        const workoutCount = {};
+        completedWorkouts.forEach(workout => {
+            const workoutName = workout.name;
+            if (!workoutCount[workoutName]) workoutCount[workoutName] = 1;
+            else workoutCount[workoutName]++;
+        });
+
+        const mostWorkout = Object.keys(workoutCount).reduce((a, b) => workoutCount[a] > workoutCount[b] ? a : b);
+
+        res.status(200).json({ mostWorkout });
+    } catch (error) {
+        console.error('Error fetching completed workouts:', error);
+        res.status(500).json({ message: 'Failed to fetch completed workouts.' });
+    }
+});
+// Function to get the favorite workout of the user
+router.get('/favorite-workout', async (req, res) => {
+    try {
+        const completedWorkouts = await CompletedWorkout.find({ userId: req.session.userId });
+
+        if (completedWorkouts.length === 0) {
+            return res.status(200).json({ favoriteWorkout: "No workouts completed yet" });
+        }
+
+        const workoutCount = completedWorkouts.reduce((acc, workout) => {
+            acc[workout.name] = (acc[workout.name] || 0) + 1;
+            return acc;
+        }, {});
+
+        const favoriteWorkout = Object.keys(workoutCount).reduce((a, b) => workoutCount[a] > workoutCount[b] ? a : b);
+
+        res.status(200).json({ favoriteWorkout });
+    } catch (error) {
+        console.error('Error fetching completed workouts:', error);
+        res.status(500).json({ message: 'Failed to fetch completed workouts.' });
+    }
+});
+// Function to get the number of users logging workouts daily, weekly, or monthly
+router.get('/user-logs', async (req, res) => {
+    try {
+        const date = new Date();
+        const today = date.toISOString().split('T')[0];
+        const last7Days = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const last30Days = new Date(date.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        const todayUsers = await User.find({ _id: { $in: await CompletedWorkout.distinct('userId', { completedAt: { $gte: today + 'T00:00:00.000Z', $lt: today + 'T23:59:59.999Z' } }) } });
+        const last7DaysUsers = await User.find({ _id: { $in: await CompletedWorkout.distinct('userId', { completedAt: { $gte: last7Days.toISOString().split('T')[0] + 'T00:00:00.000Z', $lt: today + 'T23:59:59.999Z' } }) } });
+        const last30DaysUsers = await User.find({ _id: { $in: await CompletedWorkout.distinct('userId', { completedAt: { $gte: last30Days.toISOString().split('T')[0] + 'T00:00:00.000Z', $lt: today + 'T23:59:59.999Z' } }) } });
+
+        res.status(200).json({
+            daily: todayUsers,
+            weekly: last7DaysUsers,
+            monthly: last30DaysUsers
+        });
+    } catch (error) {
+        console.error('Error fetching completed workouts:', error);
+        res.status(500).json({ message: 'Failed to fetch completed workouts.' });
+    }
+});
+// Function to get the number of users logging workouts daily, weekly, or monthly
+router.get('/user-logs-count', async (req, res) => {
+    try {
+        const date = new Date();
+        const today = date.toISOString().split('T')[0];
+        const last7Days = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const last30Days = new Date(date.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        const todayUsersCount = await CompletedWorkout.distinct('userId', { completedAt: { $gte: today + 'T00:00:00.000Z', $lt: today + 'T23:59:59.999Z' } }).countDocuments();
+        const last7DaysUsersCount = await CompletedWorkout.distinct('userId', { completedAt: { $gte: last7Days.toISOString().split('T')[0] + 'T00:00:00.000Z', $lt: today + 'T23:59:59.999Z' } }).countDocuments();
+        const last30DaysUsersCount = await CompletedWorkout.distinct('userId', { completedAt: { $gte: last30Days.toISOString().split('T')[0] + 'T00:00:00.000Z', $lt: today + 'T23:59:59.999Z' } }).countDocuments();
+
+        res.status(200).json({
+            daily: todayUsersCount,
+            weekly: last7DaysUsersCount,
+            monthly: last30DaysUsersCount
+        });
+    } catch (error) {
+        console.error('Error fetching completed workouts:', error);
+        res.status(500).json({ message: 'Failed to fetch completed workouts.' });
+    }
+});
 export default router;

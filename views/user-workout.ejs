@@ -31,7 +31,6 @@
             <ul>
                 <li><a href="/user-dashboard">DASHBOARD</a></li>
                 <li><a href="/user-workout" class="active">WORKOUT</a></li>
-                <li><a href="/user-nutrition">NUTRITION</a></li>
                 <li><a href="/user-profile">PROFILE</a></li>
             </ul>
         </nav>
@@ -42,7 +41,16 @@
         <div class="overview-card">
             <h2>WORKOUT</h2>
             <div id="workout-list" class="workout-list"></div>
-        </div> 
+            <div class="user-workouts">
+                <h2>YOUR WORKOUT</h2>
+                <div id="workoutSummaryContainer"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="completed-workouts">
+        <h2>COMPLETED WORKOUT</h2>
+        <div id="completedWorkoutContainer"></div>
     </div>
 
     <!-- Modal Structure -->
@@ -171,6 +179,7 @@
                     alert('Workout added successfully!');
                     closeModal();
                     fetchWorkouts(); // Refresh workout list
+                    fetchUserWorkouts(); // Refresh user workouts
                 } else {
                     const errorResponse = await response.json();
                     console.error('Error details:', errorResponse);
@@ -186,8 +195,110 @@
             document.getElementById('workout-modal').style.display = 'none';
         }
 
-        // Fetch workouts when the page loads
-        fetchWorkouts();
+        // Fetch and display user workouts
+        async function fetchUserWorkouts() {
+            try {
+                const response = await fetch('/workouts-user'); // Ensure this endpoint is correct
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user workouts.');
+                }
+
+                const userWorkouts = await response.json();
+                console.log('Fetched user workouts:', userWorkouts); // Debugging
+
+                const summaryContainer = document.getElementById('workoutSummaryContainer');
+                summaryContainer.innerHTML = ''; // Clear previous content
+
+                if (userWorkouts.length === 0) {
+                    summaryContainer.innerHTML = '<p>No workouts found.</p>'; // Display message if empty
+                    return;
+                }
+
+                userWorkouts.forEach(workout => {
+                    const workoutDiv = document.createElement('div');
+                    workoutDiv.className = 'user-workout-item';
+                    workoutDiv.innerHTML = `
+                        <img src="${workout.image}" alt="${workout.name}" class="user-workout-image" style="width: 100px; height: 100px;">
+                        <h3>${workout.name}</h3>
+                        <p>${workout.description}</p>
+                        <p>Duration: ${workout.duration} minutes</p>
+                        <button class="done-workout-btn" data-id="${workout._id}">
+                            Done
+                        </button>
+                    `;
+
+                    // Attach event listener to the Done button
+                    workoutDiv.querySelector('.done-workout-btn').addEventListener('click', markAsDone);
+                    summaryContainer.appendChild(workoutDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching user workouts:', error.message);
+            }
+        }
+
+        // Mark workout as done
+        async function markAsDone(event) {
+            const workoutId = event.currentTarget.getAttribute('data-id');
+
+            try {
+                const response = await fetch('/complete-workout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ workoutId }),
+                });
+
+                if (response.ok) {
+                    alert('Workout marked as done successfully!');
+                    fetchUserWorkouts(); // Refresh user workouts
+                } else {
+                    const errorResponse = await response.json();
+                    console.error('Failed to mark workout:', errorResponse);
+                }
+            } catch (error) {
+                console.error('Error during fetch:', error);
+            }
+        }
+        // Fetch and display completed workouts with date
+        async function fetchCompletedWorkouts() {
+            try {
+                const response = await fetch('/completed-workouts');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch completed workouts.');
+                }
+
+                const completedWorkouts = await response.json();
+                const completedContainer = document.getElementById('completedWorkoutContainer');
+                completedContainer.innerHTML = ''; // Clear previous content
+
+                if (completedWorkouts.length === 0) {
+                    completedContainer.innerHTML = '<p>No completed workouts found.</p>'; // Display message if empty
+                    return;
+                }
+
+                completedWorkouts.forEach(workout => {
+                    const workoutDate = new Date(workout.completedAt); // Assuming `completedAt` is the date field
+                    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    const formattedDate = workoutDate.toLocaleDateString(undefined, options);
+
+                    const workoutDiv = document.createElement('div');
+                    workoutDiv.className = 'completed-workout-item';
+                    workoutDiv.innerHTML = `
+                        <h3>${workout.name}</h3>
+                        <p>${workout.description}</p>
+                        <span>Completed on: ${formattedDate}</span>
+                    `;
+
+                    completedContainer.appendChild(workoutDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching completed workouts:', error.message);
+            }
+        }
+        // Fetch completed workouts on page load
+        document.addEventListener('DOMContentLoaded', fetchCompletedWorkouts);
+        // Initialize
+        fetchWorkouts(); // Fetch workouts when the page loads
+        fetchUserWorkouts(); // Fetch user workouts when the page loads
     </script>
 </body>
 </html>

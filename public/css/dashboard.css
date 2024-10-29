@@ -162,13 +162,13 @@
 
 .review-sec{
     float: right;
-    margin-top: -60%;
+    margin-top: -45%;
     border-radius: 10px;
-    margin-right: -10px;
+    margin-right: 25px;
     background-color: #1f2937;
     padding: 20px;
     height: 670px;
-    width:30% ;
+    width:27% ;
 }
 .review-sec h1{
     text-transform: capitalize;

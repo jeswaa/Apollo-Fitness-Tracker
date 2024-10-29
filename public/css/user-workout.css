@@ -99,8 +99,8 @@ body {
     background-color: #1a1a2e;
     border-top-right-radius: 60px;
     padding: 45px;
-    width: 85%;
-    height: 100vh;
+    width: 65%;
+    height: 90vh;
     position: fixed;
     overflow-y: scroll;
 }
@@ -118,6 +118,7 @@ h2{
     display: grid; 
     grid-template-columns: repeat(2, 1fr);
     gap: 30px; 
+    margin-bottom: 50px;
 }
 .workout-image {
     width: 120px;
@@ -177,6 +178,44 @@ h2{
     background-color: white;
     border: 5px solid white;
     color: #111827;
+}
+.completed-workouts{
+    top: 15%;
+    position: fixed;
+    right: 10px;
+    padding: 20px;
+    background-color: #111827;
+    width: 300px;
+    overflow-y: scroll;
+    height: 610px;
+}
+.completed-workouts h2{
+    font-size: 20px;
+    text-align: center;
+    color: #ff3333;
+}
+.completed-workout-item{
+    background-color: #1f2937;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.completed-workouts .completed-workout-item  h3{
+    color: rgb(212, 212, 212);
+    font-size: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: center;
+}
+.completed-workouts .completed-workout-item  p{
+    font-size: 12px;
+    text-align: justify;
+    color: #ddd;
+}
+.completed-workouts .completed-workout-item span{
+    font-size: 12px;
+    color: #7f8c8d;
 }
 /* Modal Content */
 .modal {
@@ -256,3 +295,49 @@ h2{
 		opacity: 1;
 	}
 }
+
+#workoutSummaryContainer {
+    display: flex;  /* Allow items to wrap onto the next line */
+    gap: 20px;        /* Space between items */
+    padding: 20px;
+}
+
+.workout-summary-item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    width: 50%;  /* Set each item to take half the width minus gap */
+}
+
+.workout-summary-item:hover {
+    transform: scale(1.02);
+}
+
+.summary-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-right: 1px solid #ddd;
+}
+
+.summary-text {
+    padding: 20px;
+    flex: 1;
+}
+
+.summary-text h3 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.summary-text p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #666;
+}
+
