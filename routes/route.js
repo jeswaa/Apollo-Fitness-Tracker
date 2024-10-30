@@ -789,4 +789,24 @@ router.get('/user-logs-count', async (req, res) => {
         res.status(500).json({ message: 'Failed to fetch completed workouts.' });
     }
 });
+// Route: Get Most Popular Workouts
+router.get('/most-popular-workouts', async (req, res) => {
+    try {
+      const popularWorkouts = await UserWorkout.aggregate([
+        {
+          $group: {
+            _id: "$name", // Group by workout name
+            count: { $sum: 1 }, // Count the number of times each workout is logged
+          },
+        },
+        { $sort: { count: -1 } }, // Sort in descending order
+        { $limit: 5 }, // Optional: Limit to top 5 most popular workouts
+      ]);
+  
+      res.json(popularWorkouts);
+    } catch (error) {
+      console.error("Error fetching popular workouts:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
 export default router;

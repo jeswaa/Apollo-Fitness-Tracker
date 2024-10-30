@@ -253,6 +253,11 @@
         function closeReviewModal() {
             document.getElementById("reviewModal").style.display = "none";
         }
+         // Open the modal every 5 minutes (300000ms)
+        setInterval(() => {
+            openReviewModal();
+        }, 300000); // 300,000 milliseconds = 5 minutes
+
 
         function submitReview(event) {
             event.preventDefault(); // Prevent the default form submission
