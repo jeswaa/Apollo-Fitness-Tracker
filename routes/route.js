@@ -430,7 +430,7 @@ router.get('/logout', async (req, res) => {
     try {
         const user = await User.findOne({ username: req.session.user?.username });
         if (user) {
-            user.loggedOutAt = new Date();
+            user.loggedOutAt = new Date(Date.now()).toISOString();
             await user.save();
         }
 
