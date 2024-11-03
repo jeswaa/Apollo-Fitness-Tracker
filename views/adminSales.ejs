@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/dashboard-sales.css" />
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+          <img src="./images/logo.png" alt="" />
+        </div>
+      </div>
+        <div class="content">
+            <div class="side-panel">
+                <a href="/admin-dashboard">Dashboard</a>
+        
+                <div class="dropdown">
+                    <p class="dropdown-toggle">Workout</p>
+                    <div class="dropdown-content">
+                        <a href="/workout-user">User Workout</a>
+                        <a href="/add-workout">Workouts</a>
+                    </div>
+                </div>
+        
+                <a href="/admin-usertbl">Users</a>
+                <a href="/admin-sales">Sales</a>
+                <a href="/admin-review">Reviews</a>
+        
+                <div class="logoutbtn">
+                    <a href="/"><i class="fas fa-sign-out-alt"></i></a>
+                </div>
+            </div>
+            
+            <div class="main-col">
+                <h2>Subscriptions</h2>
+                <div id="subscriptionContainer" class="subscription-container"></div>
+
+                <div class="second-col">
+                    <h2>Total Earnings</h2>
+                    <canvas id="sales-graph" width="600" height="300"></canvas>
+                    <script>
+                        // Fetch data from the API
+                        async function fetchEarningsData() {
+                            try {
+                                const response = await fetch('/subscriptions-sales');
+                                if (!response.ok) throw new Error('Failed to fetch data');
+                                return await response.json();
+                            } catch (error) {
+                                console.error(error);
+                                return { daily: 0, weekly: 0, monthly: 0 };
+                            }
+                        }
+                
+                        // Function to render the line chart
+                        async function renderEarningsChart() {
+                            const data = await fetchEarningsData();
+                
+                            const ctx = document.getElementById('sales-graph').getContext('2d'); // Updated ID
+                            new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: ['Day', 'Week', 'Month'],
+                                    datasets: [
+                                        {
+                                            label: 'Earnings',
+                                            data: [data.daily, data.weekly, data.monthly],
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            borderWidth: 2,
+                                            fill: true,
+                                            tension: 0.4 // Smooth the line
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            display: true,
+                                            position: 'top'
+                                        }
+                                    },
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            title: {
+                                                display: true,
+                                                text: 'Earnings ($)'
+                                            }
+                                        },
+                                        x: {
+                                            title: {
+                                                display: true,
+                                                text: 'Time Period'
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                
+                        // Initialize the chart
+                        renderEarningsChart();
+                    </script>
+                </div>
+                
+            </div>
+
+            <script>
+                (async () => {
+                    const response = await fetch('/subscriptions');
+                    const subscriptions = await response.json();
+                    const subscriptionContainer = document.getElementById('subscriptionContainer');
+
+                    subscriptions.forEach(sub => {
+                        const subscriptionDiv = document.createElement('div');
+                        subscriptionDiv.className = 'subscription-item';
+                        subscriptionDiv.innerHTML = `
+                            <div>
+                                <div class="subscription-details">
+                                    <p><strong>Plan:</strong> ${sub.plan}</p>
+                                    <p><strong>Username:</strong> ${sub.username}</p>
+                                    <p><strong>Price:</strong> ${sub.price}</p>
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                        subscriptionContainer.appendChild(subscriptionDiv);
+                    });
+                })();
+            </script>
+            <script>
+                function updateStatus(event, subId) {
+                    const status = event.target.value;
+                    fetch(`/admin-update-subscription/${subId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ status })
+                    });
+                }
+            </script>
+
+        </div>
+</body>
+</html>

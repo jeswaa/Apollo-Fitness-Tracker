@@ -4,16 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="shortcut icon" href="images/logo.ico" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/dashboard.css" />
   </head>
   <body>
@@ -35,6 +31,7 @@
             </div>
     
             <a href="/admin-usertbl">Users</a>
+            <a href="/admin-sales">Sales</a>
             <a href="/admin-review">Reviews</a>
     
             <div class="logoutbtn">
@@ -82,6 +79,38 @@
                           'rgba(255, 206, 86, 1)'
                         ],
                         borderWidth: 1
+                      }]
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true
+                        }
+                      }
+                    }
+                  });
+                })();
+              </script>
+            </div>
+            <div class="card">
+              <h1>Total Login</h1>
+              <canvas id="user-login-graph" width="300" height="200"></canvas>
+              <script>
+                (async () => {
+                  const response = await fetch('/user-logs');
+                  const userLogs = await response.json();
+                  const ctx = document.getElementById('user-login-graph').getContext('2d');
+                  new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                      labels: ['Daily', 'Weekly', 'Monthly'],
+                      datasets: [{
+                        label: 'User Logs',
+                        data: [userLogs.daily, userLogs.weekly, userLogs.monthly],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        fill: false
                       }]
                     },
                     options: {

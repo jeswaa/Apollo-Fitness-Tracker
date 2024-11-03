@@ -16,13 +16,13 @@
     width: 100px;
     margin-left: 50px;
 }
-.header .logo h1{
+.header .logo h1, span{
     margin-top: 30px;
     color: white;
     text-align: center;
     margin-right: 30px;
 }
-.wrapper {
+.content {
     display: flex; 
 }
 
@@ -72,13 +72,16 @@
     padding: 20px;
     color: white;
 }
+.dropdown p:hover{
+    min-width: 230px;
+}
 .dropdown-content {
     display: none;
     position: absolute;
     top: 100%; /* Align below the parent link */
     left: 0;
     background-color: #1f2937;
-    width: 225px; /* Same width as the panel */
+    width: 230px; /* Same width as the panel */
     z-index: 1;
     flex-direction: column;
 }
@@ -98,86 +101,59 @@
     display: flex;
 }
 
-/* Main Column */
+/* Main content */
 .main-col{
-    flex-grow: 1;
-    padding: 25px;
-    overflow-y: auto; 
-    height: 80vh;
-}
-.main-col .main-sec {
     padding: 20px;
-    border-radius: 15px;
+    margin-top: 20px;
+    margin-left: 20px;
 }
-.main-col .main-sec table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    overflow: hidden;
-    border-radius: 10px; 
-}
-.main-col .main-sec thead tr {
-    background-color: #111827;
-    color: white;
-    font-weight: bold;
-    text-align: left;
-}
-.main-col .main-sec th, td {
-    padding: 15px;
-    text-align: center;
-}
-.main-col .main-sec table tbody tr:last-child td {
-    border-bottom: none;
-}
-.print-btn{
-    margin-bottom: 20px;
-}
-.print-btn button{
-    padding: 17px 40px;
-    border-radius: 10px;
-    border: 0;
-    background-color: #1f2937;
-    letter-spacing: 1.5px;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    box-shadow: #111827 0px 10px 0px 0px;
-    color: hsl(0, 0%, 100%);
-    cursor: pointer;
-}
-.print-btn button:hover {
-    box-shadow: #111827 0px 7px 0px 0px;
-}
-.print-btn button:active {
-    background-color: #111827;
-    box-shadow: #111827 0px 0px 0px 0px;
-    transform: translateY(5px);
-    transition: 200ms;
-}
-.filter-section {
-    display: flex;
-    align-items: center;
+.subscription-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+    gap: 20px; /* Space between items */
     margin: 20px 0;
-    padding: 10px;
 }
 
-.filter-section label {
-    font-weight: 600;
-    margin-right: 10px;
-    font-family: 'Montserrat', sans-serif;
-    color: #333;
-}
-
-.filter-section input[type="date"] {
-    padding: 8px;
+.subscription-details {
     border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1em;
-    color: #333;
-    font-family: 'Montserrat', sans-serif;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
 }
 
-.filter-section input[type="date"]:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+.subscription-details p {
+margin: 5px 0;
+}
+
+.subscription-details select, .subscription-details a {
+margin-top: 5px;
+}
+
+.btn {
+padding: 17px 40px;
+border-radius: 10px;
+border: 0;
+background-color: #1f2937;
+letter-spacing: 1.5px;
+font-size: 15px;
+transition: all 0.3s ease;
+box-shadow: #111827 0px 10px 0px 0px;
+color: hsl(0, 0%, 100%);
+cursor: pointer;
+}
+
+.btn-primary {
+background-color: #007bff;
+}
+
+.btn-danger {
+background-color: #dc3545;
+}
+.second-col{
+    position: absolute;
+    top: 9rem;
+    right: 5rem;
 }

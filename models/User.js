@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: false
     },
     username: {
         type: String,
@@ -19,12 +19,30 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    loggedInAt: {
+        type: String,
+        default: () => {
+            const date = new Date();
+            const hours = `0${date.getHours()}`.slice(-2);
+            const minutes = `0${date.getMinutes()}`.slice(-2);
+            return `${hours}:${minutes}`;
+        }
+    },
+    loggedOutAt: {
+        type: String,
+        default: () => {
+            const date = new Date();
+            const hours = `0${date.getHours()}`.slice(-2);
+            const minutes = `0${date.getMinutes()}`.slice(-2);
+            return `${hours}:${minutes}`;
+        }
     }
 }, { 
     timestamps: true 
 });
 
-
 // Create and export the User model
 const User = mongoose.model('User', userSchema);
 export default User;
+

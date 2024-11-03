@@ -29,7 +29,7 @@ connection(); // Connects to your MongoDB instance
 // Set up session middleware
 app.use(
     session({
-        secret: process.env.SESSION_SECRET || 'your-secret-key', // Use an environment variable for security
+        secret: process.env.SESSION_SECRET || 'qwerty12345', // Use an environment variable for security
         resave: false,
         saveUninitialized: true,
     })

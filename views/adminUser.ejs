@@ -10,11 +10,47 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard-usertbl.css">
+    <style>
+        /* Print Styling */
+        @media print {
+            .header, .side-panel, .print-btn, .filter-section {
+                display: none !important;
+            }
+            .main-col {
+                width: 100%;
+                padding: 0;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            .print-only {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            #printDate {
+                text-align: right;
+                margin: 20px 0;
+                font-size: 0.9em;
+                color: gray;
+            }
+        }
+
+        .print-only {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">
-        <img src="./images/logo.png" alt="">
+            <img src="./images/logo.png" alt="">
         </div>
     </div>
     <div class="wrapper">
@@ -28,6 +64,7 @@
                 </div>
             </div>
             <a href="/admin-usertbl">Users</a>
+            <a href="/admin-sales">Sales</a>
             <a href="/admin-review">Reviews</a>
             <div class="logoutbtn">
                 <a href="/"><i class="fas fa-sign-out-alt"></i></a>
@@ -35,49 +72,90 @@
         </div>
         <div class="main-col">
             <div class="main-sec">
+                <!-- Company Header - Visible Only in Print -->
+                <div class="print-only">
+                    <img src="./images/logo.png" alt="Apollo Fitness Gym Logo" style="width: 80px;">
+                    <h1>Apollo Fitness Gym</h1>
+                </div>
+
+                <!-- Print Button -->
+                <div class="print-btn">
+                    <button onclick="window.print()">Print</button>
+                </div>
+                
+                <!-- Date Filter -->
+                <div class="filter-section">
+                    <label for="dateFilter">Filter by Date:</label>
+                    <input type="date" id="dateFilter" onchange="filterByDate()">
+                </div>
+
+
                 <table border="2px">
                     <thead>
                         <tr>
                             <th>Fullname</th>
                             <th>Email</th>
                             <th>Username</th>
-                            <th>Password</th>
+                            <th>Date</th>
+                            <th>Time In</th>
+                            <th>Time Out</th>
                         </tr>
                     </thead>
-                        <tbody id="workoutTableBody"></tbody>
+                    <tbody id="workoutTableBody"></tbody>
                 </table>
+                <p id="printDate"></p>
             </div>
         </div>
     </div>
 
     <script>
-        // Function to fetch users from the backend
+        let allUsers = []; // Store all users data globally for filtering
+
         async function fetchUsers() {
             try {
                 const response = await fetch('/users');
                 if (!response.ok) throw new Error('Failed to fetch users');
                 
-                const users = await response.json();
-                const tableBody = document.getElementById('workoutTableBody');
-                tableBody.innerHTML = ''; // Clear previous content
-
-                // Populate the table with users
-                users.forEach(user => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${user.fullname}</td>
-                        <td>${user.email}</td>
-                        <td>${user.username}</td>
-                        <td>${user.password}</td> <!-- Avoid displaying raw passwords -->
-                    `;
-                    tableBody.appendChild(row);
-                });
+                allUsers = await response.json(); // Save data to allUsers for filtering
+                renderTable(allUsers); // Initial render with all data
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
         }
 
-        // Call the fetchUsers function when the page loads
+        function renderTable(users) {
+            const tableBody = document.getElementById('workoutTableBody');
+            tableBody.innerHTML = ''; // Clear previous content
+
+            // Populate the table with filtered users
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.fullname}</td>
+                    <td>${user.email}</td>
+                    <td>${user.username}</td>
+                    <td>${new Date(user.loggedInAt).toLocaleDateString('default', { month: 'long', day: 'numeric', year: 'numeric' })}</td>
+                    <td>${new Date(user.loggedInAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td>${new Date(user.loggedOutAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function filterByDate() {
+            const selectedDate = document.getElementById('dateFilter').value;
+            if (selectedDate) {
+                const filteredUsers = allUsers.filter(user => {
+                    const userDate = new Date(user.loggedInAt).toISOString().split('T')[0];
+                    return userDate === selectedDate;
+                });
+                renderTable(filteredUsers);
+            } else {
+                renderTable(allUsers); // Show all data if no date is selected
+            }
+        }
+
+        // Fetch users when the page loads
         window.onload = fetchUsers;
     </script>
 </body>

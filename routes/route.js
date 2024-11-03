@@ -7,6 +7,7 @@ import UserWorkout from '../models/Workout-duration.js';
 import Food from '../models/Food.js';
 import Review from '../models/Reviews.js'; // Import the Review model
 import CompletedWorkout from '../models/CompletedWorkout.js';
+import Subscription from '../models/Subscription.js';
 import bcrypt from 'bcryptjs';
 import flash from 'connect-flash'; 
 import session from 'express-session'; 
@@ -59,6 +60,7 @@ router.get('/workout-user', (req, res) => res.render('adminWorkout-duration'));
 router.get('/add-food', (req, res) => res.render('adminNutrition'));
 router.get('/admin-usertbl', (req, res) => res.render('adminUser'));
 router.get('/admin-review', (req, res) => res.render('adminReview'));
+router.get('/admin-sales', (req, res) => res.render('adminSales'));
 router.get('/', (req, res) => res.render('index'));
 //binura yung sa user-dashboard pinalitan basta yung may mga user
 
@@ -108,17 +110,6 @@ router.get('/user-profile', (req, res) => {
     }
 });
 
-router.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Error logging out:', err);
-            req.flash('error_msg', 'Error logging out.');
-            return res.redirect('/'); // Or admin dashboard if needed
-        }
-        req.flash('success_msg', 'You have successfully logged out.');
-        res.redirect('/login');
-    });
-});
 
 // New search route for foods
 router.get('/foods', async (req, res) => {
@@ -385,24 +376,74 @@ router.post('/login', async (req, res) => {
         if (username === 'admin' && password === 'admin12345') {
             req.session.user = { username: 'Admin', fullname: 'Admin Name', email: 'admin@example.com' }; // Store admin info
             req.flash('success_msg', 'Welcome, Admin!');
+            console.log(`Admin logged in at: ${new Date().toISOString()}`);
             return res.redirect('/admin-dashboard');
         }
 
         const user = await User.findOne({ username });
         if (user && await bcrypt.compare(password, user.password)) {
             req.session.user = { username: user.username, fullname: user.fullname, email: user.email }; // Store user info
+            user.loggedInAt = new Date(Date.now()).toISOString(); // Update the updatedAt field
+            await user.save();
             req.flash('success_msg', 'Successfully logged in.');
+            console.log(`User ${user.username} logged in at: ${user.loggedInAt}`);
             res.redirect('/user-dashboard');
         } else {
             req.flash('error_msg', 'Invalid username or password.');
             res.redirect('/login');
         }
+
     } catch (error) {
         console.error('Error logging in:', error);
         req.flash('error_msg', 'Error logging in: ' + error.message);
         res.redirect('/login');
     }
 });
+// User Logs
+router.get('/user-logs', async (req, res) => {
+    try {
+        const date = new Date();
+        const today = date.toISOString().split('T')[0];
+        const last7Days = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const last30Days = new Date(date.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        const dailyCount = await CompletedWorkout.countDocuments({ userId: req.session.userId, completedAt: { $gte: today + 'T00:00:00.000Z', $lt: today + 'T23:59:59.999Z' } });
+        const weeklyCount = await CompletedWorkout.countDocuments({ userId: req.session.userId, completedAt: { $gte: last7Days.toISOString().split('T')[0] + 'T00:00:00.000Z' } });
+        const monthlyCount = await CompletedWorkout.countDocuments({ userId: req.session.userId, completedAt: { $gte: last30Days.toISOString().split('T')[0] + 'T00:00:00.000Z' } });
+
+        res.json({
+            daily: dailyCount,
+            weekly: weeklyCount,
+            monthly: monthlyCount
+        });
+    } catch (error) {
+        console.error('Error fetching user logs:', error);
+        res.status(500).json({ error: 'Failed to fetch user logs' });
+    }
+});
+
+// Logout
+router.get('/logout', async (req, res) => {
+    console.log(req);
+    if (req.session === undefined) throw Error('req.flash() requires sessions');
+
+    try {
+        const user = await User.findOne({ username: req.session.user?.username });
+        if (user) {
+            user.loggedOutAt = new Date();
+            await user.save();
+        }
+
+        req.session.user = undefined;
+        req.flash('success_msg', 'You have successfully logged out.');
+        res.redirect('/');
+    } catch (error) {
+        console.error('Error logging out:', error);
+        req.flash('error_msg', 'Error logging out: ' + error.message);
+        res.redirect('/');
+    }
+});
+
 
 // Add New User Workout
 router.post('/add-users-workout', async (req, res) => {
@@ -809,4 +850,99 @@ router.get('/most-popular-workouts', async (req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   });
+
+router.post('/subscribe', async (req, res) => {
+  const { plan, price } = req.body; // Include price in the request body
+
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'You must be logged in to subscribe' });
+  }
+
+  const username = req.session.user.username;
+  const email = req.session.user.email;
+
+  try {
+    const existingSubscription = await Subscription.findOne({ username });
+
+    if (existingSubscription) {
+      existingSubscription.plan = plan;
+      existingSubscription.price = price; // Update the price
+      await existingSubscription.save();
+    } else {
+      const newSubscription = new Subscription({ plan, price, username, email });
+      await newSubscription.save();
+    }
+
+    req.flash('success_msg', 'Subscription successful!');
+    res.redirect('/user-dashboard');
+  } catch (error) {
+    console.error('Error creating subscription:', error);
+    res.status(500).json({ message: 'Failed to create subscription.' });
+  }
+});
+
+router.get('/subscriptions', async (req, res) => {
+  try {
+    const subscriptions = await Subscription.find();
+
+    res.status(200).json(subscriptions);
+  } catch (error) {
+    console.error('Error fetching subscriptions:', error);
+    res.status(500).json({ message: 'Failed to fetch subscriptions.' });
+  }
+});
+
+router.post('/admin-update-subscription', async (req, res) => {
+  const { id, plan } = req.body;
+
+  try {
+    const updatedSubscription = await Subscription.findOneAndUpdate(
+      { _id: id },
+      { plan },
+      { new: true }
+    );
+
+    if (!updatedSubscription) {
+      return res.status(404).json({ error: 'Subscription not found' });
+    }
+
+    res.status(200).json(updatedSubscription);
+  } catch (error) {
+    console.error('Error updating subscription:', error);
+    res.status(500).json({ message: 'Failed to update subscription.' });
+  }
+});
+router.get('/subscriptions-sales', async (req, res) => {
+  try {
+    const today = new Date();
+    const oneDayAgo = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const oneMonthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const dailyEarnings = await Subscription.aggregate([
+      { $match: { createdAt: { $gte: oneDayAgo } } },
+      { $group: { _id: null, total: { $sum: "$price" } } }
+    ]);
+
+    const weeklyEarnings = await Subscription.aggregate([
+      { $match: { createdAt: { $gte: oneWeekAgo } } },
+      { $group: { _id: null, total: { $sum: "$price" } } }
+    ]);
+
+    const monthlyEarnings = await Subscription.aggregate([
+      { $match: { createdAt: { $gte: oneMonthAgo } } },
+      { $group: { _id: null, total: { $sum: "$price" } } }
+    ]);
+
+    res.status(200).json({
+      daily: dailyEarnings[0] ? dailyEarnings[0].total : 0,
+      weekly: weeklyEarnings[0] ? weeklyEarnings[0].total : 0,
+      monthly: monthlyEarnings[0] ? monthlyEarnings[0].total : 0
+    });
+  } catch (error) {
+    console.error('Error fetching subscriptions earnings:', error);
+    res.status(500).json({ message: 'Failed to fetch subscriptions earnings.' });
+  }
+});
+
 export default router;

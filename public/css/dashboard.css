@@ -164,12 +164,12 @@
 
 .review-sec{
     float: right;
-    margin-top: -81.5%;
+    margin-top: -57%;
     border-radius: 10px;
     margin-right: 25px;
     background-color: #1f2937;
     padding: 20px;
-    height: 935px;
+    height: 660px;
     width:25% ;
     overflow-y: scroll;
 }

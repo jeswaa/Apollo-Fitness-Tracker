@@ -20,9 +20,9 @@
         <div class="welcome-text">
             <h1>Welcome Back, <%= user.username %>!</h1>
         </div>
-        <div class="profile-icon">
+        <div class="profile-icon" hidden>
             <i class="fa-solid fa-circle-user"></i>
-        </div>
+          </div>
     </div>
 
     <!-- Side Navbar -->
@@ -32,6 +32,9 @@
                 <li><a href="/user-dashboard" class="active">DASHBOARD</a></li>
                 <li><a href="/user-workout">WORKOUT</a></li>
                 <li><a href="/user-profile">PROFILE</a></li>
+                <div class="logoutbtn">
+                    <a href="/"><i class="fas fa-sign-out-alt"></i></a>
+                </div>
             </ul>
         </nav>
     </div>
@@ -144,6 +147,66 @@
             </div>
         </div>
     </div>
+
+    <!-- Subscription Modal -->
+    <div id="subscriptionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSubscriptionModal()">&times;</span>
+            <h2>Subscription</h2>
+            <form action="/subscribe" method="POST">
+              <p>Choose your subscription plan:</p>
+              <div class="plan-option">
+                <input type="radio" id="daily-plan" name="plan" value="daily" data-price="40" required>
+                <label for="daily-plan">Daily Plan</label>
+                <span class="price">40 pesos</span>
+              </div>
+              <div class="plan-option">
+                <input type="radio" id="monthly-plan" name="plan" value="monthly" data-price="400" required>
+                <label for="monthly-plan">Monthly Plan</label>
+                <span class="price">400 pesos</span>
+              </div>
+              <label for="username">Username</label>
+              <input type="text" name="username" value="<%= user.username %>" required>
+              <label for="email" style="display: none;">Email</label>
+              <input type="email" name="email" value="<%= user.email %>" style="display: none;" required>
+              <input type="hidden" name="price" id="price" required>
+              <button type="submit">Subscribe</button>
+            </form>
+
+            <script>
+              const planOptions = document.querySelectorAll(".plan-option input");
+              planOptions.forEach(option => {
+                option.addEventListener("click", () => {
+                  document.getElementById("price").value = option.getAttribute("data-price");
+                });
+              });
+            </script>
+        </div>
+    </div>
+    <script>
+        let subscriptionModal = document.getElementById("subscriptionModal");
+        let closeSubscriptionModalBtn = document.querySelector(".close");
+
+        function openSubscriptionModal() {
+            subscriptionModal.style.display = 'block';
+        }
+
+        function closeSubscriptionModal() {
+            subscriptionModal.style.display = 'none';
+        }
+
+        // Open the modal every 2 minutes (120000ms)
+        setInterval(() => {
+            openSubscriptionModal();
+        }, 12000);
+
+        // Close the modal if user clicks outside it
+        window.onclick = (event) => {
+            if (event.target === subscriptionModal) {
+                closeSubscriptionModal();
+            }
+        };
+    </script>
 
     <!-- Right Side New Container -->
     <div class="right-side-container">

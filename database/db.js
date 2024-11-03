@@ -7,11 +7,11 @@ dotenv.config();
 
 const connection = async () => {
   try {
-    mongoose.set('strictQuery', true); // Optional: for strict MongoDB queries
+    mongoose.set('strictQuery', true)
 
     // Connect to MongoDB using the URI from environment variables
     await mongoose.connect(process.env.MONGO_URI, {
-      autoIndex: true, // Enables automatic creation of indexes (optional)
+      autoIndex: true,
     });
 
     console.log('MongoDB connected successfully!');
@@ -31,7 +31,7 @@ const connection = async () => {
 
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
-    process.exit(1); // Exit if there is a connection error
+    process.exit(1); 
   }
 };
 

@@ -383,4 +383,16 @@ color: white; /* Adjust color to match your theme */
 .workout-details p{
     font-size: 12px;
 }
+.navbar .logoutbtn{
+    margin-top: 30px;
+}
+.navbar .logoutbtn a{
+    font-size: 30px;
+    margin-left: 30%;
+    color: #374151;
+}
+.navbar .logoutbtn a:hover{
+    color: #ddd;
+    background-color: transparent;
+}
   

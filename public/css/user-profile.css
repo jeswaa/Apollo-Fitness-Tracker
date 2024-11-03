@@ -222,3 +222,15 @@ body {
     color: #d1d1d1;
     font-size: 16px;
 }
+.navbar .logoutbtn{
+    margin-top: 30px;
+}
+.navbar .logoutbtn a{
+    font-size: 30px;
+    margin-left: 30%;
+    color: #374151;
+}
+.navbar .logoutbtn a:hover{
+    color: #ddd;
+    background-color: transparent;
+}

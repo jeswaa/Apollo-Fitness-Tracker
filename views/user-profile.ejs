@@ -21,7 +21,7 @@
       <div class="welcome-text">
         <h1>Welcome Back, <%= user.username %>!</h1> 
       </div>
-      <div class="profile-icon">
+      <div class="profile-icon" hidden>
         <i class="fa-solid fa-circle-user"></i>
       </div>
     </div>
@@ -33,6 +33,9 @@
           <li><a href="/user-dashboard">DASHBOARD</a></li>
           <li><a href="/user-workout">WORKOUT</a></li>
           <li><a href="/user-profile" class="active">PROFILE</a></li>
+          <div class="logoutbtn">
+            <a href="/"><i class="fas fa-sign-out-alt"></i></a>
+        </div>
         </ul>
       </nav>
     </div>
@@ -60,8 +63,8 @@
               />
             </div>
           <div class="user-info">
-            <h2><%= user.fullname %></h2> <!-- Display full name -->
-            <p><%= user.email %></p> <!-- Display email -->
+            <h2><%= user.fullname %></h2>
+            <p><%= user.email %></p> 
           </div>
         </div>
 
