@@ -109,7 +109,7 @@
 }
 .subscription-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 items per row */
+    grid-template-columns: repeat(2, 1fr); /* 3 items per row */
     gap: 20px; /* Space between items */
     margin: 20px 0;
 }
